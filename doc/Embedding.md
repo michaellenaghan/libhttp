@@ -39,12 +39,6 @@ By default, the server will automatically serve up files like a normal HTTP serv
   - Use `httplib_set_request_handler()` to easily add your own request handlers.
   - Use `httplib_stop()` to stop the server.
 
-JavaScript Support
-------
-
-LibHTTP can be built with server side JavaScript support by including the Duktape library.
-
-
 LibHTTP internals
 ------
 
@@ -109,4 +103,3 @@ threads use blocking IO on accepted sockets for reading and writing data.
 All accepted sockets have `SO_RCVTIMEO` and `SO_SNDTIMEO` socket options set
 (controlled by the `request_timeout_ms` LibHTTP option, 30 seconds default)
 which specifies a read/write timeout on client connections.
-
