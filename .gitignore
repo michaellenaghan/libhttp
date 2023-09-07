@@ -3,8 +3,9 @@ libhttpserver
 testmime
 *-cache
 *.dmg
-*.msi
 *.exe
+*.log
+*.msi
 *.zip
 [oO]utput
 [tT]esting
@@ -17,6 +18,7 @@ lib/*.lib
 lib/*.a
 test/obj/*.o
 test/obj/*.obj
+examples/*/*.a
 
 
 #################

@@ -15,7 +15,7 @@
 #include <string.h>
 #include <time.h>
 
-#include "civetweb.h"
+#include "libhttp.h"
 
 
 #define DOCUMENT_ROOT "."
@@ -38,157 +38,158 @@ int exitNow = 0;
 
 
 int
-ExampleHandler(struct httplib_connection *conn, void *cbdata)
+ExampleHandler(struct lh_ctx_t *ctx, struct lh_con_t *conn, void *cbdata)
 {
-	httplib_printf(conn,
+	httplib_printf(ctx, conn,
 	          "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nConnection: "
 	          "close\r\n\r\n");
-	httplib_printf(conn, "<html><body>");
-	httplib_printf(conn, "<h2>This is an example text from a C handler</h2>");
+	httplib_printf(ctx, conn, "<html><body>");
+	httplib_printf(ctx, conn, "<h2>This is an example text from a C handler</h2>");
 	httplib_printf(
+		ctx,
 	    conn,
 	    "<p>To see a page from the A handler <a href=\"A\">click A</a></p>");
-	httplib_printf(conn,
+	httplib_printf(ctx, conn,
 	          "<p>To see a page from the A handler <a href=\"A/A\">click "
 	          "A/A</a></p>");
-	httplib_printf(conn,
+	httplib_printf(ctx, conn,
 	          "<p>To see a page from the A/B handler <a "
 	          "href=\"A/B\">click A/B</a></p>");
-	httplib_printf(conn,
+	httplib_printf(ctx, conn,
 	          "<p>To see a page from the B handler (0) <a "
 	          "href=\"B\">click B</a></p>");
-	httplib_printf(conn,
+	httplib_printf(ctx, conn,
 	          "<p>To see a page from the B handler (1) <a "
 	          "href=\"B/A\">click B/A</a></p>");
-	httplib_printf(conn,
+	httplib_printf(ctx, conn,
 	          "<p>To see a page from the B handler (2) <a "
 	          "href=\"B/B\">click B/B</a></p>");
-	httplib_printf(conn,
+	httplib_printf(ctx, conn,
 	          "<p>To see a page from the *.foo handler <a "
 	          "href=\"xy.foo\">click xy.foo</a></p>");
-	httplib_printf(conn,
+	httplib_printf(ctx, conn,
 	          "<p>To see a page from the close handler <a "
 	          "href=\"close\">click close</a></p>");
-	httplib_printf(conn,
+	httplib_printf(ctx, conn,
 	          "<p>To see a page from the FileHandler handler <a "
 	          "href=\"form\">click form</a> (the starting point of the "
 	          "<b>form</b> test)</p>");
-	httplib_printf(conn,
+	httplib_printf(ctx, conn,
 	          "<p>To see a page from the CookieHandler handler <a "
 	          "href=\"cookie\">click cookie</a></p>");
-	httplib_printf(conn,
+	httplib_printf(ctx, conn,
 	          "<p>To see an example for parsing files on the fly <a "
 	          "href=\"on_the_fly_form\">click form</a> (form for "
 	          "uploading files)</p>");
 
 #ifdef USE_WEBSOCKET
-	httplib_printf(conn,
+	httplib_printf(ctx, conn,
 	          "<p>To test websocket handler <a href=\"/websocket\">click "
 	          "websocket</a></p>");
 #endif
-	httplib_printf(conn, "<p>To exit <a href=\"%s\">click exit</a></p>", EXIT_URI);
-	httplib_printf(conn, "</body></html>\n");
+	httplib_printf(ctx, conn, "<p>To exit <a href=\"%s\">click exit</a></p>", EXIT_URI);
+	httplib_printf(ctx, conn, "</body></html>\n");
 	return 1;
 }
 
 
 int
-ExitHandler(struct httplib_connection *conn, void *cbdata)
+ExitHandler(struct lh_ctx_t *ctx, struct lh_con_t *conn, void *cbdata)
 {
-	httplib_printf(conn,
+	httplib_printf(ctx, conn,
 	          "HTTP/1.1 200 OK\r\nContent-Type: "
 	          "text/plain\r\nConnection: close\r\n\r\n");
-	httplib_printf(conn, "Server will shut down.\n");
-	httplib_printf(conn, "Bye!\n");
+	httplib_printf(ctx, conn, "Server will shut down.\n");
+	httplib_printf(ctx, conn, "Bye!\n");
 	exitNow = 1;
 	return 1;
 }
 
 
 int
-AHandler(struct httplib_connection *conn, void *cbdata)
+AHandler(struct lh_ctx_t *ctx, struct lh_con_t *conn, void *cbdata)
 {
-	httplib_printf(conn,
+	httplib_printf(ctx, conn,
 	          "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nConnection: "
 	          "close\r\n\r\n");
-	httplib_printf(conn, "<html><body>");
-	httplib_printf(conn, "<h2>This is the A handler!!!</h2>");
-	httplib_printf(conn, "</body></html>\n");
+	httplib_printf(ctx, conn, "<html><body>");
+	httplib_printf(ctx, conn, "<h2>This is the A handler!!!</h2>");
+	httplib_printf(ctx, conn, "</body></html>\n");
 	return 1;
 }
 
 
 int
-ABHandler(struct httplib_connection *conn, void *cbdata)
+ABHandler(struct lh_ctx_t *ctx, struct lh_con_t *conn, void *cbdata)
 {
-	httplib_printf(conn,
+	httplib_printf(ctx, conn,
 	          "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nConnection: "
 	          "close\r\n\r\n");
-	httplib_printf(conn, "<html><body>");
-	httplib_printf(conn, "<h2>This is the AB handler!!!</h2>");
-	httplib_printf(conn, "</body></html>\n");
+	httplib_printf(ctx, conn, "<html><body>");
+	httplib_printf(ctx, conn, "<h2>This is the AB handler!!!</h2>");
+	httplib_printf(ctx, conn, "</body></html>\n");
 	return 1;
 }
 
 
 int
-BXHandler(struct httplib_connection *conn, void *cbdata)
+BXHandler(struct lh_ctx_t *ctx, struct lh_con_t *conn, void *cbdata)
 {
 	/* Handler may access the request info using httplib_get_request_info */
-	const struct httplib_request_info *req_info = httplib_get_request_info(conn);
+	const struct lh_rqi_t *req_info = httplib_get_request_info(conn);
 
-	httplib_printf(conn,
+	httplib_printf(ctx, conn,
 	          "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nConnection: "
 	          "close\r\n\r\n");
-	httplib_printf(conn, "<html><body>");
-	httplib_printf(conn, "<h2>This is the BX handler %p!!!</h2>", cbdata);
-	httplib_printf(conn, "<p>The actual uri is %s</p>", req_info->uri);
-	httplib_printf(conn, "</body></html>\n");
+	httplib_printf(ctx, conn, "<html><body>");
+	httplib_printf(ctx, conn, "<h2>This is the BX handler %p!!!</h2>", cbdata);
+	httplib_printf(ctx, conn, "<p>The actual uri is %s</p>", req_info->uri);
+	httplib_printf(ctx, conn, "</body></html>\n");
 	return 1;
 }
 
 
 int
-FooHandler(struct httplib_connection *conn, void *cbdata)
+FooHandler(struct lh_ctx_t *ctx, struct lh_con_t *conn, void *cbdata)
 {
 	/* Handler may access the request info using httplib_get_request_info */
-	const struct httplib_request_info *req_info = httplib_get_request_info(conn);
+	const struct lh_rqi_t *req_info = httplib_get_request_info(conn);
 
-	httplib_printf(conn,
+	httplib_printf(ctx, conn,
 	          "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nConnection: "
 	          "close\r\n\r\n");
-	httplib_printf(conn, "<html><body>");
-	httplib_printf(conn, "<h2>This is the Foo handler!!!</h2>");
-	httplib_printf(conn,
+	httplib_printf(ctx, conn, "<html><body>");
+	httplib_printf(ctx, conn, "<h2>This is the Foo handler!!!</h2>");
+	httplib_printf(ctx, conn,
 	          "<p>The request was:<br><pre>%s %s HTTP/%s</pre></p>",
 	          req_info->request_method,
 	          req_info->uri,
 	          req_info->http_version);
-	httplib_printf(conn, "</body></html>\n");
+	httplib_printf(ctx, conn, "</body></html>\n");
 	return 1;
 }
 
 
 int
-CloseHandler(struct httplib_connection *conn, void *cbdata)
+CloseHandler(struct lh_ctx_t *ctx, struct lh_con_t *conn, void *cbdata)
 {
 	/* Handler may access the request info using httplib_get_request_info */
-	const struct httplib_request_info *req_info = httplib_get_request_info(conn);
+	const struct lh_rqi_t *req_info = httplib_get_request_info(conn);
 
-	httplib_printf(conn,
+	httplib_printf(ctx, conn,
 	          "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nConnection: "
 	          "close\r\n\r\n");
-	httplib_printf(conn, "<html><body>");
-	httplib_printf(conn,
+	httplib_printf(ctx, conn, "<html><body>");
+	httplib_printf(ctx, conn,
 	          "<h2>This handler will close the connection in a second</h2>");
 #ifdef _WIN32
 	Sleep(1000);
 #else
 	sleep(1);
 #endif
-	httplib_printf(conn, "bye");
+	httplib_printf(ctx, conn, "bye");
 	printf("CloseHandler: close connection\n");
-	httplib_close_connection(conn);
+	httplib_close_connection(ctx, conn);
 	printf("CloseHandler: wait 10 sec\n");
 #ifdef _WIN32
 	Sleep(10000);
@@ -201,14 +202,20 @@ CloseHandler(struct httplib_connection *conn, void *cbdata)
 
 
 int
-FileHandler(struct httplib_connection *conn, void *cbdata)
+FileHandler(struct lh_ctx_t *ctx, struct lh_con_t *conn, void *cbdata)
 {
 	/* In this handler, we ignore the req_info and send the file "fileName". */
 	const char *fileName = (const char *)cbdata;
 
-	httplib_send_file(conn, fileName);
+	httplib_send_file(ctx, conn, fileName, NULL, NULL);
 	return 1;
 }
+
+
+struct ctx_conn_t {
+	struct lh_ctx_t *ctx;
+	struct lh_con_t *conn;
+};
 
 
 int
@@ -218,9 +225,9 @@ field_found(const char *key,
             size_t pathlen,
             void *user_data)
 {
-	struct httplib_connection *conn = (struct httplib_connection *)user_data;
+	struct ctx_conn_t *ctx_conn = user_data;
 
-	httplib_printf(conn, "\r\n\r\n%s:\r\n", key);
+	httplib_printf(ctx_conn->ctx, ctx_conn->conn, "\r\n\r\n%s:\r\n", key);
 
 	if (filename && *filename) {
 #ifdef _WIN32
@@ -237,12 +244,12 @@ field_found(const char *key,
 int
 field_get(const char *key, const char *value, size_t valuelen, void *user_data)
 {
-	struct httplib_connection *conn = (struct httplib_connection *)user_data;
+	struct ctx_conn_t *ctx_conn = user_data;
 
 	if (key[0]) {
-		httplib_printf(conn, "%s = ", key);
+		httplib_printf(ctx_conn->ctx, ctx_conn->conn, "%s = ", key);
 	}
-	httplib_write(conn, value, valuelen);
+	httplib_write(ctx_conn->ctx, ctx_conn->conn, value, valuelen);
 
 	return 0;
 }
@@ -251,19 +258,19 @@ field_get(const char *key, const char *value, size_t valuelen, void *user_data)
 int
 field_stored(const char *path, int64_t file_size, void *user_data)
 {
-	struct httplib_connection *conn = (struct httplib_connection *)user_data;
+	struct ctx_conn_t *ctx_conn = user_data;
 
-	httplib_printf(conn, "stored as %s (%lu bytes)\r\n\r\n", path, (unsigned long)file_size);
+	httplib_printf(ctx_conn->ctx, ctx_conn->conn, "stored as %s (%lu bytes)\r\n\r\n", path, (unsigned long)file_size);
 
 	return 0;
 }
 
 
 int
-FormHandler(struct httplib_connection *conn, void *cbdata)
+FormHandler(struct lh_ctx_t *ctx, struct lh_con_t *conn, void *cbdata)
 {
 	/* Handler may access the request info using httplib_get_request_info */
-	const struct httplib_request_info *req_info = httplib_get_request_info(conn);
+	const struct lh_rqi_t *req_info = httplib_get_request_info(conn);
 	int ret;
 	struct httplib_form_data_handler fdh = {field_found, field_get, field_stored, 0};
 
@@ -271,44 +278,48 @@ FormHandler(struct httplib_connection *conn, void *cbdata)
 	 * httplib_handle_form_request. */
 	(void)req_info;
 
-	httplib_printf(conn,
+	httplib_printf(ctx, conn,
 	          "HTTP/1.1 200 OK\r\nContent-Type: "
 	          "text/plain\r\nConnection: close\r\n\r\n");
-	fdh.user_data = (void *)conn;
 
 	/* Call the form handler */
-	httplib_printf(conn, "Form data:");
-	ret = httplib_handle_form_request(conn, &fdh);
-	httplib_printf(conn, "\r\n%i fields found", ret);
+	httplib_printf(ctx, conn, "Form data:");
+	struct ctx_conn_t *ctx_conn = httplib_calloc(1, sizeof(struct ctx_conn_t));
+	ctx_conn->ctx = ctx;
+	ctx_conn->conn = conn;
+	fdh.user_data = ctx_conn;
+	ret = httplib_handle_form_request(ctx, conn, &fdh);
+	httplib_free(fdh.user_data);
+	httplib_printf(ctx, conn, "\r\n%i fields found", ret);
 
 	return 1;
 }
 
 
 int
-FileUploadForm(struct httplib_connection *conn, void *cbdata)
+FileUploadForm(struct lh_ctx_t *ctx, struct lh_con_t *conn, void *cbdata)
 {
-	httplib_printf(conn,
+	httplib_printf(ctx, conn,
 	          "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nConnection: "
 	          "close\r\n\r\n");
 
-	httplib_printf(conn, "<!DOCTYPE html>\n");
-	httplib_printf(conn, "<html>\n<head>\n");
-	httplib_printf(conn, "<meta charset=\"UTF-8\">\n");
-	httplib_printf(conn, "<title>File upload</title>\n");
-	httplib_printf(conn, "</head>\n<body>\n");
-	httplib_printf(conn,
+	httplib_printf(ctx, conn, "<!DOCTYPE html>\n");
+	httplib_printf(ctx, conn, "<html>\n<head>\n");
+	httplib_printf(ctx, conn, "<meta charset=\"UTF-8\">\n");
+	httplib_printf(ctx, conn, "<title>File upload</title>\n");
+	httplib_printf(ctx, conn, "</head>\n<body>\n");
+	httplib_printf(ctx, conn,
 	          "<form action=\"%s\" method=\"POST\" "
 	          "enctype=\"multipart/form-data\">\n",
 	          (const char *)cbdata);
-	httplib_printf(conn, "<input type=\"file\" name=\"filesin\" multiple>\n");
-	httplib_printf(conn, "<input type=\"submit\" value=\"Submit\">\n");
-	httplib_printf(conn, "</form>\n</body>\n</html>\n");
+	httplib_printf(ctx, conn, "<input type=\"file\" name=\"filesin\" multiple>\n");
+	httplib_printf(ctx, conn, "<input type=\"submit\" value=\"Submit\">\n");
+	httplib_printf(ctx, conn, "</form>\n</body>\n</html>\n");
 	return 1;
 }
 
 #define MD5_STATIC static
-#include "../src/md5.inl"
+#include "md5.inl"
 
 struct tfile_checksum {
 	char name[128];
@@ -368,10 +379,10 @@ field_get_checksum(const char *key,
 
 
 int
-CheckSumHandler(struct httplib_connection *conn, void *cbdata)
+CheckSumHandler(struct lh_ctx_t *ctx, struct lh_con_t *conn, void *cbdata)
 {
 	/* Handler may access the request info using httplib_get_request_info */
-	const struct httplib_request_info *req_info = httplib_get_request_info(conn);
+	const struct lh_rqi_t *req_info = httplib_get_request_info(conn);
 	int i, j, ret;
 	struct tfiles_checksums chksums;
 	md5_byte_t digest[16];
@@ -383,36 +394,36 @@ CheckSumHandler(struct httplib_connection *conn, void *cbdata)
 
 	memset(&chksums, 0, sizeof(chksums));
 
-	httplib_printf(conn,
+	httplib_printf(ctx, conn,
 	          "HTTP/1.1 200 OK\r\n"
 	          "Content-Type: text/plain\r\n"
 	          "Connection: close\r\n\r\n");
 
 	/* Call the form handler */
-	httplib_printf(conn, "File checksums:");
-	ret = httplib_handle_form_request(conn, &fdh);
+	httplib_printf(ctx, conn, "File checksums:");
+	ret = httplib_handle_form_request(ctx, conn, &fdh);
 	for (i = 0; i < chksums.index; i++) {
 		md5_finish(&(chksums.file[i].chksum), digest);
 		/* Visual Studio 2010+ support llu */
-		httplib_printf(conn,
+		httplib_printf(ctx, conn,
 		          "\r\n%s %llu ",
 		          chksums.file[i].name,
 		          chksums.file[i].length);
 		for (j = 0; j < 16; j++) {
-			httplib_printf(conn, "%02x", (unsigned int)digest[j]);
+			httplib_printf(ctx, conn, "%02x", (unsigned int)digest[j]);
 		}
 	}
-	httplib_printf(conn, "\r\n%i files\r\n", ret);
+	httplib_printf(ctx, conn, "\r\n%i files\r\n", ret);
 
 	return 1;
 }
 
 
 int
-CookieHandler(struct httplib_connection *conn, void *cbdata)
+CookieHandler(struct lh_ctx_t *ctx, struct lh_con_t *conn, void *cbdata)
 {
 	/* Handler may access the request info using httplib_get_request_info */
-	const struct httplib_request_info *req_info = httplib_get_request_info(conn);
+	const struct lh_rqi_t *req_info = httplib_get_request_info(conn);
 	const char *cookie = httplib_get_header(conn, "Cookie");
 	char first_str[64], count_str[64];
 	int count;
@@ -420,11 +431,11 @@ CookieHandler(struct httplib_connection *conn, void *cbdata)
 	httplib_get_cookie(cookie, "first", first_str, sizeof(first_str));
 	httplib_get_cookie(cookie, "count", count_str, sizeof(count_str));
 
-	httplib_printf(conn, "HTTP/1.1 200 OK\r\nConnection: close\r\n");
+	httplib_printf(ctx, conn, "HTTP/1.1 200 OK\r\nConnection: close\r\n");
 	if (first_str[0] == 0) {
 		time_t t = time(0);
 		struct tm *ptm = localtime(&t);
-		httplib_printf(conn,
+		httplib_printf(ctx, conn,
 		          "Set-Cookie: first=%04i-%02i-%02iT%02i:%02i:%02i\r\n",
 		          ptm->tm_year + 1900,
 		          ptm->tm_mon + 1,
@@ -434,42 +445,43 @@ CookieHandler(struct httplib_connection *conn, void *cbdata)
 		          ptm->tm_sec);
 	}
 	count = (count_str[0] == 0) ? 0 : atoi(count_str);
-	httplib_printf(conn, "Set-Cookie: count=%i\r\n", count + 1);
-	httplib_printf(conn, "Content-Type: text/html\r\n\r\n");
+	httplib_printf(ctx, conn, "Set-Cookie: count=%i\r\n", count + 1);
+	httplib_printf(ctx, conn, "Content-Type: text/html\r\n\r\n");
 
-	httplib_printf(conn, "<html><body>");
-	httplib_printf(conn, "<h2>This is the CookieHandler.</h2>");
-	httplib_printf(conn, "<p>The actual uri is %s</p>", req_info->uri);
+	httplib_printf(ctx, conn, "<html><body>");
+	httplib_printf(ctx, conn, "<h2>This is the CookieHandler.</h2>");
+	httplib_printf(ctx, conn, "<p>The actual uri is %s</p>", req_info->uri);
 
 	if (first_str[0] == 0) {
-		httplib_printf(conn, "<p>This is the first time, you opened this page</p>");
+		httplib_printf(ctx, conn, "<p>This is the first time, you opened this page</p>");
 	} else {
-		httplib_printf(conn, "<p>You opened this page %i times before.</p>", count);
-		httplib_printf(conn, "<p>You first opened this page on %s.</p>", first_str);
+		httplib_printf(ctx, conn, "<p>You opened this page %i times before.</p>", count);
+		httplib_printf(ctx, conn, "<p>You first opened this page on %s.</p>", first_str);
 	}
 
-	httplib_printf(conn, "</body></html>\n");
+	httplib_printf(ctx, conn, "</body></html>\n");
 	return 1;
 }
 
 
 int
-WebSocketStartHandler(struct httplib_connection *conn, void *cbdata)
+WebSocketStartHandler(struct lh_ctx_t *ctx, struct lh_con_t *conn, void *cbdata)
 {
-	httplib_printf(conn,
+	httplib_printf(ctx, conn,
 	          "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nConnection: "
 	          "close\r\n\r\n");
 
-	httplib_printf(conn, "<!DOCTYPE html>\n");
-	httplib_printf(conn, "<html>\n<head>\n");
-	httplib_printf(conn, "<meta charset=\"UTF-8\">\n");
-	httplib_printf(conn, "<title>Embedded websocket example</title>\n");
+	httplib_printf(ctx, conn, "<!DOCTYPE html>\n");
+	httplib_printf(ctx, conn, "<html>\n<head>\n");
+	httplib_printf(ctx, conn, "<meta charset=\"UTF-8\">\n");
+	httplib_printf(ctx, conn, "<title>Embedded websocket example</title>\n");
 
 #ifdef USE_WEBSOCKET
-	/* httplib_printf(conn, "<script type=\"text/javascript\"><![CDATA[\n"); ...
+	/* httplib_printf(ctx, conn, "<script type=\"text/javascript\"><![CDATA[\n"); ...
 	 * xhtml style */
-	httplib_printf(conn, "<script>\n");
+	httplib_printf(ctx, conn, "<script>\n");
 	httplib_printf(
+		ctx,
 	    conn,
 	    "function load() {\n"
 	    "  var wsproto = (location.protocol === 'https:') ? 'wss:' : 'ws:';\n"
@@ -485,17 +497,18 @@ WebSocketStartHandler(struct httplib_connection *conn, void *cbdata)
 	    "    connection.close();\n"
 	    "  }\n"
 	    "}\n");
-	/* httplib_printf(conn, "]]></script>\n"); ... xhtml style */
-	httplib_printf(conn, "</script>\n");
-	httplib_printf(conn, "</head>\n<body onload=\"load()\">\n");
+	/* httplib_printf(ctx, conn, "]]></script>\n"); ... xhtml style */
+	httplib_printf(ctx, conn, "</script>\n");
+	httplib_printf(ctx, conn, "</head>\n<body onload=\"load()\">\n");
 	httplib_printf(
+		ctx,
 	    conn,
 	    "<div id='websock_text_field'>No websocket connection yet</div>\n");
 #else
-	httplib_printf(conn, "</head>\n<body>\n");
-	httplib_printf(conn, "Example not compiled with USE_WEBSOCKET\n");
+	httplib_printf(ctx, conn, "</head>\n<body>\n");
+	httplib_printf(ctx, conn, "Example not compiled with USE_WEBSOCKET\n");
 #endif
-	httplib_printf(conn, "</body>\n</html>\n");
+	httplib_printf(ctx, conn, "</body>\n</html>\n");
 
 	return 1;
 }
@@ -511,7 +524,7 @@ WebSocketStartHandler(struct httplib_connection *conn, void *cbdata)
 #define MAX_WS_CLIENTS (5)
 
 struct t_ws_client {
-	struct httplib_connection *conn;
+	struct lh_con_t *conn;
 	int state;
 } static ws_clients[MAX_WS_CLIENTS];
 
@@ -527,16 +540,15 @@ struct t_ws_client {
 
 
 int
-WebSocketConnectHandler(const struct httplib_connection *conn, void *cbdata)
+WebSocketConnectHandler(struct lh_ctx_t *ctx, const struct lh_con_t *conn, void *cbdata)
 {
-	struct httplib_context *ctx = httplib_get_context(conn);
 	int reject = 1;
 	int i;
 
 	httplib_lock_context(ctx);
 	for (i = 0; i < MAX_WS_CLIENTS; i++) {
 		if (ws_clients[i].conn == NULL) {
-			ws_clients[i].conn = (struct httplib_connection *)conn;
+			ws_clients[i].conn = (struct lh_con_t *)conn;
 			ws_clients[i].state = 1;
 			httplib_set_user_connection_data(ws_clients[i].conn, (void *)(ws_clients + i));
 			reject = 0;
@@ -551,12 +563,12 @@ WebSocketConnectHandler(const struct httplib_connection *conn, void *cbdata)
 
 
 void
-WebSocketReadyHandler(struct httplib_connection *conn, void *cbdata)
+WebSocketReadyHandler(struct lh_ctx_t *ctx, struct lh_con_t *conn, void *cbdata)
 {
 	const char *text = "Hello from the websocket ready handler";
 	struct t_ws_client *client = httplib_get_user_connection_data(conn);
 
-	httplib_websocket_write(conn, WEBSOCKET_OPCODE_TEXT, text, strlen(text));
+	httplib_websocket_write(ctx, conn, WEBSOCKET_OPCODE_TEXT, text, strlen(text));
 	fprintf(stdout, "Greeting message sent to websocket client\r\n\r\n");
 	ASSERT(client->conn == conn);
 	ASSERT(client->state == 1);
@@ -566,7 +578,7 @@ WebSocketReadyHandler(struct httplib_connection *conn, void *cbdata)
 
 
 int
-WebsocketDataHandler(struct httplib_connection *conn, int bits, char *data, size_t len, void *cbdata)
+WebsocketDataHandler(struct lh_ctx_t *ctx, struct lh_con_t *conn, int bits, char *data, size_t len, void *cbdata)
 {
 	struct t_ws_client *client = httplib_get_user_connection_data(conn);
 	ASSERT(client->conn == conn);
@@ -581,9 +593,8 @@ WebsocketDataHandler(struct httplib_connection *conn, int bits, char *data, size
 
 
 void
-WebSocketCloseHandler(const struct httplib_connection *conn, void *cbdata)
+WebSocketCloseHandler(struct lh_ctx_t *ctx, const struct lh_con_t *conn, void *cbdata)
 {
-	struct httplib_context *ctx = httplib_get_context(conn);
 	struct t_ws_client *client = httplib_get_user_connection_data(conn);
 	ASSERT(client->conn == conn);
 	ASSERT(client->state >= 1);
@@ -598,7 +609,7 @@ WebSocketCloseHandler(const struct httplib_connection *conn, void *cbdata)
 
 
 void
-InformWebsockets(struct httplib_context *ctx)
+InformWebsockets(struct lh_ctx_t *ctx)
 {
 	static unsigned long cnt = 0;
 	char text[32];
@@ -609,7 +620,7 @@ InformWebsockets(struct httplib_context *ctx)
 	httplib_lock_context(ctx);
 	for (i = 0; i < MAX_WS_CLIENTS; i++) {
 		if (ws_clients[i].state == 2) {
-			httplib_websocket_write(ws_clients[i].conn, WEBSOCKET_OPCODE_TEXT, text, strlen(text));
+			httplib_websocket_write(ctx, ws_clients[i].conn, WEBSOCKET_OPCODE_TEXT, text, strlen(text));
 		}
 	}
 	httplib_unlock_context(ctx);
@@ -673,24 +684,24 @@ get_dh2236()
 
 #ifndef NO_SSL
 int
-init_ssl(void *ssl_context, void *user_data)
+init_ssl(struct lh_ctx_t *ctx, void *ssl_context, void *user_data)
 {
 	/* Add application specific SSL initialization */
-	struct ssl_ctx_st *ctx = (struct ssl_ctx_st *)ssl_context;
+	struct ssl_ctx_st *ssl_ctx = (struct ssl_ctx_st *)ssl_context;
 
 #ifdef USE_SSL_DH
 	/* example from https://github.com/civetweb/civetweb/issues/347 */
 	DH *dh = get_dh2236();
 	if (!dh)
 		return -1;
-	if (1 != SSL_CTX_set_tmp_dh(ctx, dh))
+	if (1 != SSL_CTX_set_tmp_dh(ssl_ctx, dh))
 		return -1;
 	DH_free(dh);
 
 	EC_KEY *ecdh = EC_KEY_new_by_curve_name(NID_X9_62_prime256v1);
 	if (!ecdh)
 		return -1;
-	if (1 != SSL_CTX_set_tmp_ecdh(ctx, ecdh))
+	if (1 != SSL_CTX_set_tmp_ecdh(ssl_ctx, ecdh))
 		return -1;
 	EC_KEY_free(ecdh);
 
@@ -704,55 +715,33 @@ init_ssl(void *ssl_context, void *user_data)
 int
 main(int argc, char *argv[])
 {
-	const char *options[] = {
-	    "document_root",
-	    DOCUMENT_ROOT,
-	    "listening_ports",
-	    PORT,
-	    "request_timeout_ms",
-	    "10000",
-	    "error_log_file",
-	    "error.log",
+	const struct lh_opt_t options[] = {
+	    {"document_root", DOCUMENT_ROOT},
+	    {"listening_ports", PORT},
+	    {"request_timeout_ms", "10000"},
+	    {"error_log_file", "error.log"},
 #ifdef USE_WEBSOCKET
-	    "websocket_timeout_ms",
-	    "3600000",
+	    {"websocket_timeout_ms", "3600000"},
 #endif
 #ifndef NO_SSL
-	    "ssl_certificate",
-	    "../../resources/cert/server.pem",
-	    "ssl_protocol_version",
-	    "3",
-	    "ssl_cipher_list",
+	    {"ssl_certificate", "../../resources/cert/server.pem"},
+	    {"ssl_protocol_version", "3"},
+	    {"ssl_cipher_list",
 #ifdef USE_SSL_DH
 	    "ECDHE-RSA-AES256-GCM-SHA384:DES-CBC3-SHA:AES128-SHA:AES128-GCM-SHA256",
 #else
 	    "DES-CBC3-SHA:AES128-SHA:AES128-GCM-SHA256",
 #endif
+		},
 #endif
 	    0};
-	struct httplib_callbacks callbacks;
-	struct httplib_context *ctx;
-	struct httplib_server_ports ports[32];
+	struct lh_clb_t callbacks;
+	struct lh_ctx_t *ctx;
+	struct lh_slp_t ports[32];
 	int port_cnt, n;
 	int err = 0;
 
 /* Check if libcivetweb has been built with all required features. */
-#ifdef USE_IPV6
-	if (!httplib_check_feature(8)) {
-		fprintf(stderr,
-		        "Error: Embedded example built with IPv6 support, "
-		        "but civetweb library build without.\n");
-		err = 1;
-	}
-#endif
-#ifdef USE_WEBSOCKET
-	if (!httplib_check_feature(16)) {
-		fprintf(stderr,
-		        "Error: Embedded example built with websocket support, "
-		        "but civetweb library build without.\n");
-		err = 1;
-	}
-#endif
 #ifndef NO_SSL
 	if (!httplib_check_feature(2)) {
 		fprintf(stderr,
@@ -772,6 +761,9 @@ main(int argc, char *argv[])
 	callbacks.init_ssl = init_ssl;
 #endif
 	ctx = httplib_start(&callbacks, 0, options);
+	if (!ctx) {
+		exit(EXIT_FAILURE);
+	}
 
 	/* Add handler EXAMPLE_URI, to explain the example */
 	httplib_set_request_handler(ctx, EXAMPLE_URI, ExampleHandler, 0);
@@ -815,10 +807,10 @@ main(int argc, char *argv[])
 	/* WS site for the websocket connection */
 	httplib_set_websocket_handler(ctx,
 	                         "/websocket",
-	                         WebSocketConnectHandler,
+	                         (httplib_websocket_connect_handler)WebSocketConnectHandler,
 	                         WebSocketReadyHandler,
 	                         WebsocketDataHandler,
-	                         WebSocketCloseHandler,
+	                         (httplib_websocket_close_handler)WebSocketCloseHandler,
 	                         0);
 #endif
 
@@ -828,7 +820,7 @@ main(int argc, char *argv[])
 	printf("\n%i listening ports:\n\n", port_cnt);
 
 	for (n = 0; n < port_cnt && n < 32; n++) {
-		const char *proto = ports[n].is_ssl ? "https" : "http";
+		const char *proto = ports[n].has_ssl ? "https" : "http";
 		const char *host;
 
 		if ((ports[n].protocol & 1) == 1) {

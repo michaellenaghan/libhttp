@@ -127,8 +127,12 @@ char static_assert_replacement[1];
 
 #ifdef __MACH__
 
+#ifndef CLOCK_MONOTONIC
 #define CLOCK_MONOTONIC (1)
+#endif
+#ifndef CLOCK_REALTIME
 #define CLOCK_REALTIME (2)
+#endif
 
 #include <sys/time.h>
 #include <mach/clock.h>
@@ -318,8 +322,12 @@ typedef unsigned short int in_port_t;
 #endif
 #include <pthread.h>
 #if defined(__MACH__)
-#define SSL_LIB "libssl.dylib"
-#define CRYPTO_LIB "libcrypto.dylib"
+#if !defined(SSL_LIB)
+#define SSL_LIB "libssl.1.0.0.dylib"
+#endif
+#if !defined(CRYPTO_LIB)
+#define CRYPTO_LIB "libcrypto.1.0.0.dylib"
+#endif
 #else
 #if !defined(SSL_LIB)
 #define SSL_LIB "libssl.so"
