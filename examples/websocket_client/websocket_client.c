@@ -38,26 +38,16 @@ const size_t websocket_goodbye_msg_len = 14 /* strlen(websocket_goodbye_msg) */;
 /*************************************************************************************/
 /* WEBSOCKET SERVER */
 /*************************************************************************************/
-#if defined(MG_LEGACY_INTERFACE)
-int
-websock_server_connect(const struct httplib_connection *conn)
-#else
 int
 websocket_server_connect(const struct httplib_connection *conn, void *_ignored)
-#endif
 {
 	printf("Server: Websocket connected\n");
 	return 0; /* return 0 to accept every connection */
 }
 
 
-#if defined(MG_LEGACY_INTERFACE)
-void
-websocket_server_ready(struct httplib_connection *conn)
-#else
 void
 websocket_server_ready(struct httplib_connection *conn, void *_ignored)
-#endif
 {
 	printf("Server: Websocket ready\n");
 
@@ -71,20 +61,12 @@ websocket_server_ready(struct httplib_connection *conn, void *_ignored)
 }
 
 
-#if defined(MG_LEGACY_INTERFACE)
-int
-websocket_server_data(struct httplib_connection *conn,
-                      int bits,
-                      char *data,
-                      size_t data_len)
-#else
 int
 websocket_server_data(struct httplib_connection *conn,
                       int bits,
                       char *data,
                       size_t data_len,
                       void *_ignored)
-#endif
 {
 	printf("Server: Got %lu bytes from the client\n", (unsigned long)data_len);
 	printf("Server received data from client: ");
@@ -113,14 +95,9 @@ websocket_server_data(struct httplib_connection *conn,
 }
 
 
-#if defined(MG_LEGACY_INTERFACE)
-void
-websocket_server_connection_close(const struct httplib_connection *conn)
-#else
 void
 websocket_server_connection_close(const struct httplib_connection *conn,
                                   void *_ignored)
-#endif
 {
 	printf("Server: Close connection\n");
 
@@ -146,16 +123,6 @@ start_websocket_server()
 
 	memset(&callbacks, 0, sizeof(callbacks));
 
-#if defined(MG_LEGACY_INTERFACE)
-	/* Obsolete: */
-	callbacks.websocket_connect = websock_server_connect;
-	callbacks.websocket_ready = websocket_server_ready;
-	callbacks.websocket_data = websocket_server_data;
-	callbacks.connection_close = websocket_server_connection_close;
-
-	ctx = httplib_start(&callbacks, 0, options);
-#else
-	/* New interface: */
 	ctx = httplib_start(&callbacks, 0, options);
 
 	httplib_set_websocket_handler(ctx,
@@ -165,7 +132,6 @@ start_websocket_server()
 	                         websocket_server_data,
 	                         websocket_server_connection_close,
 	                         NULL);
-#endif
 
 	return ctx;
 }
