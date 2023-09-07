@@ -2359,10 +2359,8 @@ START_TEST(test_http_auth)
 		".",
 		"listening_ports",
 		"8080",
-#if !defined(NO_CACHING)
 		"static_file_max_age",
 		"0",
-#endif
 		NULL,
 	};
 	struct httplib_context *ctx;
