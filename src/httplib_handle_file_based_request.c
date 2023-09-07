@@ -31,39 +31,19 @@
  * void XX_httplib_handle_file_based_request( struct lh_ctx_t *ctx, struct lh_con_t *conn, const char *path, struct file *file );
  *
  * The function XX_httplib_handle_file_based_request() handles a request which
- * involves a file. This can either be a CGI request, an SSI request of a
- * request for a static file.
+ * involves a file. This can either be an SSI request or a request for a static
+ * file.
  */
 
 void XX_httplib_handle_file_based_request( struct lh_ctx_t *ctx, struct lh_con_t *conn, const char *path, struct file *file ) {
 
-#if !defined(NO_CGI)
-	const char *cgi_ext;
-#endif  /* ! NO_CGI */
 	const char *ssi_ext;
 
 	if ( ctx == NULL  ||  conn == NULL ) return;
 
-#if !defined(NO_CGI)
-	cgi_ext = ctx->cgi_pattern;
-#endif  /* ! NO_CGI */
 	ssi_ext = ctx->ssi_pattern;
 
-	if (0) {
-#if !defined(NO_CGI)
-	}
-	
-	else if ( cgi_ext != NULL  &&  XX_httplib_match_prefix( cgi_ext, strlen( cgi_ext ), path ) > 0 ) {
-		
-		/*
-		 * CGI scripts may support all HTTP methods
-		 */
-
-		XX_httplib_handle_cgi_request( ctx, conn, path );
-#endif /* !NO_CGI */
-	}
-	
-	else if ( ssi_ext != NULL  &&  XX_httplib_match_prefix( ssi_ext, strlen( ssi_ext ), path ) > 0 ) {
+	if ( ssi_ext != NULL  &&  XX_httplib_match_prefix( ssi_ext, strlen( ssi_ext ), path ) > 0 ) {
 
 		XX_httplib_handle_ssi_file_request( ctx, conn, path, file );
 	}

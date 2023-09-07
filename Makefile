@@ -174,7 +174,6 @@ OBJLIST =									\
 	${OBJDIR}extern_ssl_lut${OBJEXT}					\
 	${OBJDIR}httplib_abort_start${OBJEXT}					\
 	${OBJDIR}httplib_accept_new_connection${OBJEXT}				\
-	${OBJDIR}httplib_addenv${OBJEXT}					\
 	${OBJDIR}httplib_atomic_dec${OBJEXT}					\
 	${OBJDIR}httplib_atomic_inc${OBJEXT}					\
 	${OBJDIR}httplib_authorize${OBJEXT}					\
@@ -234,7 +233,6 @@ OBJLIST =									\
 	${OBJDIR}httplib_getreq${OBJEXT}					\
 	${OBJDIR}httplib_global_data${OBJEXT}					\
 	${OBJDIR}httplib_gmt_time_string${OBJEXT}				\
-	${OBJDIR}httplib_handle_cgi_request${OBJEXT}				\
 	${OBJDIR}httplib_handle_directory_request${OBJEXT}			\
 	${OBJDIR}httplib_handle_file_based_request${OBJEXT}			\
 	${OBJDIR}httplib_handle_form_request${OBJEXT}				\
@@ -285,7 +283,6 @@ OBJLIST =									\
 	${OBJDIR}httplib_parse_range_header${OBJEXT}				\
 	${OBJDIR}httplib_path_to_unicode${OBJEXT}				\
 	${OBJDIR}httplib_poll${OBJEXT}						\
-	${OBJDIR}httplib_prepare_cgi_environment${OBJEXT}			\
 	${OBJDIR}httplib_print_dir_entry${OBJEXT}				\
 	${OBJDIR}httplib_printf${OBJEXT}					\
 	${OBJDIR}httplib_process_new_connection${OBJEXT}			\
@@ -338,7 +335,6 @@ OBJLIST =									\
 	${OBJDIR}httplib_skip_quoted${OBJEXT}					\
 	${OBJDIR}httplib_snprintf${OBJEXT}					\
 	${OBJDIR}httplib_sockaddr_to_string${OBJEXT}				\
-	${OBJDIR}httplib_spawn_process${OBJEXT}					\
 	${OBJDIR}httplib_ssi${OBJEXT}						\
 	${OBJDIR}httplib_ssl_error${OBJEXT}					\
 	${OBJDIR}httplib_ssl_get_client_cert_info${OBJEXT}			\
@@ -440,11 +436,6 @@ ${OBJDIR}httplib_abort_start${OBJEXT}					: ${SRCDIR}httplib_abort_start.c				\
 
 ${OBJDIR}httplib_accept_new_connection${OBJEXT}				: ${SRCDIR}httplib_accept_new_connection.c			\
 									  ${SRCDIR}httplib_ssl.h					\
-									  ${SRCDIR}httplib_main.h					\
-									  ${INCDIR}libhttp.h
-
-${OBJDIR}httplib_addenv${OBJEXT}					: ${SRCDIR}httplib_addenv.c					\
-									  ${SRCDIR}httplib_utils.h					\
 									  ${SRCDIR}httplib_main.h					\
 									  ${INCDIR}libhttp.h
 
@@ -703,10 +694,6 @@ ${OBJDIR}httplib_gmt_time_string${OBJEXT}				: ${SRCDIR}httplib_gmt_time_string.
 									  ${SRCDIR}httplib_main.h					\
 									  ${INCDIR}libhttp.h
 
-${OBJDIR}httplib_handle_cgi_request${OBJEXT}				: ${SRCDIR}httplib_handle_cgi_request.c				\
-									  ${SRCDIR}httplib_main.h					\
-									  ${INCDIR}libhttp.h
-
 ${OBJDIR}httplib_handle_directory_request${OBJEXT}			: ${SRCDIR}httplib_handle_directory_request.c			\
 									  ${SRCDIR}httplib_utils.h					\
 									  ${SRCDIR}httplib_main.h					\
@@ -923,12 +910,6 @@ ${OBJDIR}httplib_path_to_unicode${OBJEXT}				: ${SRCDIR}httplib_path_to_unicode.
 									  ${INCDIR}libhttp.h
 
 ${OBJDIR}httplib_poll${OBJEXT}						: ${SRCDIR}httplib_poll.c					\
-									  ${SRCDIR}httplib_main.h					\
-									  ${INCDIR}libhttp.h
-
-${OBJDIR}httplib_prepare_cgi_environment${OBJEXT}			: ${SRCDIR}httplib_prepare_cgi_environment.c			\
-									  ${SRCDIR}httplib_ssl.h					\
-									  ${SRCDIR}httplib_utils.h					\
 									  ${SRCDIR}httplib_main.h					\
 									  ${INCDIR}libhttp.h
 
@@ -1153,10 +1134,6 @@ ${OBJDIR}httplib_snprintf${OBJEXT}					: ${SRCDIR}httplib_snprintf.c					\
 									  ${INCDIR}libhttp.h
 
 ${OBJDIR}httplib_sockaddr_to_string${OBJEXT}				: ${SRCDIR}httplib_sockaddr_to_string.c				\
-									  ${SRCDIR}httplib_main.h					\
-									  ${INCDIR}libhttp.h
-
-${OBJDIR}httplib_spawn_process${OBJEXT}					: ${SRCDIR}httplib_spawn_process.c				\
 									  ${SRCDIR}httplib_main.h					\
 									  ${INCDIR}libhttp.h
 

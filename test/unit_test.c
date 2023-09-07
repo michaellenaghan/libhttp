@@ -189,8 +189,8 @@ static void test_match_prefix(void)
 	ASSERT(match_prefix("a|b|cd", 6, "cdef") == 2);
 	ASSERT(match_prefix("a|b|c?", 6, "cdef") == 2);
 	ASSERT(match_prefix("a|?|cd", 6, "cdef") == 1);
-	ASSERT(match_prefix("/a/**.cgi", 9, "/foo/bar/x.cgi") == -1);
-	ASSERT(match_prefix("/a/**.cgi", 9, "/a/bar/x.cgi") == 12);
+	ASSERT(match_prefix("/a/**.bar", 9, "/foo/bar/x.bar") == -1);
+	ASSERT(match_prefix("/a/**.bar", 9, "/a/bar/x.bar") == 12);
 	ASSERT(match_prefix("**/", 3, "/a/b/c") == 5);
 	ASSERT(match_prefix("**/$", 4, "/a/b/c") == -1);
 	ASSERT(match_prefix("**/$", 4, "/a/b/") == 5);

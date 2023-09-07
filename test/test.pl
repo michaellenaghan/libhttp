@@ -165,7 +165,6 @@ my $cmd = "$civetweb_exe ".
   "-listening_ports 127.0.0.1:$port ".
   "-access_log_file access.log ".
   "-error_log_file debug.log ".
-  "-cgi_environment CGI_FOO=foo,CGI_BAR=bar,CGI_BAZ=baz " .
   "-extra_mime_types .bar=foo/bar,.tar.gz=blah,.baz=foo " .
   '-put_delete_auth_file test/passfile ' .
   '-access_control_list -0.0.0.0/0,+127.0.0.1 ' .
@@ -173,7 +172,6 @@ my $cmd = "$civetweb_exe ".
   "-hide_files_patterns **exploit.PL ".
   "-enable_keep_alive yes ".
   "-url_rewrite_patterns /aiased=/etc/,/ta=$test_dir";
-$cmd .= ' -cgi_interpreter perl' if on_windows();
 spawn($cmd);
 
 o("GET /hello.txt HTTP/1.1\nConnection: close\nRange: bytes=3-50\r\n\r\n",
@@ -182,11 +180,6 @@ o("GET /hello.txt HTTP/1.1\nConnection: close\nRange: bytes=3-50\r\n\r\n",
 o("GET /hello.txt HTTP/1.1\n\n   GET /hello.txt HTTP/1.0\n\n",
   'HTTP/1.1 200.+keep-alive.+HTTP/1.1 200.+close',
   'Request pipelining', 2);
-
-my $x = 'x=' . 'A' x (200 * 1024);
-my $len = length($x);
-o("POST /env.cgi HTTP/1.0\r\nContent-Length: $len\r\n\r\n$x",
-  '^HTTP/1.1 200 OK', 'Long POST');
 
 # Try to overflow: Send very long request
 req('POST ' . '/..' x 100 . 'ABCD' x 3000 . "\n\n", 0); # don't log this one
@@ -198,17 +191,6 @@ o("GET /hello.txt HTTP/1.0\n\n", 'Content-Length: 17\s',
   'GET regular file Content-Length');
 o("GET /%68%65%6c%6c%6f%2e%74%78%74 HTTP/1.0\n\n",
   'HTTP/1.1 200 OK', 'URL-decoding');
-
-# Break CGI reading after 1 second. We must get full output.
-# Since CGI script does sleep, we sleep as well and increase request count
-# manually.
-my $slow_cgi_reply;
-print "==> Slow CGI output ... ";
-fail('Slow CGI output forward reply=', $slow_cgi_reply) unless
-  ($slow_cgi_reply = req("GET /timeout.cgi HTTP/1.0\r\n\r\n", 0, 1)) =~ /Some data/s;
-print "OK\n";
-sleep 3;
-$num_requests++;
 
 # '+' in URI must not be URL-decoded to space
 write_file("$root/a+.txt", '');
@@ -238,27 +220,6 @@ o("GET / HTTP/1.0\n\n", 'embed.c', 'Directory listing - file name');
 o("GET /ta/ HTTP/1.0\n\n", 'Modified', 'Aliases');
 o("GET /not-exist HTTP/1.0\r\n\n", 'HTTP/1.1 404', 'Not existent file');
 mkdir $test_dir . $dir_separator . 'x';
-my $path = $test_dir . $dir_separator . 'x' . $dir_separator . 'index.cgi';
-write_file($path, read_file($root . $dir_separator . 'env.cgi'));
-chmod(0755, $path);
-o("GET /$test_dir_uri/x/ HTTP/1.0\n\n", "Content-Type: text/html\r\n\r\n",
-  'index.cgi execution');
-
-my $cwd = getcwd();
-o("GET /$test_dir_uri/x/ HTTP/1.0\n\n",
-  "SCRIPT_FILENAME=$cwd/test/test_dir/x/index.cgi", 'SCRIPT_FILENAME');
-o("GET /ta/x/ HTTP/1.0\n\n", "SCRIPT_NAME=/ta/x/index.cgi",
-  'Aliases SCRIPT_NAME');
-o("GET /hello.txt HTTP/1.1\nConnection: close\n\n", 'Connection: close',
-  'No keep-alive');
-
-$path = $test_dir . $dir_separator . 'x' . $dir_separator . 'a.cgi';
-system("ln -s `which perl` $root/myperl") == 0 or fail("Can't symlink perl");
-write_file($path, "#!../../myperl\n" .
-           "print \"Content-Type: text/plain\\n\\nhi\";");
-chmod(0755, $path);
-o("GET /$test_dir_uri/x/a.cgi HTTP/1.0\n\n", "hi", 'Relative CGI interp path');
-o("GET * HTTP/1.0\n\n", "^HTTP/1.1 404", '* URI');
 
 my $mime_types = {
   html => 'text/html',
@@ -353,63 +314,6 @@ unless (scalar(@ARGV) > 0 and $ARGV[0] eq "basic_tests") {
     '^HTTP/1.1 404', 'hidden files must not be shown');
   unlink "$root/.htpasswd";
 
-
-  o("GET /dir%20with%20spaces/hello.cgi HTTP/1.0\n\r\n",
-      'HTTP/1.1 200 OK.+hello', 'CGI script with spaces in path');
-  o("GET /env.cgi HTTP/1.0\n\r\n", 'HTTP/1.1 200 OK', 'GET CGI file');
-  o("GET /bad2.cgi HTTP/1.0\n\n", "HTTP/1.1 123 Please pass me to the client\r",
-    'CGI Status code text');
-  o("GET /sh.cgi HTTP/1.0\n\r\n", 'shell script CGI',
-    'GET sh CGI file') unless on_windows();
-  o("GET /env.cgi?var=HELLO HTTP/1.0\n\n", 'QUERY_STRING=var=HELLO',
-    'QUERY_STRING wrong');
-  o("POST /env.cgi HTTP/1.0\r\nContent-Length: 9\r\n\r\nvar=HELLO",
-    'var=HELLO', 'CGI POST wrong');
-  o("POST /env.cgi HTTP/1.0\r\nContent-Length: 9\r\n\r\nvar=HELLO",
-    '\x0aCONTENT_LENGTH=9', 'Content-Length not being passed to CGI');
-  o("GET /env.cgi HTTP/1.0\nMy-HdR: abc\n\r\n",
-    'HTTP_MY_HDR=abc', 'HTTP_* env');
-  o("GET /env.cgi HTTP/1.0\n\r\nSOME_TRAILING_DATA_HERE",
-    'HTTP/1.1 200 OK', 'GET CGI with trailing data');
-
-  o("GET /env.cgi%20 HTTP/1.0\n\r\n",
-    'HTTP/1.1 404', 'CGI Win32 code disclosure (%20)');
-  o("GET /env.cgi%ff HTTP/1.0\n\r\n",
-    'HTTP/1.1 404', 'CGI Win32 code disclosure (%ff)');
-  o("GET /env.cgi%2e HTTP/1.0\n\r\n",
-    'HTTP/1.1 404', 'CGI Win32 code disclosure (%2e)');
-  o("GET /env.cgi%2b HTTP/1.0\n\r\n",
-    'HTTP/1.1 404', 'CGI Win32 code disclosure (%2b)');
-  o("GET /env.cgi HTTP/1.0\n\r\n", '\nHTTPS=off\n', 'CGI HTTPS');
-  o("GET /env.cgi HTTP/1.0\n\r\n", '\nCGI_FOO=foo\n', '-cgi_env 1');
-  o("GET /env.cgi HTTP/1.0\n\r\n", '\nCGI_BAR=bar\n', '-cgi_env 2');
-  o("GET /env.cgi HTTP/1.0\n\r\n", '\nCGI_BAZ=baz\n', '-cgi_env 3');
-  o("GET /env.cgi/a/b/98 HTTP/1.0\n\r\n", 'PATH_INFO=/a/b/98\n', 'PATH_INFO');
-  o("GET /env.cgi/a/b/9 HTTP/1.0\n\r\n", 'PATH_INFO=/a/b/9\n', 'PATH_INFO');
-
-  # Check that CGI's current directory is set to script's directory
-  my $copy_cmd = on_windows() ? 'copy' : 'cp';
-  system("$copy_cmd $root" . $dir_separator .  "env.cgi $test_dir" .
-    $dir_separator . 'env.cgi');
-  o("GET /$test_dir_uri/env.cgi HTTP/1.0\n\n",
-    "CURRENT_DIR=.*$root/$test_dir_uri", "CGI chdir()");
-
-  # SSI tests
-  o("GET /ssi1.shtml HTTP/1.0\n\n",
-    'ssi_begin.+CFLAGS.+ssi_end', 'SSI #include file=');
-  o("GET /ssi2.shtml HTTP/1.0\n\n",
-    'ssi_begin.+Unit test.+ssi_end', 'SSI #include virtual=');
-  my $ssi_exec = on_windows() ? 'ssi4.shtml' : 'ssi3.shtml';
-  o("GET /$ssi_exec HTTP/1.0\n\n",
-    'ssi_begin.+Makefile.+ssi_end', 'SSI #exec');
-  my $abs_path = on_windows() ? 'ssi6.shtml' : 'ssi5.shtml';
-  my $word = on_windows() ? 'boot loader' : 'root';
-  o("GET /$abs_path HTTP/1.0\n\n",
-    "ssi_begin.+$word.+ssi_end", 'SSI #include abspath');
-  o("GET /ssi7.shtml HTTP/1.0\n\n",
-    'ssi_begin.+Unit test.+ssi_end', 'SSI #include "..."');
-  o("GET /ssi8.shtml HTTP/1.0\n\n",
-    'ssi_begin.+CFLAGS.+ssi_end', 'SSI nested #includes');
 
   # Manipulate the passwords file
   my $path = 'test_htpasswd';

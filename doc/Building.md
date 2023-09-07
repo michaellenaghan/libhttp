@@ -83,14 +83,13 @@ preprocessor defines in the source code - usually USE_* is used there.
 
 Compile flags can be set using the *COPT* make option like so.
 ```
-make build COPT="-DNDEBUG -DNO_CGI"
+make build COPT="-DNDEBUG"
 ```
 
 | Compile Flags             | Description                          |
 | ------------------------- | ------------------------------------ |
 | NDEBUG                    | strip off all debug code             |
 | DEBUG                     | build debug version (very noisy)     |
-| NO_CGI                    | disable CGI support                  |
 | NO_SSL                    | disable SSL functionality            |
 | NO_SSL_DL                 | link against system libssl library   |
 | SSL_ALREADY_INITIALIZED   | do not initialize libcrypto          |

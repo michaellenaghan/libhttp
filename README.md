@@ -6,7 +6,7 @@ Project Mission
 -----------------
 
 The project mission is to provide easy to use, powerful, C/C++ embeddable web
-server with IPv6, CGI and SSL support. LibHTTP has a MIT license so you can innovate without restrictions.
+server with IPv6 and SSL support. LibHTTP has a MIT license so you can innovate without restrictions.
 
 LibHTTP can be used by developers as a library to add web server functionality to an existing application.
 It can also be used by end users as a stand-alone web server. It is available as single executable, no installation is required.
@@ -49,7 +49,7 @@ simplicity by a carefully selected list of features:
 - Free from copy-left licenses, like GPL, because you should innovate without restrictions.
 - Forked from [Mongoose](https://code.google.com/p/mongoose/) in 2013, before it changed the licence from MIT to commercial + GPL. A lot of enchancements have been added since that time, see [RELEASE_NOTES.md](RELEASE_NOTES.md).
 - Works on Windows, Mac, Linux, UNIX, iPhone, Android, Buildroot, and many other platforms.
-- Support for CGI, HTTPS (SSL/TLS), SSI, HTTP digest (MD5) authorization, Websocket, WEbDAV.
+- Support for HTTPS (SSL/TLS), SSI, HTTP digest (MD5) authorization, Websocket, WEbDAV.
 - Optional support for authentication using client side X.509 certificates.
 - Resumed download, URL rewrite, file blacklist, IP-based ACL.
 - Download speed limit based on client subnet or URI pattern. 

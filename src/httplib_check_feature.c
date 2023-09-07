@@ -43,9 +43,6 @@ unsigned httplib_check_feature( unsigned feature ) {
 #if !defined(NO_SSL)
 	                                    | 0x0002u
 #endif
-#if !defined(NO_CGI)
-	                                    | 0x0004u
-#endif
 
 /* Set some extra bits not defined in the API documentation.
  * These bits may change without further notice. */

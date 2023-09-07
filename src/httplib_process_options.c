@@ -51,9 +51,6 @@ bool XX_httplib_process_options( struct lh_ctx_t *ctx, const struct lh_opt_t *op
 		if ( check_file( ctx, options, "access_log_file",             & ctx->access_log_file                         ) ) return true;
 		if ( check_bool( ctx, options, "allow_sendfile_call",         & ctx->allow_sendfile_call                     ) ) return true;
 		if ( check_str(  ctx, options, "authentication_domain",       & ctx->authentication_domain                   ) ) return true;
-		if ( check_str(  ctx, options, "cgi_environment",             & ctx->cgi_environment                         ) ) return true;
-		if ( check_file( ctx, options, "cgi_interpreter",             & ctx->cgi_interpreter                         ) ) return true;
-		if ( check_patt( ctx, options, "cgi_pattern",                 & ctx->cgi_pattern                             ) ) return true;
 		if ( check_dbg(  ctx, options, "debug_level",                 & ctx->debug_level                             ) ) return true;
 		if ( check_bool( ctx, options, "decode_url",                  & ctx->decode_url                              ) ) return true;
 		if ( check_dir(  ctx, options, "document_root",               & ctx->document_root                           ) ) return true;

@@ -1,6 +1,6 @@
 #!/usr/bin/env perl
 
-@flags = ("NO_SSL", "NDEBUG", "DEBUG", "NO_CGI");
+@flags = ("NO_SSL", "NDEBUG", "DEBUG");
 my $num_flags = @flags;
 
 sub fail {

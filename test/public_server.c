@@ -897,8 +897,6 @@ START_TEST(test_request_handlers)
 	FILE *f;
 	const char *plain_file_content;
 	const char *encoded_file_content;
-	const char *cgi_script_content;
-	const char *expected_cgi_result;
 	int opt_idx = 0;
 
 #if !defined(NO_SSL)
@@ -939,8 +937,6 @@ START_TEST(test_request_handlers)
 
 	opt = httplib_get_option(ctx, "listening_ports");
 	ck_assert_str_eq(opt, HTTP_PORT);
-	opt = httplib_get_option(ctx, "cgi_environment");
-	ck_assert_str_eq(opt, "");
 	opt = httplib_get_option(ctx, "unknown_option_name");
 	ck_assert(opt == NULL);
 
@@ -1113,34 +1109,6 @@ START_TEST(test_request_handlers)
 	fwrite(encoded_file_content, 1, 52, f);
 	fclose(f);
 
-#ifdef _WIN32
-	f = fopen("test.cgi", "wb");
-	cgi_script_content = "#!test.cgi.cmd\r\n";
-	fwrite(cgi_script_content, strlen(cgi_script_content), 1, f);
-	fclose(f);
-	f = fopen("test.cgi.cmd", "w");
-	cgi_script_content = "@echo off\r\n"
-	                     "echo Connection: close\r\n"
-	                     "echo Content-Type: text/plain\r\n"
-	                     "echo.\r\n"
-	                     "echo CGI test\r\n"
-	                     "\r\n";
-	fwrite(cgi_script_content, strlen(cgi_script_content), 1, f);
-	fclose(f);
-#else
-	f = fopen("test.cgi", "w");
-	cgi_script_content = "#!/bin/sh\n\n"
-	                     "printf \"Connection: close\\r\\n\"\n"
-	                     "printf \"Content-Type: text/plain\\r\\n\"\n"
-	                     "printf \"\\r\\n\"\n"
-	                     "printf \"CGI test\\r\\n\"\n"
-	                     "\n";
-	fwrite(cgi_script_content, strlen(cgi_script_content), 1, f);
-	fclose(f);
-	system("chmod a+x test.cgi");
-#endif
-	expected_cgi_result = "CGI test";
-
 	/* Get static data */
 	client_conn = httplib_download("localhost", ipv4_port, 0, ebuf, sizeof(ebuf), "%s", "GET /test.txt HTTP/1.0\r\n\r\n");
 	ck_assert(client_conn != NULL);
@@ -1157,26 +1125,6 @@ START_TEST(test_request_handlers)
 	ck_assert_str_eq(buf, plain_file_content);
 
 	httplib_close_connection(client_conn);
-
-
-/* Test with CGI test executable */
-#if defined(_WIN32)
-	sprintf(cmd_buf, "copy %s\\cgi_test.cgi cgi_test.exe", locate_test_exes());
-#else
-	sprintf(cmd_buf, "cp %s/cgi_test.cgi cgi_test.cgi", locate_test_exes());
-#endif
-	system(cmd_buf);
-
-#if !defined(NO_CGI) && !defined(_WIN32)
-	/* TODO: add test for windows, check with POST */
-	client_conn = httplib_download( "localhost", ipv4_port, 0, ebuf, sizeof(ebuf), "%s", "POST /cgi_test.cgi HTTP/1.0\r\nContent-Length: 3\r\n\r\nABC");
-	ck_assert(client_conn != NULL);
-	ri = httplib_get_request_info(client_conn);
-
-	ck_assert(ri != NULL);
-	ck_assert_str_eq(ri->uri, "200");
-	httplib_close_connection(client_conn);
-#endif
 
 	/* Get zipped static data - will not work if Accept-Encoding is not set */
 	client_conn = httplib_download("localhost", ipv4_port, 0, ebuf, sizeof(ebuf), "%s", "GET /test_gz.txt HTTP/1.0\r\n\r\n");
@@ -1205,31 +1153,6 @@ START_TEST(test_request_handlers)
 	ck_assert_str_eq(buf, encoded_file_content);
 
 	httplib_close_connection(client_conn);
-
-/* Get CGI generated data */
-#if !defined(NO_CGI)
-	client_conn = httplib_download("localhost", ipv4_port, 0, ebuf, sizeof(ebuf), "%s", "GET /test.cgi HTTP/1.0\r\n\r\n");
-	ck_assert(client_conn != NULL);
-	ri = httplib_get_request_info(client_conn);
-
-	ck_assert(ri != NULL);
-
-	i = httplib_read(client_conn, buf, sizeof(buf));
-	if ((i >= 0) && (i < (int)sizeof(buf))) {
-		while ((i > 0) && ((buf[i - 1] == '\r') || (buf[i - 1] == '\n'))) {
-			i--;
-		}
-		buf[i] = 0;
-	}
-	/* ck_assert_int_eq(i, (int)strlen(expected_cgi_result)); */
-	ck_assert_str_eq(buf, expected_cgi_result);
-	ck_assert_str_eq(ri->uri, "200");
-
-	httplib_close_connection(client_conn);
-#else
-	(void)expected_cgi_result;
-	(void)cgi_script_content;
-#endif
 
 	/* Get directory listing */ client_conn = httplib_download("localhost", ipv4_port, 0, ebuf, sizeof(ebuf), "%s", "GET / HTTP/1.0\r\n\r\n");
 	ck_assert(client_conn != NULL);

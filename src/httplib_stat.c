@@ -31,12 +31,12 @@
 
 /*
  * Windows happily opens files with some garbage at the end of file name.
- * For example, fopen("a.cgi    ", "r") on Windows successfully opens
- * "a.cgi", despite one would expect an error back.
- * This function returns non-0 if path ends with some garbage.
+ * For example, fopen("a.bar    ", "r") on Windows successfully opens
+ * "a.bar", despite one would expect an error back.
+ * This function returns 0 if path ends with some garbage.
  */
 
-static bool path_cannot_disclose_cgi( const char *path ) {
+static bool path_is_ok( const char *path ) {
 
 	static const char *allowed_last_characters = "_-";
 	int last;
@@ -106,7 +106,7 @@ int XX_httplib_stat( struct lh_ctx_t *ctx, struct lh_con_t *conn, const char *pa
 		 * functions like XX_httplib_is_file_opened() check the struct.
 		 */
 
-		if ( ! filep->is_directory  &&  ! path_cannot_disclose_cgi( path ) ) {
+		if ( ! filep->is_directory  &&  ! path_is_ok( path ) ) {
 
 			memset( filep, 0, sizeof(*filep) );
 			return 0;

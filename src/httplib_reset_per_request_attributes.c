@@ -38,7 +38,6 @@ void XX_httplib_reset_per_request_attributes( struct lh_con_t *conn ) {
 
 	if ( conn == NULL ) return;
 
-	conn->path_info                   = NULL;
 	conn->num_bytes_sent              = 0;
 	conn->consumed_content            = 0;
 	conn->status_code                 = -1;

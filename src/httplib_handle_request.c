@@ -223,9 +223,8 @@ void XX_httplib_handle_request( struct lh_ctx_t *ctx, struct lh_con_t *conn ) {
 	                        &callback_data ) ) {
 		/*
 		 * 5.2.1. A callback will handle this request. All requests
-		 * handled
-		 * by a callback have to be considered as requests to a script
-		 * resource.
+		 * handled by a callback have to be considered as requests
+		 * to a script resource.
 		 */
 
 		is_callback_resource     = true;
@@ -239,8 +238,7 @@ no_callback_resource:
 
 		/*
 		 * 5.2.2. No callback is responsible for this request. The URI
-		 * addresses a file based resource (static content or cgi
-		 * scripts in the file system).
+		 * addresses a file based resource.
 		 */
 
 		is_callback_resource = false;
@@ -392,7 +390,7 @@ no_callback_resource:
 		/*
 		 * 11.4. PATCH method
 		 * This method is not supported for static resources,
-		 * only for scripts (CGI) and callbacks.
+		 * only for callbacks.
 		 */
 
 		XX_httplib_send_http_error( ctx, conn, 405, "%s method not allowed", conn->request_info.request_method );
@@ -451,8 +449,6 @@ no_callback_resource:
 		 * This standard handler is only used for real files.
 		 * Scripts should support the OPTIONS method themselves, to allow a
 		 * maximum flexibility.
-		 * CGI scripts may fully support CORS this way (including
-		 * preflights).
 		 */
 
 		XX_httplib_send_options( ctx, conn );

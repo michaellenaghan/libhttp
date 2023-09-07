@@ -44,8 +44,7 @@
  * + MicroSoft extensions
  * https://msdn.microsoft.com/en-us/library/aa142917.aspx
  *
- * The PATCH method is only supported for CGI and other scripts and for
- * callbacks.
+ * The PATCH method is only supported for callbacks.
  */
 
 bool XX_httplib_is_valid_http_method( const char *method ) {

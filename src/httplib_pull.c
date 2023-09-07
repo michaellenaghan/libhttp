@@ -58,8 +58,8 @@ int XX_httplib_pull( const struct lh_ctx_t *ctx, FILE *fp, struct lh_con_t *conn
 	do {
 		if ( fp != NULL ) {
 			/*
-			 * Use read() instead of fread(), because if we're reading from the
-			 * CGI pipe, fread() may block until IO buffer is filled up. We
+			 * Use read() instead of fread(), because if we're reading from a
+			 * pipe, fread() may block until IO buffer is filled up. We
 			 * cannot afford to block and must pass all read bytes immediately
 			 * to the client.
 			 */

@@ -57,10 +57,6 @@ void XX_httplib_interpret_uri( struct lh_ctx_t *ctx, struct lh_con_t *conn, char
 	char gz_path[PATH_MAX];
 	char const *accept_encoding;
 	bool truncated;
-#if !defined(NO_CGI)
-	char *p;
-	const char *cgi_ext;
-#endif  /* !NO_CGI */
 
 	if ( ctx == NULL  ||  conn == NULL  ||  filep == NULL ) return;
 
@@ -94,12 +90,10 @@ void XX_httplib_interpret_uri( struct lh_ctx_t *ctx, struct lh_con_t *conn, char
 	}
 
 	/*
-	 * Using buf_len - 1 because memmove() for PATH_INFO may shift part
-	 * of the path one byte on the right.
 	 * If document_root is NULL, leave the file empty.
 	 */
 
-	XX_httplib_snprintf( ctx, conn, &truncated, filename, filename_buf_len - 1, "%s%s", root, uri );
+	XX_httplib_snprintf( ctx, conn, &truncated, filename, filename_buf_len, "%s%s", root, uri );
 
 	if ( truncated ) goto interpret_cleanup;
 
@@ -111,7 +105,7 @@ void XX_httplib_interpret_uri( struct lh_ctx_t *ctx, struct lh_con_t *conn, char
 
 		if ( match_len > 0 ) {
 
-			XX_httplib_snprintf( ctx, conn, &truncated, filename, filename_buf_len - 1, "%.*s%s", (int)b.len, b.ptr, uri + match_len );
+			XX_httplib_snprintf( ctx, conn, &truncated, filename, filename_buf_len, "%.*s%s", (int)b.len, b.ptr, uri + match_len );
 			break;
 		}
 	}
@@ -124,32 +118,6 @@ void XX_httplib_interpret_uri( struct lh_ctx_t *ctx, struct lh_con_t *conn, char
 	 */
 
 	if ( XX_httplib_stat( ctx, conn, filename, filep ) ) {
-#if !defined(NO_CGI)
-
-		/*
-		 * File exists. Check if it is a script type.
-		 */
-
-		if ( ctx->cgi_pattern != NULL  &&  XX_httplib_match_prefix( ctx->cgi_pattern, strlen( ctx->cgi_pattern ), filename ) > 0 ) {
-
-			/*
-			 * The request addresses a CGI script. The URI
-			 * corresponds to the script itself (like /path/script.cgi),
-			 * and there is no additional resource path
-			 * (like /path/script.cgi/something).
-			 * Requests that modify (replace or delete) a resource, like
-			 * PUT and DELETE requests, should replace/delete the script
-			 * file.
-			 * Requests that read or write from/to a resource, like GET and
-			 * POST requests, should call the script and return the
-			 * generated response.
-			 */
-
-			*is_script_resource = ! *is_put_or_delete_request;
-		}
-
-#endif /* !defined(NO_CGI) */
-
 		*is_found = true;
 		return;
 	}
@@ -188,43 +156,6 @@ void XX_httplib_interpret_uri( struct lh_ctx_t *ctx, struct lh_con_t *conn, char
 		}
 	}
 
-#if !defined(NO_CGI)
-
-	/*
-	 * Support PATH_INFO for CGI scripts.
-	 */
-
-	for (p = filename+strlen(filename); p > filename + 1; p--) {
-
-		if ( *p == '/' ) {
-
-			*p      = '\0';
-			cgi_ext = ctx->cgi_pattern;
-
-			if ( cgi_ext != NULL  &&  XX_httplib_match_prefix( cgi_ext, strlen( cgi_ext ), filename ) > 0  &&  XX_httplib_stat( ctx, conn, filename, filep ) ) {
-
-				/*
-				 * Shift PATH_INFO block one character right, e.g.
-				 * "/x.cgi/foo/bar\x00" => "/x.cgi\x00/foo/bar\x00"
-				 * conn->path_info is pointing to the local variable "path"
-				 * declared in XX_httplib_handle_request(), so PATH_INFO is not valid
-				 * after XX_httplib_handle_request returns.
-				 */
-
-				conn->path_info = p + 1;
-
-				memmove( p + 2, p + 1, strlen(p + 1) + 1 ); /* +1 is for trailing \0 */
-
-				p[1]                = '/';
-				*is_script_resource = true;
-
-				break;
-			}
-			
-			else *p = '/';
-		}
-	}
-#endif /* !defined(NO_CGI) */
 	return;
 
 /*

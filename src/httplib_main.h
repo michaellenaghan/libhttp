@@ -458,8 +458,6 @@ extern CRITICAL_SECTION			global_log_file_lock;
 #endif
 
 #define PASSWORDS_FILE_NAME		".htpasswd"
-#define CGI_ENVIRONMENT_SIZE		(4096)
-#define MAX_CGI_ENVIR_VARS		(256)
 #define MG_BUF_LEN			(8192)
 #define ERROR_STRING_LEN		(256)
 
@@ -565,9 +563,6 @@ struct lh_ctx_t {
 	char *	access_control_list;
 	char *	access_log_file;
 	char *	authentication_domain;
-	char *	cgi_environment;
-	char *	cgi_interpreter;
-	char *	cgi_pattern;
 	char *	document_root;
 	char *	error_log_file;
 	char *	error_pages;
@@ -703,29 +698,6 @@ struct dir_scan_data {
 };
 
 
-/*
- * This structure helps to create an environment for the spawned CGI program.
- * Environment is an array of "VARIABLE=VALUE\0" ASCIIZ strings,
- * last element must be NULL.
- * However, on Windows there is a requirement that all these VARIABLE=VALUE\0
- * strings must reside in a contiguous buffer. The end of the buffer is
- * marked by two '\0' characters.
- * We satisfy both worlds: we create an envp array (which is vars), all
- * entries are actually pointers inside buf.
- */
-
-struct cgi_environment {
-	struct lh_con_t *conn;
-	/* Data block */
-	char *buf;      /* Environment buffer */
-	size_t buflen;  /* Space available in buf */
-	size_t bufused; /* Space taken in buf */
-	                /* Index block */
-	char **var;     /* char **envp */
-	size_t varlen;  /* Number of variables available in var */
-	size_t varused; /* Number of variables stored in var */
-};
-
 /* Parsed Authorization header */
 struct ah {
 	char *	user;
@@ -820,7 +792,6 @@ int			XX_httplib_get_request_len( const char *buf, int buflen );
 void			XX_httplib_get_system_name( char **sysName );
 enum uri_type_t		XX_httplib_get_uri_type( const char *uri );
 bool			XX_httplib_getreq( struct lh_ctx_t *ctx, struct lh_con_t *conn, int *err );
-void			XX_httplib_handle_cgi_request( struct lh_ctx_t *ctx, struct lh_con_t *conn, const char *prog );
 void			XX_httplib_handle_directory_request( struct lh_ctx_t *ctx, struct lh_con_t *conn, const char *dir );
 void			XX_httplib_handle_file_based_request( struct lh_ctx_t *ctx, struct lh_con_t *conn, const char *path, struct file *filep );
 void			XX_httplib_handle_not_modified_static_file_request( struct lh_ctx_t *ctx, struct lh_con_t *conn, struct file *filep );
@@ -861,7 +832,6 @@ int			XX_httplib_parse_http_message( char *buf, int len, struct lh_rqi_t *ri );
 int			XX_httplib_parse_net( const char *spec, uint32_t *net, uint32_t *mask );
 int			XX_httplib_parse_range_header( const char *header, int64_t *a, int64_t *b );
 void			XX_httplib_path_to_unicode( const char *path, wchar_t *wbuf, size_t wbuf_len );
-void			XX_httplib_prepare_cgi_environment( struct lh_ctx_t *ctx, struct lh_con_t *conn, const char *prog, struct cgi_environment *env );
 void			XX_httplib_print_dir_entry( struct lh_ctx_t *ctx, struct de *de );
 void			XX_httplib_process_new_connection( struct lh_ctx_t *ctx, struct lh_con_t *conn );
 bool			XX_httplib_process_options( struct lh_ctx_t *ctx, const struct lh_opt_t *options );
@@ -904,7 +874,6 @@ char *			XX_httplib_skip( char **buf, const char *delimiters );
 char *			XX_httplib_skip_quoted( char **buf, const char *delimiters, const char *whitespace, char quotechar );
 void			XX_httplib_snprintf( struct lh_ctx_t *ctx, const struct lh_con_t *conn, bool *truncated, char *buf, size_t buflen, PRINTF_FORMAT_STRING(const char *fmt), ... ) PRINTF_ARGS(6, 7);
 void			XX_httplib_sockaddr_to_string(char *buf, size_t len, const union usa *usa );
-pid_t			XX_httplib_spawn_process( struct lh_ctx_t *ctx, struct lh_con_t *conn, const char *prog, char *envblk, char *envp[], int fdin[2], int fdout[2], int fderr[2], const char *dir );
 int			XX_httplib_start_thread_with_id( httplib_thread_func_t func, void *param, pthread_t *threadidptr );
 int			XX_httplib_stat( struct lh_ctx_t *ctx, struct lh_con_t *conn, const char *path, struct file *filep );
 int			XX_httplib_substitute_index_file( struct lh_ctx_t *ctx, struct lh_con_t *conn, char *path, size_t path_len, struct file *filep );

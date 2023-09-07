@@ -132,7 +132,7 @@ int XX_httplib_parse_auth_header( const struct lh_ctx_t *ctx, struct lh_con_t *c
 	if ( nonce >= ( (uint64_t)ctx->start_time + ctx->nonce_count ) ) return 0;
 
 	/*
-	 * CGI needs it as REMOTE_USER
+	 * Callbacks need it as REMOTE_USER
 	 */
 
 	if ( ah->user != NULL ) conn->request_info.remote_user = httplib_strdup( ah->user );

@@ -132,7 +132,7 @@ void XX_httplib_send_file_data( struct lh_ctx_t *ctx, struct lh_con_t *conn, str
 			/*
 			 * sf_sent<0 means error, thus fall back to the classic way
 			 * This is always the case, if sf_file is not a "normal" file,
-			 * e.g., for sending data from the output of a CGI process.
+			 * e.g., for sending data from the output of a process.
 			 */
 
 			offset = (int64_t)sf_offs;

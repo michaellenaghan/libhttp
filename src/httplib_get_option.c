@@ -46,9 +46,6 @@ const char *httplib_get_option( const struct lh_ctx_t *ctx, const char *name, ch
 	if ( ! httplib_strcasecmp( name, "access_log_file"             ) ) return (ctx == NULL) ? buffer : store_str(  buffer, buflen, ctx->access_log_file             );
 	if ( ! httplib_strcasecmp( name, "allow_sendfile_call"         ) ) return (ctx == NULL) ? buffer : store_bool( buffer, buflen, ctx->allow_sendfile_call         );
 	if ( ! httplib_strcasecmp( name, "authentication_domain"       ) ) return (ctx == NULL) ? buffer : store_str(  buffer, buflen, ctx->authentication_domain       );
-	if ( ! httplib_strcasecmp( name, "cgi_environment"             ) ) return (ctx == NULL) ? buffer : store_str(  buffer, buflen, ctx->cgi_environment             );
-	if ( ! httplib_strcasecmp( name, "cgi_interpreter"             ) ) return (ctx == NULL) ? buffer : store_str(  buffer, buflen, ctx->cgi_interpreter             );
-	if ( ! httplib_strcasecmp( name, "cgi_pattern"                 ) ) return (ctx == NULL) ? buffer : store_str(  buffer, buflen, ctx->cgi_pattern                 );
 	if ( ! httplib_strcasecmp( name, "decode_url"                  ) ) return (ctx == NULL) ? buffer : store_bool( buffer, buflen, ctx->decode_url                  );
 	if ( ! httplib_strcasecmp( name, "document_root"               ) ) return (ctx == NULL) ? buffer : store_str(  buffer, buflen, ctx->document_root               );
 	if ( ! httplib_strcasecmp( name, "enable_directory_listing"    ) ) return (ctx == NULL) ? buffer : store_bool( buffer, buflen, ctx->enable_directory_listing    );

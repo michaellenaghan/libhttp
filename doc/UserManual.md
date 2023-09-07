@@ -76,11 +76,9 @@ LibHTTP can also be used to modify `.htpasswd` passwords files:
 
     libhttp -A <htpasswd_file> <realm> <user> <passwd>
 
-Unlike other web servers, LibHTTP does not require CGI scripts to be located
-in a special directory. CGI scripts can be anywhere. CGI (and SSI) files are
-recognized by the file name pattern. LibHTTP uses shell-like glob
-patterns. Pattern match starts at the beginning of the string, so essentially
-patterns are prefix patterns. Syntax is as follows:
+LibHTTP uses shell-like glob patterns. Pattern match starts at the beginning 
+of the string, so essentially patterns are prefix patterns. Syntax is as 
+follows:
 
      **      Matches everything
      *       Matches everything but slash character, '/'
@@ -90,7 +88,7 @@ patterns are prefix patterns. Syntax is as follows:
 
 All other characters in the pattern match themselves. Examples:
 
-    **.cgi$      Any string that ends with .cgi
+    **.foo$      Any string that ends with .foo
     /foo         Any string that begins with /foo
     **a$|**b$    Any string that ends with a or b
 
@@ -100,40 +98,9 @@ Below is a list of configuration options understood by LibHTTP.
 Every option is followed by it's default value. If a default value is not
 present, then the default is empty.
 
-### cgi\_pattern `**.cgi$|**.pl$|**.php$`
-All files that match `cgi_pattern` are treated as CGI files. Default pattern
-allows CGI files be anywhere. To restrict CGIs to a certain directory,
-use `/path/to/cgi-bin/**.cgi` as pattern. Note that the full file path is
-matched against the pattern, not the URI.
-
-### cgi\_environment
-Extra environment variables to be passed to the CGI script in
-addition to standard ones. The list must be comma-separated list
-of name=value pairs, like this: `VARIABLE1=VALUE1,VARIABLE2=VALUE2`.
-
 ### put\_delete\_auth\_file
-Passwords file for PUT and DELETE requests. Without password file, it will not
-be possible to, PUT new files to the server or DELETE existing ones. PUT and
-DELETE requests might still be handled by CGI pages.
-
-### cgi\_interpreter
-Path to an executable to use as CGI interpreter for __all__ CGI scripts
-regardless of the script file extension. If this option is not set (which is
-the default), LibHTTP looks at first line of a CGI script,
-[shebang line](http://en.wikipedia.org/wiki/Shebang_(Unix\)), for an
-interpreter (not only on Linux and Mac but also for Windows).
-
-For example, if both PHP and Perl CGIs are used, then
-`#!/path/to/php-cgi.exe` and `#!/path/to/perl.exe` must be first lines of the
-respective CGI scripts. Note that paths should be either full file paths,
-or file paths relative to the current working directory of the LibHTTP
-server. If LibHTTP is started by mouse double-click on Windows, the current
-working directory is the directory where the LibHTTP executable is located.
-
-If all CGIs use the same interpreter, for example they are all PHP, it is
-more efficient to set `cgi_interpreter` to the path to `php-cgi.exe`.
-The  shebang line in the CGI scripts can be omitted in this case.
-Note that PHP scripts must use `php-cgi.exe` as executable, not `php.exe`.
+Passwords file for PUT and DELETE requests. Without a password file, it will not
+be possible to PUT new files to the server or DELETE existing ones.
 
 ### protect\_uri
 Comma separated list of URI=PATH pairs, specifying that given
@@ -170,7 +137,7 @@ three path specifications:
     <!--#include "path">
 
 The `include` directive may be used to include the contents of a file or the
-result of running a CGI script. The `exec` directive is used to execute a
+result of running a command. The `exec` directive is used to execute a
 command on a server, and show the output that would have been printed to
 stdout (the terminal window) otherwise. Example:
 
@@ -204,7 +171,7 @@ password in digest format:
 Password files may be generated using `libhttp -A` as explained above, or
 online tools e.g. [this generator](http://www.askapache.com/online-tools/htpasswd-generator).
 
-### index\_files `index.xhtml,index.html,index.htm,index.cgi,index.shtml,index.php`
+### index\_files `index.xhtml,index.html,index.htm,index.shtml`
 Comma-separated list of files to be treated as directory index files.
 If more than one matching file is present in a directory, the one listed to the left
 is used as a directory index.
@@ -313,11 +280,7 @@ a path relative to the web server's current working directory. Note that
 
 This makes it possible to serve many directories outside from `document_root`,
 redirect all requests to scripts, and do other tricky things. For example,
-to redirect all accesses to `.doc` files to a special script, do:
-
-    libhttp -url_rewrite_patterns **.doc$=/path/to/cgi-bin/handle_doc.cgi
-
-Or, to imitate support for user home directories, do:
+to imitate support for user home directories, do:
 
     libhttp -url_rewrite_patterns /~joe/=/home/joe/,/~bill=/home/bill/
 
@@ -438,20 +401,6 @@ This option can be used to enable or disable the use of the Linux `sendfile` sys
 
 
 # Common Problems
-- PHP doesn't work - getting empty page, or 'File not found' error. The
-  reason for that is wrong paths to the interpreter. Remember that with PHP,
-  the correct interpreter is `php-cgi.exe` (`php-cgi` on UNIX).
-  Solution: specify the full path to the PHP interpreter, e.g.:
-    `libhttp -cgi_interpreter /full/path/to/php-cgi`
-
-- `php-cgi` is unavailable, for example on Mac OS X. As long as the `php` binary is installed, you can run CGI programs in command line mode (see the example below). Note that in this mode, `$_GET` and friends will be unavailable, and you'll have to parse the query string manually using [parse_str](http://php.net/manual/en/function.parse-str.php) and the `QUERY_STRING` environmental variable.
-
-        #!/usr/bin/php
-        <?php
-        echo "Content-Type: text/html\r\n\r\n";
-        echo "Hello World!\n";
-        ?>
-
 - LibHTTP fails to start. If LibHTTP exits immediately when started, this
   usually indicates a syntax error in the configuration file
   (named `libhttp.conf` by default) or the command-line arguments.

@@ -173,8 +173,8 @@ START_TEST(test_match_prefix)
 	ck_assert_int_eq(2, match_prefix("a|b|cd", 6, "cdef"));
 	ck_assert_int_eq(2, match_prefix("a|b|c?", 6, "cdef"));
 	ck_assert_int_eq(1, match_prefix("a|?|cd", 6, "cdef"));
-	ck_assert_int_eq(-1, match_prefix("/a/**.cgi", 9, "/foo/bar/x.cgi"));
-	ck_assert_int_eq(12, match_prefix("/a/**.cgi", 9, "/a/bar/x.cgi"));
+	ck_assert_int_eq(-1, match_prefix("/a/**.bar", 9, "/foo/bar/x.bar"));
+	ck_assert_int_eq(12, match_prefix("/a/**.bar", 9, "/a/bar/x.bar"));
 	ck_assert_int_eq(5, match_prefix("**/", 3, "/a/b/c"));
 	ck_assert_int_eq(-1, match_prefix("**/$", 4, "/a/b/c"));
 	ck_assert_int_eq(5, match_prefix("**/$", 4, "/a/b/"));

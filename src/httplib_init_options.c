@@ -40,9 +40,6 @@ bool XX_httplib_init_options( struct lh_ctx_t *ctx ) {
 	ctx->access_log_file             = NULL;
 	ctx->allow_sendfile_call         = true;
 	ctx->authentication_domain       = NULL;
-	ctx->cgi_environment             = NULL;
-	ctx->cgi_interpreter             = NULL;
-	ctx->cgi_pattern                 = NULL;
 	ctx->debug_level                 = LH_DEBUG_WARNING;
 	ctx->decode_url                  = true;
 	ctx->document_root               = NULL;
@@ -89,13 +86,7 @@ bool XX_httplib_init_options( struct lh_ctx_t *ctx ) {
 		return true;
 	}
 
-	if ( (ctx->cgi_pattern = httplib_strdup( "**.cgi$|**.pl$|**.php$" )) == NULL ) {
-
-		XX_httplib_abort_start( ctx, "Out of memory creating context allocating \"cgi_pattern\"" );
-		return true;
-	}
-
-	if ( (ctx->index_files = httplib_strdup( "index.xhtml,index.html,index.htm,index.cgi,index.shtml,index.php" )) == NULL ) {
+	if ( (ctx->index_files = httplib_strdup( "index.xhtml,index.html,index.htm,index.shtml" )) == NULL ) {
 
 		XX_httplib_abort_start( ctx, "Out of memory creating context allocating \"index_files\"" );
 		return true;
