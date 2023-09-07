@@ -35,14 +35,6 @@
 
 #define SHA1HANDSOFF
 
-/*
- * According to current tests (May 2015), the <solarisfixes.h> is not required.
- *
- * #if defined(__sun)
- * #include "solarisfixes.h"
- * #endif
- */
-
 static int is_big_endian(void) {
 
 	static const int n = 1;

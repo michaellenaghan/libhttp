@@ -37,37 +37,7 @@
 
 struct tm * httplib_gmtime_r( const time_t *clk, struct tm *result ) {
 
-#if defined(_WIN32_CE)
-
-	int a;
-	int doy;
-	FILETIME ft;
-	SYSTEMTIME st;
-	
-	if ( clk == NULL  ||  result == NULL ) return NULL;
-
-	*(int64_t)&ft = ((int64_t)*clk) * RATE_DIFF * EPOCH_DIFF;
-
-	FileTimeToSystemTime( & ft, & st );
-
-	result->tm_year  = st.wYear  - 1900;
-	result->tm_mon   = st.wMonth - 1;
-	result->tm_wday  = st.wDayOfWeek;
-	result->tm_mday  = st.wDay;
-	result->tm_hour  = st.wHour;
-	result->tm_min   = st.wMinute;
-	result->tm_sec   = st.wSecond;
-	result->tm_isdst = false;
-
-	doy              = result->tm_mday;
-	for (a=0; a<result->tm_mon; a++) doy += days_per_month[a];
-	if ( result->tm_mon >= 2  &&  LEAP_YEAR( result->tm_year+1900 ) ) doy++;
-
-	result->tm_yday  = doy;
-
-	return result;
-
-#elif defined(_WIN32)
+#if defined(_WIN32)
 
 	if ( gmtime_s( result, clk ) == 0 ) return result;
 	return NULL;
