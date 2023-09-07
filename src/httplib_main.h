@@ -584,7 +584,6 @@ struct lh_ctx_t {
 	char *	ssl_ca_path;
 	char *	ssl_certificate;
 	char *	ssl_cipher_list;
-	char *	throttle;
 	char *	url_rewrite_patterns;
 	char *	websocket_root;
 
@@ -631,9 +630,6 @@ struct lh_con_t {					/*												*/
 	int		request_len;			/* Size of the request + headers in a buffer							*/
 	int		data_len;			/* Total size of data in a buffer								*/
 	int		status_code;			/* HTTP reply status code, e.g. 200								*/
-	time_t		last_throttle_time;		/* Last time throttled data was sent								*/
-	int64_t		throttle;			/* Throttling, bytes/sec. <= 0 means no throttle						*/
-	int64_t		last_throttle_bytes;		/* Bytes sent this second									*/
 	pthread_mutex_t	mutex;				/* Used by httplib_(un)lock_connection to ensure atomic transmissions for websockets		*/
 	int		thread_index;			/* Thread index within ctx									*/
 };							/*												*/
@@ -901,7 +897,6 @@ int			XX_httplib_set_ports_option( struct lh_ctx_t *ctx );
 int			XX_httplib_set_sock_timeout( SOCKET sock, int milliseconds );
 int			XX_httplib_set_tcp_nodelay( SOCKET sock, bool nodelay_on );
 void			XX_httplib_set_thread_name( struct lh_ctx_t *ctx, const char *name );
-int			XX_httplib_set_throttle( const char *spec, uint32_t remote_ip, const char *uri );
 bool			XX_httplib_set_uid_option( struct lh_ctx_t *ctx );
 bool			XX_httplib_should_decode_url( const struct lh_ctx_t *ctx );
 bool			XX_httplib_should_keep_alive( const struct lh_ctx_t *ctx, const struct lh_con_t *conn );

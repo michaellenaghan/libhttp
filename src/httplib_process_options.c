@@ -83,7 +83,6 @@ bool XX_httplib_process_options( struct lh_ctx_t *ctx, const struct lh_opt_t *op
 		if ( check_bool( ctx, options, "ssl_verify_paths",            & ctx->ssl_verify_paths                        ) ) return true;
 		if ( check_bool( ctx, options, "ssl_verify_peer",             & ctx->ssl_verify_peer                         ) ) return true;
 		if ( check_int(  ctx, options, "static_file_max_age",         & ctx->static_file_max_age,         0, INT_MAX ) ) return true;
-		if ( check_str(  ctx, options, "throttle",                    & ctx->throttle                                ) ) return true;
 		if ( check_bool( ctx, options, "tcp_nodelay",                 & ctx->tcp_nodelay                             ) ) return true;
 		if ( check_str(  ctx, options, "url_rewrite_patterns",        & ctx->url_rewrite_patterns                    ) ) return true;
 		if ( check_dir(  ctx, options, "websocket_root",              & ctx->websocket_root                          ) ) return true;

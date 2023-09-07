@@ -45,7 +45,6 @@ void XX_httplib_reset_per_request_attributes( struct lh_con_t *conn ) {
 	conn->is_chunked                  = 0;
 	conn->must_close                  = false;
 	conn->request_len                 = 0;
-	conn->throttle                    = 0;
 	conn->request_info.content_length = -1;
 	conn->request_info.remote_user    = NULL;
 	conn->request_info.request_method = NULL;

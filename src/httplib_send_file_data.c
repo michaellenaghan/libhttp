@@ -81,7 +81,7 @@ void XX_httplib_send_file_data( struct lh_ctx_t *ctx, struct lh_con_t *conn, str
 		 * sendfile is only available for Linux
 		 */
 
-		if ( ctx->allow_sendfile_call  &&  conn->ssl == 0  &&  conn->throttle == 0 ) {
+		if ( ctx->allow_sendfile_call  &&  conn->ssl == 0 ) {
 
 			sf_offs  = (off_t)offset;
 			sf_file  = fileno( filep->fp );

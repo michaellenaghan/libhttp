@@ -329,7 +329,6 @@ OBJLIST =									\
 	${OBJDIR}httplib_set_sock_timeout${OBJEXT}				\
 	${OBJDIR}httplib_set_tcp_nodelay${OBJEXT}				\
 	${OBJDIR}httplib_set_thread_name${OBJEXT}				\
-	${OBJDIR}httplib_set_throttle${OBJEXT}					\
 	${OBJDIR}httplib_set_uid_option${OBJEXT}				\
 	${OBJDIR}httplib_set_user_connection_data${OBJEXT}			\
 	${OBJDIR}httplib_set_websocket_handler${OBJEXT}				\
@@ -1118,11 +1117,6 @@ ${OBJDIR}httplib_set_tcp_nodelay${OBJEXT}				: ${SRCDIR}httplib_set_tcp_nodelay.
 									  ${INCDIR}libhttp.h
 
 ${OBJDIR}httplib_set_thread_name${OBJEXT}				: ${SRCDIR}httplib_set_thread_name.c				\
-									  ${SRCDIR}httplib_main.h					\
-									  ${INCDIR}libhttp.h
-
-${OBJDIR}httplib_set_throttle${OBJEXT}					: ${SRCDIR}httplib_set_throttle.c				\
-									  ${SRCDIR}httplib_utils.h					\
 									  ${SRCDIR}httplib_main.h					\
 									  ${INCDIR}libhttp.h
 

@@ -77,7 +77,6 @@ const char *httplib_get_option( const struct lh_ctx_t *ctx, const char *name, ch
 	if ( ! httplib_strcasecmp( name, "ssl_verify_paths"            ) ) return (ctx == NULL) ? buffer : store_bool( buffer, buflen, ctx->ssl_verify_paths            );
 	if ( ! httplib_strcasecmp( name, "ssl_verify_peer"             ) ) return (ctx == NULL) ? buffer : store_bool( buffer, buflen, ctx->ssl_verify_peer             );
 	if ( ! httplib_strcasecmp( name, "static_file_max_age"         ) ) return (ctx == NULL) ? buffer : store_int(  buffer, buflen, ctx->static_file_max_age         );
-	if ( ! httplib_strcasecmp( name, "throttle"                    ) ) return (ctx == NULL) ? buffer : store_str(  buffer, buflen, ctx->throttle                    );
 	if ( ! httplib_strcasecmp( name, "tcp_nodelay"                 ) ) return (ctx == NULL) ? buffer : store_bool( buffer, buflen, ctx->tcp_nodelay                 );
 	if ( ! httplib_strcasecmp( name, "url_rewrite_patterns"        ) ) return (ctx == NULL) ? buffer : store_str(  buffer, buflen, ctx->url_rewrite_patterns        );
 	if ( ! httplib_strcasecmp( name, "websocket_root"              ) ) return (ctx == NULL) ? buffer : store_str(  buffer, buflen, ctx->websocket_root              );

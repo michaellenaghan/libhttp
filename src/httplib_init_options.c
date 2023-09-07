@@ -72,7 +72,6 @@ bool XX_httplib_init_options( struct lh_ctx_t *ctx ) {
 	ctx->ssl_verify_paths            = true;
 	ctx->ssl_verify_peer             = false;
 	ctx->static_file_max_age         = 0;
-	ctx->throttle                    = NULL;
 	ctx->tcp_nodelay                 = false;
 	ctx->url_rewrite_patterns        = NULL;
 	ctx->websocket_root              = NULL;

@@ -56,7 +56,6 @@ void XX_httplib_free_config_options( struct lh_ctx_t *ctx ) {
 	ctx->ssl_ca_path                 = httplib_free( ctx->ssl_ca_path                 );
 	ctx->ssl_certificate             = httplib_free( ctx->ssl_certificate             );
 	ctx->ssl_cipher_list             = httplib_free( ctx->ssl_cipher_list             );
-	ctx->throttle                    = httplib_free( ctx->throttle                    );
 	ctx->url_rewrite_patterns        = httplib_free( ctx->url_rewrite_patterns        );
 	ctx->websocket_root              = httplib_free( ctx->websocket_root              );
 
