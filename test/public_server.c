@@ -266,10 +266,8 @@ START_TEST(test_httplib_start_stop_http_server)
 {
 	struct httplib_context *ctx;
 	const char *OPTIONS[] = {
-#if !defined(NO_FILES)
 		"document_root",
 		".",
-#endif
 		"listening_ports",
 		"8080",
 		NULL,
@@ -344,15 +342,12 @@ START_TEST(test_httplib_start_stop_http_server)
 	client_ri = httplib_get_request_info(client_conn);
 	ck_assert(client_ri != NULL);
 
-#if defined(NO_FILES)
-	ck_assert_str_eq(client_ri->uri, "404");
-#else
 	ck_assert_str_eq(client_ri->uri, "200");
 	/* TODO: ck_assert_str_eq(client_ri->request_method, "HTTP/1.0"); */
 	client_res = (int)httplib_read(client_conn, client_err, sizeof(client_err));
 	ck_assert_int_gt(client_res, 0);
 	ck_assert_int_le(client_res, sizeof(client_err));
-#endif
+
 	httplib_close_connection(client_conn);
 
 	test_sleep(1);
@@ -371,15 +366,11 @@ START_TEST(test_httplib_start_stop_http_server)
 	client_ri = httplib_get_request_info(client_conn);
 	ck_assert(client_ri != NULL);
 
-#if defined(NO_FILES)
-	ck_assert_str_eq(client_ri->uri, "404");
-#else
 	ck_assert_str_eq(client_ri->uri, "200");
 	/* TODO: ck_assert_str_eq(client_ri->request_method, "HTTP/1.0"); */
 	client_res = (int)httplib_read(client_conn, client_err, sizeof(client_err));
 	ck_assert_int_gt(client_res, 0);
 	ck_assert_int_le(client_res, sizeof(client_err));
-#endif
 	httplib_close_connection(client_conn);
 
 	test_sleep(1);
@@ -461,10 +452,8 @@ START_TEST(test_httplib_start_stop_https_server)
 	ck_assert(ssl_cert != NULL);
 
 	memset((void *)OPTIONS, 0, sizeof(OPTIONS));
-#if !defined(NO_FILES)
 	OPTIONS[opt_idx++] = "document_root";
 	OPTIONS[opt_idx++] = ".";
-#endif
 	OPTIONS[opt_idx++] = "listening_ports";
 	OPTIONS[opt_idx++] = "8080r,8443s";
 	OPTIONS[opt_idx++] = "ssl_certificate";
@@ -537,15 +526,12 @@ START_TEST(test_httplib_start_stop_https_server)
 	client_ri = httplib_get_request_info(client_conn);
 	ck_assert(client_ri != NULL);
 
-#if defined(NO_FILES)
-	ck_assert_str_eq(client_ri->uri, "404");
-#else
 	ck_assert_str_eq(client_ri->uri, "200");
 	/* TODO: ck_assert_str_eq(client_ri->request_method, "HTTP/1.0"); */
 	client_res = (int)httplib_read(client_conn, client_err, sizeof(client_err));
 	ck_assert_int_gt(client_res, 0);
 	ck_assert_int_le(client_res, sizeof(client_err));
-#endif
+
 	httplib_close_connection(client_conn);
 
 	test_sleep(1);
@@ -591,10 +577,8 @@ START_TEST(test_httplib_server_and_client_tls)
 #endif
 
 	memset((void *)OPTIONS, 0, sizeof(OPTIONS));
-#if !defined(NO_FILES)
 	OPTIONS[opt_idx++] = "document_root";
 	OPTIONS[opt_idx++] = ".";
-#endif
 	OPTIONS[opt_idx++] = "listening_ports";
 	OPTIONS[opt_idx++] = "8080r,8443s";
 	OPTIONS[opt_idx++] = "ssl_certificate";
@@ -659,15 +643,12 @@ START_TEST(test_httplib_server_and_client_tls)
 	client_ri = httplib_get_request_info(client_conn);
 	ck_assert(client_ri != NULL);
 
-#if defined(NO_FILES)
-	ck_assert_str_eq(client_ri->uri, "404");
-#else
 	ck_assert_str_eq(client_ri->uri, "200");
 	/* TODO: ck_assert_str_eq(client_ri->request_method, "HTTP/1.0"); */
 	client_res = (int)httplib_read(client_conn, client_err, sizeof(client_err));
 	ck_assert_int_gt(client_res, 0);
 	ck_assert_int_le(client_res, sizeof(client_err));
-#endif
+
 	httplib_close_connection(client_conn);
 
 	/* TODO: A client API using a client certificate is missing */
@@ -940,10 +921,8 @@ START_TEST(test_request_handlers)
 	OPTIONS[opt_idx++] = HTTP_PORT;
 	OPTIONS[opt_idx++] = "authentication_domain";
 	OPTIONS[opt_idx++] = "test.domain";
-#if !defined(NO_FILES)
 	OPTIONS[opt_idx++] = "document_root";
 	OPTIONS[opt_idx++] = ".";
-#endif
 #ifndef NO_SSL
 	ck_assert(ssl_cert != NULL);
 	OPTIONS[opt_idx++] = "ssl_certificate";
@@ -1169,9 +1148,6 @@ START_TEST(test_request_handlers)
 
 	ck_assert(ri != NULL);
 
-#if defined(NO_FILES)
-	ck_assert_str_eq(ri->uri, "404");
-#else
 	ck_assert_str_eq(ri->uri, "200");
 	i = httplib_read(client_conn, buf, sizeof(buf));
 	ck_assert_int_eq(i, 17);
@@ -1179,7 +1155,7 @@ START_TEST(test_request_handlers)
 		buf[i] = 0;
 	}
 	ck_assert_str_eq(buf, plain_file_content);
-#endif
+
 	httplib_close_connection(client_conn);
 
 
@@ -1191,7 +1167,7 @@ START_TEST(test_request_handlers)
 #endif
 	system(cmd_buf);
 
-#if !defined(NO_CGI) && !defined(NO_FILES) && !defined(_WIN32)
+#if !defined(NO_CGI) && !defined(_WIN32)
 	/* TODO: add test for windows, check with POST */
 	client_conn = httplib_download( "localhost", ipv4_port, 0, ebuf, sizeof(ebuf), "%s", "POST /cgi_test.cgi HTTP/1.0\r\nContent-Length: 3\r\n\r\nABC");
 	ck_assert(client_conn != NULL);
@@ -1219,9 +1195,6 @@ START_TEST(test_request_handlers)
 
 	ck_assert(ri != NULL);
 
-#if defined(NO_FILES)
-	ck_assert_str_eq(ri->uri, "404");
-#else
 	ck_assert_str_eq(ri->uri, "200");
 	i = httplib_read(client_conn, buf, sizeof(buf));
 	ck_assert_int_eq(i, 52);
@@ -1230,7 +1203,7 @@ START_TEST(test_request_handlers)
 	}
 	ck_assert_int_eq(ri->content_length, 52);
 	ck_assert_str_eq(buf, encoded_file_content);
-#endif
+
 	httplib_close_connection(client_conn);
 
 /* Get CGI generated data */
@@ -1241,12 +1214,6 @@ START_TEST(test_request_handlers)
 
 	ck_assert(ri != NULL);
 
-#if defined(NO_FILES)
-	ck_assert_str_eq(ri->uri, "404");
-
-	(void)expected_cgi_result;
-	(void)cgi_script_content;
-#else
 	i = httplib_read(client_conn, buf, sizeof(buf));
 	if ((i >= 0) && (i < (int)sizeof(buf))) {
 		while ((i > 0) && ((buf[i - 1] == '\r') || (buf[i - 1] == '\n'))) {
@@ -1257,9 +1224,8 @@ START_TEST(test_request_handlers)
 	/* ck_assert_int_eq(i, (int)strlen(expected_cgi_result)); */
 	ck_assert_str_eq(buf, expected_cgi_result);
 	ck_assert_str_eq(ri->uri, "200");
-	httplib_close_connection(client_conn);
-#endif
 
+	httplib_close_connection(client_conn);
 #else
 	(void)expected_cgi_result;
 	(void)cgi_script_content;
@@ -1270,15 +1236,12 @@ START_TEST(test_request_handlers)
 	ri = httplib_get_request_info(client_conn);
 
 	ck_assert(ri != NULL);
-#if defined(NO_FILES)
-	ck_assert_str_eq(ri->uri, "404");
-#else
 	ck_assert_str_eq(ri->uri, "200");
 	i = httplib_read(client_conn, buf, sizeof(buf));
 	ck_assert(i > 6);
 	buf[6] = 0;
 	ck_assert_str_eq(buf, "<html>");
-#endif
+
 	httplib_close_connection(client_conn);
 
 	/* POST to static file (will not work) */
@@ -1287,15 +1250,12 @@ START_TEST(test_request_handlers)
 	ri = httplib_get_request_info(client_conn);
 
 	ck_assert(ri != NULL);
-#if defined(NO_FILES)
-	ck_assert_str_eq(ri->uri, "404");
-#else
 	ck_assert_str_eq(ri->uri, "405");
 	i = httplib_read(client_conn, buf, sizeof(buf));
 	ck_assert(i >= 29);
 	buf[29] = 0;
 	ck_assert_str_eq(buf, "Error 405: Method Not Allowed");
-#endif
+
 	httplib_close_connection(client_conn);
 
 	/* PUT to static file (will not work) */
@@ -1304,11 +1264,8 @@ START_TEST(test_request_handlers)
 	ri = httplib_get_request_info(client_conn);
 
 	ck_assert(ri != NULL);
-#if defined(NO_FILES)
-	ck_assert_str_eq(ri->uri, "405"); /* method not allowed */
-#else
 	ck_assert_str_eq(ri->uri, "401"); /* not authorized */
-#endif
+
 	httplib_close_connection(client_conn);
 
 
@@ -2397,7 +2354,6 @@ END_TEST
 
 START_TEST(test_http_auth)
 {
-#if !defined(NO_FILES)
 	const char *OPTIONS[] = {
 		"document_root",
 		".",
@@ -2648,8 +2604,6 @@ START_TEST(test_http_auth)
 	/* Stop the server and clean up */
 	httplib_stop(ctx);
 	remove(test_file);
-
-#endif
 }
 END_TEST
 
@@ -2664,12 +2618,10 @@ START_TEST(test_keep_alive)
 	  "10000",
 	  "enable_keep_alive",
 	  "yes",
-#if !defined(NO_FILES)
 	  "document_root",
 	  ".",
 	  "enable_directory_listing",
 	  "no",
-#endif
 	  NULL };
 
 	struct httplib_connection *client_conn;
@@ -2698,11 +2650,7 @@ START_TEST(test_keep_alive)
 	client_ri = httplib_get_request_info(client_conn);
 	ck_assert(client_ri != NULL);
 
-#if defined(NO_FILES)
-	ck_assert_str_eq(client_ri->uri, "404");
-#else
 	ck_assert_str_eq(client_ri->uri, "403");
-#endif
 
 	connection_header = 0;
 	for (i = 0; i < client_ri->num_headers; i++) {
@@ -2719,8 +2667,7 @@ START_TEST(test_keep_alive)
 
 	test_sleep(1);
 
-	/* TODO: request a file and keep alive
-	 * (will only work if NO_FILES is not set). */
+	/* TODO: request a file and keep alive. */
 
 	/* Stop the server and clean up */
 	httplib_stop(ctx);

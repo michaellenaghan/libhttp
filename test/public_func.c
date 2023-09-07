@@ -40,9 +40,9 @@ START_TEST(test_httplib_version)
 {
 	const char *ver = httplib_version();
 	unsigned major = 0, minor = 0;
-	unsigned feature_files, feature_https, feature_cgi, feature_ipv6,
+	unsigned feature_https, feature_cgi, feature_ipv6,
 	    feature_websocket, feature_caching;
-	unsigned expect_files = 0, expect_https = 0, expect_cgi = 0,
+	unsigned expect_https = 0, expect_cgi = 0,
 	         expect_ipv6 = 0, expect_websocket = 0,
 	         expect_caching = 0;
 	int ret;
@@ -59,16 +59,12 @@ START_TEST(test_httplib_version)
 	}
 
 	/* check feature */
-	feature_files = httplib_check_feature(1);
 	feature_https = httplib_check_feature(2);
 	feature_cgi = httplib_check_feature(4);
 	feature_ipv6 = httplib_check_feature(8);
 	feature_websocket = httplib_check_feature(16);
 	feature_caching = httplib_check_feature(128);
 
-#if !defined(NO_FILES)
-	expect_files = 1;
-#endif
 #if !defined(NO_SSL)
 	expect_https = 1;
 #endif
@@ -85,7 +81,6 @@ START_TEST(test_httplib_version)
 	expect_caching = 1;
 #endif
 
-	ck_assert_uint_eq(expect_files, !!feature_files);
 	ck_assert_uint_eq(expect_https, !!feature_https);
 	ck_assert_uint_eq(expect_cgi, !!feature_cgi);
 	ck_assert_uint_eq(expect_ipv6, !!feature_ipv6);
