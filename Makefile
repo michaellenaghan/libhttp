@@ -400,11 +400,7 @@ OBJLIST =									\
 	${OBJDIR}httplib_localtime_r${OBJEXT}					\
 	${OBJDIR}lh_ipt_to_ip${OBJEXT}						\
 	${OBJDIR}lh_ipt_to_ip4${OBJEXT}						\
-	${OBJDIR}lh_ipt_to_ip6${OBJEXT}						\
-	${OBJDIR}wince_rename${OBJEXT}						\
-	${OBJDIR}wince_stat${OBJEXT}						\
-	${OBJDIR}wince_strftime${OBJEXT}					\
-	${OBJDIR}wince_time${OBJEXT}
+	${OBJDIR}lh_ipt_to_ip6${OBJEXT}
 
 #
 # Creation of the library from the individually compiled object files
@@ -1441,20 +1437,3 @@ ${OBJDIR}lh_ipt_to_ip4${OBJEXT}						: ${SRCDIR}lh_ipt_to_ip4.c					\
 ${OBJDIR}lh_ipt_to_ip6${OBJEXT}						: ${SRCDIR}lh_ipt_to_ip6.c					\
 									  ${SRCDIR}httplib_main.h					\
 									  ${INCDIR}libhttp.h
-
-${OBJDIR}wince_rename${OBJEXT}						: ${SRCDIR}wince_rename.c					\
-									  ${SRCDIR}httplib_main.h					\
-									  ${INCDIR}libhttp.h
-
-${OBJDIR}wince_stat${OBJEXT}						: ${SRCDIR}wince_stat.c						\
-									  ${SRCDIR}httplib_main.h					\
-									  ${INCDIR}libhttp.h
-
-${OBJDIR}wince_strftime${OBJEXT}					: ${SRCDIR}wince_strftime.c					\
-									  ${SRCDIR}httplib_main.h					\
-									  ${INCDIR}libhttp.h
-
-${OBJDIR}wince_time${OBJEXT}						: ${SRCDIR}wince_time.c						\
-									  ${SRCDIR}httplib_main.h					\
-									  ${INCDIR}libhttp.h
-

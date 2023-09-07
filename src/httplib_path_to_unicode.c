@@ -110,7 +110,6 @@ void XX_httplib_path_to_unicode( const char *path, wchar_t *wbuf, size_t wbuf_le
 	}
 	*/
 
-#if !defined(_WIN32_WCE)
 	/*
 	 * Only accept a full file path, not a Windows short (8.3) path.
 	 */
@@ -138,13 +137,6 @@ void XX_httplib_path_to_unicode( const char *path, wchar_t *wbuf, size_t wbuf_le
 
 		wbuf[0] = L'\0';
 	}
-#else
-	UNUSED_PARAMETER(long_len);
-	UNUSED_PARAMETER(wbuf2);
-	UNUSED_PARAMETER(err);
-
-	if ( strchr( path, '~' ) ) wbuf[0] = L'\0';
-#endif
 
 }  /* XX_httplib_path_to_unicode */
 

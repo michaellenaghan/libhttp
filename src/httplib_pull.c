@@ -57,7 +57,6 @@ int XX_httplib_pull( const struct lh_ctx_t *ctx, FILE *fp, struct lh_con_t *conn
 
 	do {
 		if ( fp != NULL ) {
-#if !defined(_WIN32_WCE)
 			/*
 			 * Use read() instead of fread(), because if we're reading from the
 			 * CGI pipe, fread() may block until IO buffer is filled up. We
@@ -66,13 +65,7 @@ int XX_httplib_pull( const struct lh_ctx_t *ctx, FILE *fp, struct lh_con_t *conn
 			 */
 
 			nread = (int)read( fileno(fp), buf, (size_t)len );
-#else
-			/*
-			 * WinCE does not support CGI pipes
-			 */
 
-			nread = (int)fread(buf, 1, (size_t)len, fp);
-#endif
 			err = (nread < 0) ? ERRNO : 0;
 
 #ifndef NO_SSL

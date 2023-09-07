@@ -55,9 +55,6 @@ unsigned httplib_check_feature( unsigned feature ) {
 #if defined(USE_TIMERS)
 	                                    | 0x0200u
 #endif
-#if !defined(NO_POPEN)
-	                                    | 0x0800u
-#endif
 	    ;
 	return (feature & feature_set);
 

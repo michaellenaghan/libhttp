@@ -28,14 +28,6 @@
 #include "httplib_main.h"
 #include "httplib_utils.h"
 
-#if defined(_WIN32_WCE)
-
-#define LEAP_YEAR(x)	( ((x)%4 == 0)  &&  ( ((x)%100) != 0  || ((x)%400) == 0 ) )
-
-const int		XX_httplib_days_per_month[] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
-
-#endif  /* _WIN32_WCE */
-
 /*
  * struct tm *httplib_localtime_r( const time_t *clk, struct tm *result );
  *
@@ -46,40 +38,7 @@ const int		XX_httplib_days_per_month[] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 3
 
 struct tm *httplib_localtime_r( const time_t *clk, struct tm *result ) {
 
-#if defined(_WIN32_WCE)
-
-	int a;
-	int doy;
-	FILETIME ft;
-	FILETIME lft;
-	SYSTEMTIME st;
-	TIME_ZONE_INFORMATION tzinfo;
-
-	if ( clk == NULL  ||  result == NULL ) return NULL;
-
-	*(int64_t *)&ft = ((int64_t)*clk) * RATE_DIFF + EPOCH_DIFF;
-
-	FileTimeToLocalFileTime( & ft,  & lft );
-	FileTimeToSystemTime(    & lft, & st  );
-
-	result->tm_year  = st.wYear  - 1900;
-	result->tm_mon   = st.wMonth - 1;
-	result->tm_wday  = st.wDayOfWeek;
-	result->tm_mday  = st.wDay;
-	result->tm_hour  = st.wHour;
-	result->tm_min   = st.wMinute;
-	result->tm_sec   = st.wSecond;
-	result->tm_isdst = (GetTimeZoneInformation(&tzinfo) == TIME_ZONE_ID_DAYLIGHT) ? 1 : 0;
-
-	doy              = result->tm_mday;
-	for (a=0; a<result->tm_mon; a++) doy += days_per_month[a];
-	if ( result->tm_mon >= 2  &&  LEAP_YEAR( result->tm_year+1900 ) ) doy++;
-
-	result->tm_yday  = doy;
-
-	return result;
-
-#elif defined(_WIN32)
+#if defined(_WIN32)
 
 	if ( localtime_s( result, clk ) == 0 ) return result;
 	return NULL;

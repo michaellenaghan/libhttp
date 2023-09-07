@@ -112,18 +112,15 @@ char static_assert_replacement[1];
 /* Include the header file here, so the LibHTTP interface is defined for the
  * entire implementation, including the following forward definitions. */
 
+#include <errno.h>
+#include <fcntl.h>
+#include <signal.h>
 #include <stdbool.h>
 #include <stdint.h>
-#include "libhttp.h"
-
-
-#ifndef _WIN32_WCE /* Some ANSI #includes are not available on Windows CE */
-#include <sys/types.h>
 #include <sys/stat.h>
-#include <errno.h>
-#include <signal.h>
-#include <fcntl.h>
-#endif /* !_WIN32_WCE */
+#include <sys/types.h>
+
+#include "libhttp.h"
 
 #ifdef __MACH__
 
@@ -178,19 +175,9 @@ httplib_static_assert(PATH_MAX >= 1, "path length must be a positive number");
 #endif  /* in_port_t */
 #endif  /* _IN_PORT_T */
 
-#ifndef _WIN32_WCE
-#include <process.h>
-#include <direct.h>
 #include <io.h>
-#else  /* _WIN32_WCE */
-#define NO_CGI   /* WinCE has no pipes */
-#define NO_POPEN /* WinCE has no popen */
-
-typedef long off_t;
-
-#define errno ((int)(GetLastError()))
-#define strerror(x) (_ultoa(x, (char *)_alloca(sizeof(x) * 3), 10))
-#endif /* _WIN32_WCE */
+#include <direct.h>
+#include <process.h>
 
 #define MAKEUQUAD(lo, hi)                                                      \
 	((uint64_t)(((uint32_t)(lo)) | ((uint64_t)((uint32_t)(hi))) << 32))
@@ -786,16 +773,6 @@ typedef struct {
 #ifndef va_copy
 #define va_copy(x, y) ((x) = (y))
 #endif
-
-
-#if defined(_WIN32_WCE)
-#define _beginthreadex(psec, stack, func, prm, flags, ptid)	(uintptr_t) CreateThread(psec, stack, func, prm, flags, ptid)
-#define access(x, a) 1 /* not required anyway */
-/* WinCE-TODO: define stat, remove, rename, _rmdir, _lseeki64 */
-#define EEXIST 1 /* TODO: See Windows error codes */
-#define EACCES 2 /* TODO: See Windows error codes */
-#define ENOENT 3 /* TODO: See Windows Error codes */
-#endif /* defined(_WIN32_WCE) */
 
 
 /* Darwin prior to 7.0 and Win32 do not have socklen_t */

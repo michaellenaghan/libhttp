@@ -125,7 +125,6 @@ static void do_ssi_include( struct lh_ctx_t *ctx, struct lh_con_t *conn, const c
 }  /* do_ssi_include */
 
 
-#if !defined(NO_POPEN)
 static void do_ssi_exec( struct lh_ctx_t *ctx, struct lh_con_t *conn, char *tag ) {
 
 	char cmd[1024] = "";
@@ -150,7 +149,6 @@ static void do_ssi_exec( struct lh_ctx_t *ctx, struct lh_con_t *conn, char *tag 
 		}
 	}
 }
-#endif /* !NO_POPEN */
 
 
 static int httplib_fgetc( struct file *filep, int offset ) {
@@ -206,12 +204,10 @@ static void send_ssi_file( struct lh_ctx_t *ctx, struct lh_con_t *conn, const ch
 
 					do_ssi_include( ctx, conn, path, buf+12, include_level );
 				}
-#if !defined(NO_POPEN)
 				else if ( ! memcmp( buf+5, "exec", 4 ) ) {
 
 					do_ssi_exec( ctx, conn, buf+9 );
 				}
-#endif /* !NO_POPEN */
 				else httplib_cry( LH_DEBUG_ERROR, ctx, conn, "%s: %s: unknown SSI command: \"%s\"", __func__, path, buf );
 			}
 

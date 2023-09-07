@@ -38,11 +38,6 @@
 void XX_httplib_get_system_name( char **sysName ) {
 
 #if defined(_WIN32)
-#if defined(_WIN32_WCE)
-
-	*sysName = httplib_strdup( "WinCE" );
-
-#else  /* _WIN32_WCE */
 
 	char name[128];
 
@@ -71,7 +66,6 @@ void XX_httplib_get_system_name( char **sysName ) {
 	sprintf( name, "Windows %u.%u", (unsigned)dwMajorVersion, (unsigned)dwMinorVersion );
 	*sysName = httplib_strdup( name );
 
-#endif  /* _WIN32_WCE */
 #else  /* _WIN32 */
 
 	struct utsname name;
