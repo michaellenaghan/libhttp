@@ -292,7 +292,6 @@ struct lh_clb_t {					/*												*/
 	int		(*init_ssl)(         struct lh_ctx_t *ctx, void *ssl_context, void *user_data );				/*		*/
 	void		(*connection_close)( struct lh_ctx_t *ctx, const struct lh_con_t *conn );					/*		*/
 	const char *	(*open_file)(        struct lh_ctx_t *ctx, const struct lh_con_t *conn, const char *path, size_t *data_len );	/*		*/
-	void		(*init_lua)(         struct lh_ctx_t *ctx, const struct lh_con_t *conn, void *lua_context );			/*		*/
 	int		(*http_error)(       struct lh_ctx_t *ctx, struct lh_con_t *, int status );					/*		*/
 	void		(*init_context)(     struct lh_ctx_t *ctx );									/*		*/
 	void		(*init_thread)(      struct lh_ctx_t *ctx, int thread_type );							/*		*/

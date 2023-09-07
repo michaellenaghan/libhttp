@@ -114,7 +114,7 @@ of name=value pairs, like this: `VARIABLE1=VALUE1,VARIABLE2=VALUE2`.
 ### put\_delete\_auth\_file
 Passwords file for PUT and DELETE requests. Without password file, it will not
 be possible to, PUT new files to the server or DELETE existing ones. PUT and
-DELETE requests might still be handled by Lua scripts and CGI paged.
+DELETE requests might still be handled by CGI pages.
 
 ### cgi\_interpreter
 Path to an executable to use as CGI interpreter for __all__ CGI scripts
@@ -228,9 +228,6 @@ online tools e.g. [this generator](http://www.askapache.com/online-tools/htpassw
 Comma-separated list of files to be treated as directory index files.
 If more than one matching file is present in a directory, the one listed to the left
 is used as a directory index.
-
-In case built-in Lua support has been enabled, `index.lp,index.lsp,index.lua`
-are additional default index files, ordered before `index.cgi`.
 
 ### enable\_keep\_alive `no`
 Enable connection keep alive, either `yes` or `no`.
@@ -356,33 +353,10 @@ Timeout for network read and network write operations, in milliseconds.
 If a client intends to keep long-running connection, either increase this
 value or (better) use keep-alive messages.
 
-### lua\_preload\_file
-This configuration option can be used to specify a Lua script file, which
-is executed before the actual web page script (Lua script, Lua server page
-or Lua websocket). It can be used to modify the Lua environment of all web
-page scripts, e.g., by loading additional libraries or defining functions
-required by all scripts.
-It may be used to achieve backward compatibility by defining obsolete
-functions as well.
-
-### lua\_script\_pattern `"**.lua$`
-A pattern for files that are interpreted as Lua scripts by the server.
-In contrast to Lua server pages, Lua scripts use plain Lua syntax.
-An example can be found in the test directory.
-
-### lua\_server\_page\_pattern `**.lp$|**.lsp$`
-Files matching this pattern are treated as Lua server pages.
-In contrast to Lua scripts, the content of a Lua server pages is delivered
-directly to the client. Lua script parts are delimited from the standard
-content by including them between <? and ?> tags.
-An example can be found in the test directory.
-
 ### websocket\_root
-In case LibHTTP is built with Lua and websocket support, Lua scripts may
-be used for websockets as well. Since websockets use a different URL scheme
-(ws, wss) than other http pages (http, https), the Lua scripts used for
-websockets may also be served from a different directory. By default,
-the document_root is used as websocket_root as well.
+Since websockets use a different URL scheme (ws, wss) than other http pages
+(http, https), the files for websockets may also be served from a different 
+directory. By default, the document_root is used as websocket_root as well.
 
 ### access\_control\_allow\_origin
 Access-Control-Allow-Origin header field, used for cross-origin resource
@@ -481,152 +455,6 @@ on a tmpfs (linux) on a system with very high throughput.
 
 ### allow\_sendfile\_call `yes`
 This option can be used to enable or disable the use of the Linux `sendfile` system call. It is only available for Linux systems and only affecting HTTP (not HTTPS) connections if `throttle` is not enabled. While using the `sendfile` call will lead to a performance boost for HTTP connections, this call may be broken for some file systems and some operating system versions.
-
-
-# Lua Scripts and Lua Server Pages
-Pre-built Windows and Mac LibHTTP binaries have built-in Lua scripting
-support as well as support for Lua Server Pages.
-
-Lua scripts (default extension: *.lua) use plain Lua syntax.
-The body of the script file is not sent directly to the client,
-the Lua script must send header and content of the web page by calling
-the function mg.write(text).
-
-Lua Server Pages (default extensions: *.lsp, *.lp) are html pages containing
-script elements similar to PHP, using the Lua programming language instead of
-PHP. Lua script elements must be enclosed in `<?  ?>` blocks, and can appear
-anywhere on the page. Furthermore, Lua Server Pages offer the opportunity to
-insert the content of a variable by enclosing the Lua variable name in
-`<?=  ?>` blocks, similar to PHP.
-For example, to print the current weekday name and the URI of the current
-page, one can write:
-
-    <p>
-      <span>Today is:</span>
-      <? mg.write(os.date("%A")) ?>
-    </p>
-    <p>
-      URI is <?=mg.request_info.uri?>
-    </p>
-
-Lua is known for it's speed and small size. LibHTTP currently uses Lua
-version 5.2.4. The documentation for it can be found in the
-[Lua 5.2 reference manual](http://www.lua.org/manual/5.2/).
-
-
-Note that this example uses function `mg.write()`, which sends data to the
-web client. Using `mg.write()` is the way to generate web content from inside
-Lua code. In addition to `mg.write()`, all standard Lua library functions
-are accessible from the Lua code (please check the reference manual for
-details). Lua functions working on files (e.g., `io.open`) use a path
-relative to the working path of the LibHTTP process. The web server content
-is located in the path `mg.document_root`.
-Information on the request is available in the `mg.request_info`
-object, like the request method, all HTTP headers, etcetera.
-
-[page2.lua](https://github.com/lammertb/libhttp/blob/master/test/page2.lua)
-is an example for a plain Lua script.
-
-[page2.lp](https://github.com/lammertb/libhttp/blob/master/test/page2.lp)
-is an example for a Lua Server Page.
-
-Both examples show the content of the `mg.request_info` object as the page
-content. Please refer to `struct httplib_request_info` definition in
-[libhttp.h](https://github.com/lammertb/libhttp/blob/master/include/libhttp.h)
-to see additional information on the elements of the `mg.request_info` object.
-
-LibHTTP also provides access to the [SQlite3 database](http://www.sqlite.org/)
-through the [LuaSQLite3 interface](http://lua.sqlite.org/index.cgi/doc/tip/doc/lsqlite3.wiki)
-in Lua. Examples are given in
-[page.lua](https://github.com/lammertb/libhttp/blob/master/test/page.lua) and
-[page.lp](https://github.com/lammertb/libhttp/blob/master/test/page.lp).
-
-
-LibHTTP exports the following functions to Lua:
-
-mg (table):
-
-    mg.read()                  -- reads a chunk from POST data, returns it as a string
-    mg.write(str)              -- writes string to the client
-    mg.include(path)           -- sources another Lua file
-    mg.redirect(uri)           -- internal redirect to a given URI
-    mg.onerror(msg)            -- error handler, can be overridden
-    mg.version                 -- a string that holds LibHTTP version
-    mg.document_root           -- a string that holds the document root directory
-    mg.auth_domain             -- a string that holds the HTTP authentication domain
-    mg.get_var(str, varname)   -- extract variable from (query) string
-    mg.get_cookie(str, cookie) -- extract cookie from a string
-    mg.get_mime_type(filename) -- get MIME type of a file
-    mg.send_file(filename)     -- send a file, including MIME type
-    mg.url_encode(str)         -- URL encode a string
-    mg.url_decode(str, [form]) -- URL decode a string. If form=true, replace + by space.
-    mg.base64_encode(str)      -- BASE64 encode a string
-    mg.base64_decode(str)      -- BASE64 decode a string
-    mg.md5(str)                -- return the MD5 hash of a string
-    mg.keep_alive(bool)        -- allow/forbid to use http keep-alive for this request
-    mg.request_info            -- a table with the following request information
-         .remote_addr          -- IP address of the client as string
-         .remote_port          -- remote port number
-         .server_port          -- server port number
-         .request_method       -- HTTP method (e.g.: GET, POST)
-         .http_version         -- HTTP protocol version (e.g.: 1.1)
-         .uri                  -- resource name
-         .query_string         -- query string if present, nil otherwise
-         .script_name          -- name of the Lua script
-         .https                -- true if accessed by https://, false otherwise
-         .remote_user          -- user name if authenticated, nil otherwise
-
-connect (function):
-
-    -- Connect to the remote TCP server. This function is an implementation
-    -- of simple socket interface. It returns a socket object with three
-    -- methods: send, recv, close, which are synchronous (blocking).
-    -- connect() throws an exception on connection error.
-    connect(host, port, use_ssl)
-
-    -- Example of using connect() interface:
-    local host = 'code.google.com'  -- IP address or domain name
-    local ok, sock = pcall(connect, host, 80, 1)
-    if ok then
-      sock:send('GET /p/libhttp/ HTTP/1.0\r\n' ..
-                'Host: ' .. host .. '\r\n\r\n')
-      local reply = sock:recv()
-      sock:close()
-      -- reply now contains the web page https://code.google.com/p/libhttp
-    end
-
-
-**IMPORTANT: LibHTTP does not send HTTP headers for Lua pages. Therefore,
-every Lua Page must begin with a HTTP reply line and headers**, like this:
-
-    <? print('HTTP/1.0 200 OK\r\nContent-Type: text/html\r\n\r\n') ?>
-    <html><body>
-      ... the rest of the web page ...
-
-To serve a Lua Page, LibHTTP creates a Lua context. That context is used for
-all Lua blocks within the page. That means, all Lua blocks on the same page
-share the same context. If one block defines a variable, for example, that
-variable is visible in all block that follow.
-
-## Websockets for Lua
-LibHTTP offers support for websockets in Lua as well. In contrast to plain
-Lua scripts and Lua server pages, Lua websocket scripts are shared by all clients.
-
-Lua websocket scripts must define a few functions:
-    open(arg)    -- callback to accept or reject a connection
-    ready(arg)   -- called after a connection has been established
-    data(arg)    -- called when the server receives data from the client
-    close(arg)   -- called when a websocket connection is closed
-All function are called with one argument of type table with at least one field
-"client" to identify the client. When "open" is called, the argument table additionally
-contains the "request_info" table as defined above. For the "data" handler, an
-additional field "data" is available. The functions "open", "ready" and "data"
-must return true in order to keep the connetion open.
-
-Lua websocket pages do support single shot (timeout) and interval timers.
-
-An example is shown in
-[websocket.lua](https://github.com/lammertb/libhttp/blob/master/test/websocket.lua).
 
 
 # Common Problems

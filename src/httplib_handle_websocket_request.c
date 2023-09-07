@@ -38,7 +38,6 @@ void XX_httplib_handle_websocket_request( struct lh_ctx_t *ctx, struct lh_con_t 
 
 	const char *websock_key;
 	const char *version;
-	int lua_websock;
 	const char *key1;
 	const char *key2;
 	char key3[8];
@@ -49,7 +48,6 @@ void XX_httplib_handle_websocket_request( struct lh_ctx_t *ctx, struct lh_con_t 
 
 	websock_key = httplib_get_header( conn, "Sec-WebSocket-Key"     );
 	version     = httplib_get_header( conn, "Sec-WebSocket-Version" );
-	lua_websock = 0;
 
 	/*
 	 * Step 1: Check websocket protocol version.
@@ -127,9 +125,6 @@ void XX_httplib_handle_websocket_request( struct lh_ctx_t *ctx, struct lh_con_t 
 			/*
 			 * C callback has returned non-zero, do not proceed with
 			 * handshake.
-			 *
-			 * Note that C callbacks are no longer called when Lua is
-			 * responsible, so C can no longer filter callbacks for Lua.
 			 */
 
 			return;
@@ -140,10 +135,11 @@ void XX_httplib_handle_websocket_request( struct lh_ctx_t *ctx, struct lh_con_t 
 	 * Step 4: Check if there is a responsible websocket handler.
 	 */
 
-	if ( ! is_callback_resource  &&   ! lua_websock ) {
+	if ( ! is_callback_resource ) {
 
 		/*
-		 * There is no callback, an Lua is not responsible either. */
+		 * There is no callback. 
+		 */
 		/* Reply with a 404 Not Found or with nothing at all?
 		 * TODO (mid): check the websocket standards, how to reply to
 		 * requests to invalid websocket addresses.

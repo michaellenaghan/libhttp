@@ -405,7 +405,6 @@ void (*websocket_ready)(struct httplib_connection *);
 int (*websocket_data)(struct httplib_connection *, int bits, char *data, size_t data_len);
 void (*connection_close)(struct httplib_connection *);
 const char *(*open_file)(const struct httplib_connection *, const char *path, size_t *data_len);
-void (*init_lua)(struct httplib_connection *, void *lua_context);
 void (*upload)(struct httplib_connection *, const char *file_name);
 int (*http_error)(struct httplib_connection *, int status);
 
@@ -955,54 +954,6 @@ static void test_next_option(void)
 	}
 }
 
-#if defined(USE_LUA)
-static void check_lua_expr(lua_State *L, const char *expr, const char *value)
-{
-	const char *v, *var_name = "myVar";
-	char buf[100];
-
-	httplib_snprintf(buf, sizeof(buf), "%s = %s", var_name, expr);
-	(void)luaL_dostring(L, buf);
-	lua_getglobal(L, var_name);
-	v = lua_tostring(L, -1);
-	ASSERT((value == NULL && v == NULL) ||
-	       (value != NULL && v != NULL && !strcmp(value, v)));
-}
-
-static void test_lua(void)
-{
-	static struct httplib_connection conn;
-	static struct httplib_context ctx;
-
-	char http_request[] = "POST /foo/bar HTTP/1.1\r\n"
-	                      "Content-Length: 12\r\n"
-	                      "Connection: close\r\n\r\nhello world!";
-	lua_State *L = luaL_newstate();
-
-	conn.ctx = &ctx;
-	conn.buf = http_request;
-	conn.buf_size = conn.data_len = strlen(http_request);
-	conn.request_len =
-	    parse_http_message(conn.buf, conn.data_len, &conn.request_info);
-	conn.content_len = conn.data_len - conn.request_len;
-
-	prepare_lua_environment(&ctx, &conn, NULL, L, "unit_test", LUA_ENV_TYPE_PLAIN_LUA_PAGE);
-	ASSERT(lua_gettop(L) == 4);
-
-	check_lua_expr(L, "'hi'", "hi");
-	check_lua_expr(L, "mg.request_info.request_method", "POST");
-	check_lua_expr(L, "mg.request_info.uri", "/foo/bar");
-	check_lua_expr(L, "mg.request_info.num_headers", "2");
-	check_lua_expr(L, "mg.request_info.remote_ip", "0");
-	check_lua_expr(L, "mg.request_info.http_headers['Content-Length']", "12");
-	check_lua_expr(L, "mg.request_info.http_headers['Connection']", "close");
-	(void)luaL_dostring(L, "post = mg.read()");
-	check_lua_expr(L, "# post", "12");
-	check_lua_expr(L, "post", "hello world!");
-	lua_close(L);
-}
-#endif
-
 static void test_httplib_stat(void)
 {
 	static struct httplib_context ctx;
@@ -1429,10 +1380,6 @@ int __cdecl main(void)
 	test_request_replies();
 	test_api_calls();
 	test_request_handlers();
-
-#if defined(USE_LUA)
-	test_lua();
-#endif
 
 	/* test completed */
 	httplib_free(fetch_data);

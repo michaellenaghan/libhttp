@@ -3,7 +3,7 @@ Embedding LibHTTP
 
 LibHTTP is primarily designed so applications can easily add HTTP and HTTPS server as well as WebSocket functionality.  For example, an application server could use LibHTTP to enable a web service interface for automation or remote control.
 
-It can deliver static files and offers built-in server side Lua, JavaScript and CGI support. Some instructions how to build the stand-alone server can be found in [Building.md](Building.md).
+It can deliver static files and offers built-in CGI support. Some instructions how to build the stand-alone server can be found in [Building.md](Building.md).
 
 Files
 ------

@@ -460,9 +460,8 @@ START_TEST(test_encode_decode)
 	const char *nonalpha_url_enc2 =
 	    "%20!%22%23%24%25%26'()*%2B%2C-.%2F0123456789%3A%3B%3C%3D%3E%3F%40";
 	int ret;
-	size_t len;
 
-#if defined(USE_WEBSOCKET) || defined(USE_LUA)
+#if defined(USE_WEBSOCKET)
 	const char *alpha_b64_enc = "YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXo=";
 	const char *nonalpha_b64_enc =
 	    "ICEiIyQlJicoKSorLC0uLzAxMjM0NTY3ODk6Ozw9Pj9A";
@@ -504,23 +503,6 @@ START_TEST(test_encode_decode)
 	ck_assert_str_eq(buf, nonalpha_b64_enc);
 #endif
 
-#if defined(USE_LUA)
-	memset(buf, 77, sizeof(buf));
-	len = 9999;
-	ret = base64_decode((unsigned char *)alpha_b64_enc,
-	                    (int)strlen(alpha_b64_enc),
-	                    buf,
-	                    &len);
-	ck_assert_int_eq(ret, -1);
-	ck_assert_uint_eq((unsigned int)len, (unsigned int)strlen(alpha));
-	ck_assert_str_eq(buf, alpha);
-
-	memset(buf, 77, sizeof(buf));
-	len = 9999;
-	ret = base64_decode((unsigned char *)"AAA*AAA", 7, buf, &len);
-	ck_assert_int_eq(ret, 3);
-#endif
-
 	memset(buf, 77, sizeof(buf));
 	ret = httplib_url_encode(alpha, buf, sizeof(buf));
 	ck_assert_int_eq(ret, (int)strlen(buf));
@@ -552,10 +534,6 @@ START_TEST(test_encode_decode)
 	ck_assert_int_eq(ret, (int)strlen(buf));
 	ck_assert_int_eq(ret, (int)strlen(nonalpha));
 	ck_assert_str_eq(buf, nonalpha);
-
-	/* len could be unused, if base64_decode is not tested because USE_LUA is
-	 * not defined */
-	(void)len;
 }
 END_TEST
 

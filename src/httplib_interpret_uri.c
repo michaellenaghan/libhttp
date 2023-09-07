@@ -133,7 +133,7 @@ void XX_httplib_interpret_uri( struct lh_ctx_t *ctx, struct lh_con_t *conn, char
 		if ( ctx->cgi_pattern != NULL  &&  XX_httplib_match_prefix( ctx->cgi_pattern, strlen( ctx->cgi_pattern ), filename ) > 0 ) {
 
 			/*
-			 * The request addresses a CGI script or a Lua script. The URI
+			 * The request addresses a CGI script. The URI
 			 * corresponds to the script itself (like /path/script.cgi),
 			 * and there is no additional resource path
 			 * (like /path/script.cgi/something).

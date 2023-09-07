@@ -20,9 +20,7 @@
     var testType = "cgi";
 
     function NextTestType() {
-      if (testType == "cgi") testType = "lp";
-      else if (testType == "lp") testType = "lua";
-      else testType = "cgi";
+      testType = "cgi";
     }
 
     function runTest(method, isAsync) {

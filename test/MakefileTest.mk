@@ -57,14 +57,12 @@ buildoptions:
 	@echo "================"
 	$(MAKE) -C $(TOP) clean build WITH_WEBSOCKET=1
 	@echo "================"
-	$(MAKE) -C $(TOP) clean build WITH_LUA=1
-	@echo "================"
-	$(MAKE) -C $(TOP) clean build WITH_LUA=1 WITH_IPV6=1 WITH_WEBSOCKET=1
+	$(MAKE) -C $(TOP) clean build WITH_IPV6=1 WITH_WEBSOCKET=1
 
 threaded:
 	@echo "================"
-	$(MAKE) -j 8 -C $(TOP) clean WITH_LUA=1
-	$(MAKE) -j 8 -C $(TOP) build WITH_LUA=1
+	$(MAKE) -j 8 -C $(TOP) clean
+	$(MAKE) -j 8 -C $(TOP) build
 
 buildinstall:
 	@echo "================"

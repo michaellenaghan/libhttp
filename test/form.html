@@ -93,14 +93,6 @@
     <fieldset>
     <legend>Submit:</legend>
       <fieldset>
-        <legend>Submit to Lua script:</legend>
-        This will only work if server side Lua scripting is activated and /handle_form.lua can be found on the server.
-        <br>
-        <input type="submit" value="Submit"  formmethod="POST"  formenctype="multipart/form-data"
-         formaction="/handle_form.lua">
-      </fieldset>
-
-      <fieldset>
         <legend>Submit to callback:</legend>
         This will work in the embedded_c example. It will call httplib_handle_form_data to parse the request.
         <br>

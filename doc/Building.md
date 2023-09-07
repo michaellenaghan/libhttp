@@ -36,7 +36,7 @@ Install on the system, Linux only.
 
 ```
 make lib WITH_CPP=1 WITH_IPV6=1
-make clean slib WITH_CPP=1 WITH_LUA=1 WITH_WEBSOCKET=1
+make clean slib WITH_CPP=1 WITH_WEBSOCKET=1
 ```
 Build the static and shared libraries.
 The *WITH_CPP* make option is to include the LibHTTPServer class.
@@ -95,7 +95,6 @@ make build COPT="-DNDEBUG -DNO_CGI"
 | NO_SSL                    | disable SSL functionality            |
 | NO_SSL_DL                 | link against system libssl library   |
 | NO_FILES                  | do not serve files from a directory  |
-| SQLITE_DISABLE_LFS        | disables large files (Lua only)      |
 | SSL_ALREADY_INITIALIZED   | do not initialize libcrypto          |
 
 ## Cross Compiling

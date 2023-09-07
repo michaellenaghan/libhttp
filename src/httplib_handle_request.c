@@ -245,7 +245,7 @@ no_callback_resource:
 
 		/*
 		 * 5.2.2. No callback is responsible for this request. The URI
-		 * addresses a file based resource (static content or Lua/cgi
+		 * addresses a file based resource (static content or cgi
 		 * scripts in the file system).
 		 */
 
@@ -353,22 +353,13 @@ no_callback_resource:
 		return;
 	}
 
-/*
- * 8. handle websocket requests
- */
+	/*
+	 * 8. handle websocket requests
+	 */
 
 	if ( is_websocket_request ) {
 
-		if ( is_script_resource ) {
-
-			/*
-			 * Websocket Lua script, the 0 in the third parameter indicates Lua
-			 */
-
-			XX_httplib_handle_websocket_request( ctx, conn, path, 0, NULL, NULL, NULL, NULL, &ctx->callbacks );
-		}
-		
-		else XX_httplib_send_http_error( ctx, conn, 404, "%s", "Not found" );
+		XX_httplib_send_http_error( ctx, conn, 404, "%s", "Not found" );
 
 		return;
 	}
@@ -407,7 +398,7 @@ no_callback_resource:
 		/*
 		 * 11.4. PATCH method
 		 * This method is not supported for static resources,
-		 * only for scripts (Lua, CGI) and callbacks.
+		 * only for scripts (CGI) and callbacks.
 		 */
 
 		XX_httplib_send_http_error( ctx, conn, 405, "%s method not allowed", conn->request_info.request_method );
@@ -466,7 +457,7 @@ no_callback_resource:
 		 * This standard handler is only used for real files.
 		 * Scripts should support the OPTIONS method themselves, to allow a
 		 * maximum flexibility.
-		 * Lua and CGI scripts may fully support CORS this way (including
+		 * CGI scripts may fully support CORS this way (including
 		 * preflights).
 		 */
 
