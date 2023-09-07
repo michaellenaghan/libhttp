@@ -49,7 +49,7 @@ simplicity by a carefully selected list of features:
 - Free from copy-left licenses, like GPL, because you should innovate without restrictions.
 - Forked from [Mongoose](https://code.google.com/p/mongoose/) in 2013, before it changed the licence from MIT to commercial + GPL. A lot of enchancements have been added since that time, see [RELEASE_NOTES.md](RELEASE_NOTES.md).
 - Works on Windows, Mac, Linux, UNIX, iPhone, Android, Buildroot, and many other platforms.
-- Support for HTTPS (SSL/TLS), SSI, HTTP digest (MD5) authorization, Websocket, WEbDAV.
+- Support for HTTPS (SSL/TLS), HTTP digest (MD5) authorization, Websocket, WebDAV.
 - Optional support for authentication using client side X.509 certificates.
 - Resumed download, URL rewrite, file blacklist, IP-based ACL.
 - Download speed limit based on client subnet or URI pattern. 

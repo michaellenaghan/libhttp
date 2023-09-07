@@ -574,7 +574,6 @@ struct lh_ctx_t {
 	char *	protect_uri;
 	char *	put_delete_auth_file;
 	char *	run_as_user;
-	char *	ssi_pattern;
 	char *	ssl_ca_file;
 	char *	ssl_ca_path;
 	char *	ssl_certificate;
@@ -584,7 +583,6 @@ struct lh_ctx_t {
 
 	int	num_threads;
 	int	request_timeout;
-	int	ssi_include_depth;
 	int	ssl_protocol_version;
 	int	ssl_verify_depth;
 	int	static_file_max_age;

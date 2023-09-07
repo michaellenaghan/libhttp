@@ -335,7 +335,6 @@ OBJLIST =									\
 	${OBJDIR}httplib_skip_quoted${OBJEXT}					\
 	${OBJDIR}httplib_snprintf${OBJEXT}					\
 	${OBJDIR}httplib_sockaddr_to_string${OBJEXT}				\
-	${OBJDIR}httplib_ssi${OBJEXT}						\
 	${OBJDIR}httplib_ssl_error${OBJEXT}					\
 	${OBJDIR}httplib_ssl_get_client_cert_info${OBJEXT}			\
 	${OBJDIR}httplib_ssl_get_protocol${OBJEXT}				\
@@ -1134,11 +1133,6 @@ ${OBJDIR}httplib_snprintf${OBJEXT}					: ${SRCDIR}httplib_snprintf.c					\
 									  ${INCDIR}libhttp.h
 
 ${OBJDIR}httplib_sockaddr_to_string${OBJEXT}				: ${SRCDIR}httplib_sockaddr_to_string.c				\
-									  ${SRCDIR}httplib_main.h					\
-									  ${INCDIR}libhttp.h
-
-${OBJDIR}httplib_ssi${OBJEXT}						: ${SRCDIR}httplib_ssi.c					\
-									  ${SRCDIR}httplib_utils.h					\
 									  ${SRCDIR}httplib_main.h					\
 									  ${INCDIR}libhttp.h
 

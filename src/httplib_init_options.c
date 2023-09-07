@@ -57,8 +57,6 @@ bool XX_httplib_init_options( struct lh_ctx_t *ctx ) {
 	ctx->put_delete_auth_file        = NULL;
 	ctx->request_timeout             = 30000;
 	ctx->run_as_user                 = NULL;
-	ctx->ssi_include_depth           = 10;
-	ctx->ssi_pattern                 = NULL;
 	ctx->ssl_ca_file                 = NULL;
 	ctx->ssl_ca_path                 = NULL;
 	ctx->ssl_certificate             = NULL;
@@ -86,7 +84,7 @@ bool XX_httplib_init_options( struct lh_ctx_t *ctx ) {
 		return true;
 	}
 
-	if ( (ctx->index_files = httplib_strdup( "index.xhtml,index.html,index.htm,index.shtml" )) == NULL ) {
+	if ( (ctx->index_files = httplib_strdup( "index.html,index.htm,index.xhtml" )) == NULL ) {
 
 		XX_httplib_abort_start( ctx, "Out of memory creating context allocating \"index_files\"" );
 		return true;
@@ -95,12 +93,6 @@ bool XX_httplib_init_options( struct lh_ctx_t *ctx ) {
 	if ( (ctx->listening_ports = httplib_strdup( "8080" )) == NULL ) {
 
 		XX_httplib_abort_start( ctx, "Out of memory creating context allocating \"listening_ports\"" );
-		return true;
-	}
-
-	if ( (ctx->ssi_pattern = httplib_strdup( "**.shtml$|**.shtm$" )) == NULL ) {
-
-		XX_httplib_abort_start( ctx, "Out of memory creating context allocating \"ssi_pattern\"" );
 		return true;
 	}
 

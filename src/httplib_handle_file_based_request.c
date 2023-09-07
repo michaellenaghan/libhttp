@@ -31,24 +31,14 @@
  * void XX_httplib_handle_file_based_request( struct lh_ctx_t *ctx, struct lh_con_t *conn, const char *path, struct file *file );
  *
  * The function XX_httplib_handle_file_based_request() handles a request which
- * involves a file. This can either be an SSI request or a request for a static
- * file.
+ * involves a file.
  */
 
 void XX_httplib_handle_file_based_request( struct lh_ctx_t *ctx, struct lh_con_t *conn, const char *path, struct file *file ) {
 
-	const char *ssi_ext;
-
 	if ( ctx == NULL  ||  conn == NULL ) return;
 
-	ssi_ext = ctx->ssi_pattern;
-
-	if ( ssi_ext != NULL  &&  XX_httplib_match_prefix( ssi_ext, strlen( ssi_ext ), path ) > 0 ) {
-
-		XX_httplib_handle_ssi_file_request( ctx, conn, path, file );
-	}
-	
-	else if ( ctx->static_file_max_age > 0  &&  ! conn->in_error_handler  &&  XX_httplib_is_not_modified( ctx, conn, file ) ) {
+	if ( ctx->static_file_max_age > 0  &&  ! conn->in_error_handler  &&  XX_httplib_is_not_modified( ctx, conn, file ) ) {
 
 		XX_httplib_handle_not_modified_static_file_request( ctx, conn, file );
 	}

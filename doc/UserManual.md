@@ -112,40 +112,6 @@ Authorization realm used for HTTP digest authentication. This domain is
 used in the encoding of the `.htpasswd` authorization files as well.
 Changing the domain retroactively will render the existing passwords useless.
 
-### ssi\_pattern `**.shtml$|**.shtm$`
-All files that match `ssi_pattern` are treated as Server Side Includes (SSI).
-
-SSI is a simple interpreted server-side scripting language which is most
-commonly used to include the contents of another file into a web page.
-It can be useful when it is desirable to include a common piece
-of code throughout a website, for example, headers and footers.
-
-In order for a webpage to recognize an SSI-enabled HTML file, the filename
-should end with a special extension, by default the extension should be
-either `.shtml` or `.shtm`. These extentions may be changed using the
-`ssi_pattern` option.
-
-Unknown SSI directives are silently ignored by LibHTTP. Currently, two SSI
-directives are supported, `<!--#include ...>` and
-`<!--#exec "command">`. Note that the `<!--#include ...>` directive supports
-three path specifications:
-
-    <!--#include virtual="path">  Path is relative to web server root
-    <!--#include abspath="path">  Path is absolute or relative to
-                                  web server working dir
-    <!--#include file="path">,    Path is relative to current document
-    <!--#include "path">
-
-The `include` directive may be used to include the contents of a file or the
-result of running a command. The `exec` directive is used to execute a
-command on a server, and show the output that would have been printed to
-stdout (the terminal window) otherwise. Example:
-
-    <!--#exec "ls -l" -->
-
-For more information on Server Side Includes, take a look at the Wikipedia:
-[Server Side Includes](http://en.wikipedia.org/wiki/Server_Side_Includes)
-
 ### access\_log\_file
 Path to a file for access logs. Either full path, or relative to the current
 working directory. If absent (default), then accesses are not logged.
@@ -171,7 +137,7 @@ password in digest format:
 Password files may be generated using `libhttp -A` as explained above, or
 online tools e.g. [this generator](http://www.askapache.com/online-tools/htpasswd-generator).
 
-### index\_files `index.xhtml,index.html,index.htm,index.shtml`
+### index\_files `index.html,index.htm,index.xhtml`
 Comma-separated list of files to be treated as directory index files.
 If more than one matching file is present in a directory, the one listed to the left
 is used as a directory index.
