@@ -78,7 +78,7 @@ bool XX_httplib_init_options( struct lh_ctx_t *ctx ) {
 		return true;
 	}
 
-	if ( (ctx->authentication_domain = httplib_strdup( "example.com" )) == NULL ) {
+	if ( (ctx->authentication_domain = httplib_strdup( "localhost" )) == NULL ) {
 
 		XX_httplib_abort_start( ctx, "Out of memory creating context allocating \"authentication_domain\"" );
 		return true;

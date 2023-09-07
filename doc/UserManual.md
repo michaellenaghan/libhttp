@@ -107,7 +107,7 @@ Comma separated list of URI=PATH pairs, specifying that given
 URIs must be protected with password files specified by PATH.
 All Paths must be full file paths.
 
-### authentication\_domain `mydomain.com`
+### authentication\_domain `localhost`
 Authorization realm used for HTTP digest authentication. This domain is
 used in the encoding of the `.htpasswd` authorization files as well.
 Changing the domain retroactively will render the existing passwords useless.
