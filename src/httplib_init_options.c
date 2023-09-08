@@ -70,7 +70,7 @@ bool XX_httplib_init_options( struct lh_ctx_t *ctx ) {
 	ctx->tcp_nodelay                 = false;
 	ctx->url_rewrite_patterns        = NULL;
 	ctx->websocket_root              = NULL;
-	ctx->websocket_timeout           = 30000;
+	ctx->websocket_timeout           = 360000;
 
 	if ( (ctx->access_control_allow_origin = httplib_strdup( "*" )) == NULL ) {
 

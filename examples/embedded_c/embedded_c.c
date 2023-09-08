@@ -731,9 +731,6 @@ main(int argc, char *argv[])
 #endif
 		},
 #endif
-#ifdef USE_WEBSOCKET
-	    {"websocket_timeout_ms", "3600000"},
-#endif
 	    0};
 	struct lh_clb_t callbacks;
 	struct lh_ctx_t *ctx;

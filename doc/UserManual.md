@@ -267,6 +267,12 @@ Since websockets use a different URL scheme (ws, wss) than other http pages
 (http, https), the files for websockets may also be served from a different 
 directory. By default, the document_root is used as websocket_root as well.
 
+### websocket\_timeout `360000`
+Timeout for network read and network write operations, in milliseconds.
+If a client intends to keep long-running connection, either increase this
+value or (better) use keep-alive messages. (`0` means "use the 
+`request_timeout`".)
+
 ### access\_control\_allow\_origin
 Access-Control-Allow-Origin header field, used for cross-origin resource
 sharing (CORS).
