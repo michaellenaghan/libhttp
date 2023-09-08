@@ -44,7 +44,7 @@ bool XX_httplib_init_options( struct lh_ctx_t *ctx ) {
 	ctx->decode_url                  = true;
 	ctx->document_root               = NULL;
 	ctx->enable_directory_listing    = false;
-	ctx->enable_keep_alive           = false;
+	ctx->enable_keep_alive           = true;
 	ctx->error_log_file              = NULL;
 	ctx->error_pages                 = NULL;
 	ctx->extra_mime_types            = NULL;

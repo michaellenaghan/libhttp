@@ -142,7 +142,7 @@ Comma-separated list of files to be treated as directory index files.
 If more than one matching file is present in a directory, the one listed to the left
 is used as a directory index.
 
-### enable\_keep\_alive `no`
+### enable\_keep\_alive `yes`
 Enable connection keep alive, either `yes` or `no`.
 
 Experimental feature. Allows clients to reuse TCP connection for subsequent
