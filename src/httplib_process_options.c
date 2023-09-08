@@ -322,7 +322,7 @@ static bool check_dbg( struct httplib_context *ctx, const struct httplib_option 
 			case LH_DEBUG_ERROR   :
 			case LH_DEBUG_WARNING :
 			case LH_DEBUG_INFO    :
-				*config = val;
+				*config = (enum httplib_debug)val;
 				return false;
 		}
 	}

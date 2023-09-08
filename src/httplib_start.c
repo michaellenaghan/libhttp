@@ -167,7 +167,7 @@ struct httplib_context *httplib_start( const struct httplib_callbacks *callbacks
 
 	if ( ctx->num_threads > 0 ) {
 
-		ctx->workerthreadids = httplib_calloc( ctx->num_threads, sizeof(pthread_t) );
+		ctx->workerthreadids = httplib_calloc( (size_t)ctx->num_threads, sizeof(pthread_t) );
 		if ( ctx->workerthreadids == NULL ) return XX_httplib_abort_start( ctx, "Not enough memory for worker thread ID array" );
 
 #if defined(ALTERNATIVE_QUEUE)

@@ -99,6 +99,7 @@ CFLAGS=	-Wall \
 	-Winit-self \
 	-Wcast-qual \
 	-Wcast-align \
+	-Wconversion \
 	-Wwrite-strings \
 	-Wnested-externs \
 	-Wredundant-decls \

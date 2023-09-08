@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -64,7 +64,7 @@ LIBHTTP_API void *XX_httplib_malloc_ex( size_t size, const char *file, unsigned 
 	data = malloc( size + sizeof(size_t) );
 
 	if ( data == NULL ) {
-	
+
 		if ( alloc_log_func != NULL ) alloc_log_func( file, line, "malloc", 0, httplib_memory_blocks_used, httplib_memory_bytes_used );
 		return NULL;
 	}
@@ -74,7 +74,7 @@ LIBHTTP_API void *XX_httplib_malloc_ex( size_t size, const char *file, unsigned 
 
 	*data = size;
 
-	if ( alloc_log_func != NULL ) alloc_log_func( file, line, "malloc", size, httplib_memory_blocks_used, httplib_memory_bytes_used );
+	if ( alloc_log_func != NULL ) alloc_log_func( file, line, "malloc", (int64_t)size, httplib_memory_blocks_used, httplib_memory_bytes_used );
 
 	return (data+1);
 
@@ -183,7 +183,7 @@ LIBHTTP_API void *XX_httplib_realloc_ex( void *memory, size_t newsize, const cha
 	oldsize = *olddata;
 	newdata = realloc( olddata, newsize + sizeof(size_t) );
 	if ( newdata == NULL ) {
-		
+
 		if ( alloc_log_func != NULL ) alloc_log_func( file, line, "realloc", 0, httplib_memory_blocks_used, httplib_memory_bytes_used );
 		return NULL;
 	}

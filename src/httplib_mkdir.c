@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -53,7 +53,7 @@ LIBHTTP_API int httplib_mkdir( const char *path, int mode ) {
 
 #else  /* _WIN32 */
 
-	return mkdir( path, mode );
+	return mkdir( path, (unsigned short)mode );
 
 #endif
 

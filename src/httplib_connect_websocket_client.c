@@ -89,7 +89,7 @@ struct httplib_connection *httplib_connect_websocket_client( struct httplib_cont
 	ctx->user_data       = user_data;
 	ctx->ctx_type        = CTX_TYPE_CLIENT;
 	ctx->num_threads     = 1;			/* one worker thread will be created	*/
-	ctx->workerthreadids = httplib_calloc( ctx->num_threads, sizeof(pthread_t) );
+	ctx->workerthreadids = httplib_calloc( (size_t)ctx->num_threads, sizeof(pthread_t) );
 
 	if ( ctx->workerthreadids == NULL ) {
 

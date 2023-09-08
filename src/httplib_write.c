@@ -41,7 +41,7 @@ int httplib_write( const struct httplib_context *ctx, struct httplib_connection 
 	if ( ctx == NULL  ||  conn == NULL  ||  buffie == NULL  ||  lennie == 0 ) return 0;
 
 	buf = buffie;
-	len = lennie;
+	len = (int64_t)lennie;
 
 	total = XX_httplib_push_all( ctx, NULL, conn->client.sock, conn->ssl, buf, len );
 
