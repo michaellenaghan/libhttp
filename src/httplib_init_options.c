@@ -90,7 +90,7 @@ bool XX_httplib_init_options( struct lh_ctx_t *ctx ) {
 		return true;
 	}
 
-	if ( (ctx->index_files = httplib_strdup( "index.html,index.htm,index.xhtml" )) == NULL ) {
+	if ( (ctx->index_files = httplib_strdup( "index.html" )) == NULL ) {
 
 		XX_httplib_abort_start( ctx, "Out of memory creating context allocating \"index_files\"" );
 		return true;

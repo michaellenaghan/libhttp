@@ -137,7 +137,7 @@ password in digest format:
 Password files may be generated using `libhttp -A` as explained above, or
 online tools e.g. [this generator](http://www.askapache.com/online-tools/htpasswd-generator).
 
-### index\_files `index.html,index.htm,index.xhtml`
+### index\_files `index.html`
 Comma-separated list of files to be treated as directory index files.
 If more than one matching file is present in a directory, the one listed to the left
 is used as a directory index.
