@@ -18,13 +18,15 @@ Getting Started
 LibHTTP Configuration
 ----
 
-The configuration file must contain an https port, identified by a letter 's'
+The configuration options must contain an https port, identified by a letter 's'
 attached to the port number.
-To serve http and https from their standard ports use the following line in
-the configuration file 'libhttp.conf':
+
+To serve http and https from their standard ports use the following configuration 
+option:
 <pre>
   listening_ports 80, 443s
 </pre>
+
 To serve only https use:
 <pre>
   listening_ports 443s

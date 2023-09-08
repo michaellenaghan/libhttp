@@ -61,20 +61,12 @@ PORTS = 8080
 # only set main compile options if none were chosen
 
 
-ifdef CONFIG_FILE
-  CFLAGS += -DCONFIG_FILE=\"$(CONFIG_FILE)\"
-endif
-
-ifdef CONFIG_FILE2
-  CFLAGS += -DCONFIG_FILE2=\"$(CONFIG_FILE2)\"
+ifdef CRYPTO_LIB
+  CFLAGS += -DCRYPTO_LIB=\"$(CRYPTO_LIB)\"
 endif
 
 ifdef SSL_LIB
   CFLAGS += -DSSL_LIB=\"$(SSL_LIB)\"
-endif
-
-ifdef CRYPTO_LIB
-  CFLAGS += -DCRYPTO_LIB=\"$(CRYPTO_LIB)\"
 endif
 
 ifneq ($(OS),Windows_NT)

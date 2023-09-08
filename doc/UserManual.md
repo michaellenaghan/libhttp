@@ -2,10 +2,9 @@
 Overview
 =====
 
-LibHTTP is small and easy to use web server.
-It may be embedded into C host applications or used as a stand-alone
-server. See `Embedding.md` for information on embedding LibHTTP into
-host applications.
+LibHTTP is small and easy to use web server. It may be embedded into 
+C host applications or used as a stand-alone server. See `Embedding.md` 
+for information on embedding LibHTTP into host applications.
 
 The stand-alone server is self-contained, and does not require any external
 software to run. Some Windows users may need to install the
@@ -13,68 +12,6 @@ software to run. Some Windows users may need to install the
 
 Installation
 ----
-
-On Windows, UNIX and Mac, the LibHTTP stand-alone executable may be started
-from the command line.
-Running `libhttp` in a terminal, optionally followed by configuration parameters
-(`libhttp [OPTIONS]`) or a configuration file name (`libhttp [config_file_name]`),
-starts the web server.
-
-For UNIX and Mac, libhttp does not detach from the terminal.
-Pressing `Ctrl-C` keys will stop the server.
-
-On Windows, LibHTTP iconifies itself to the system tray icon when started.
-Right-click on the icon pops up a menu, where it is possible to stop
-LibHTTP, or configure it, or install it as Windows service.
-
-When started without options, the server exposes the local directory at
-[http](http://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol) port 8080.
-Thus, the easiest way to share a folder on Windows is to copy `libhttp.exe`
-to this folder, double-click the exe, and launch a browser at
-[http://localhost:8080](http://localhost:8080). Note that 'localhost' should
-be changed to a machine's name if a folder is accessed from other computer.
-
-When started, LibHTTP first searches for the configuration file.
-If configuration file is specified explicitly in the command line, i.e.
-`libhttp path_to_config_file`, then specified configuration file is used.
-Otherwise, LibHTTP would search for file `libhttp.conf` in the same directory
-the executable is located, and use it. This configuration file is optional.
-
-The configuration file is a sequence of lines, each line containing one
-command line argument name and the corresponding value.
-Empty lines, and lines beginning with `#`, are ignored.
-Here is the example of `libhttp.conf` file:
-
-    document_root c:\www
-    listening_ports 80,443s
-    ssl_certificate c:\libhttp\ssl_cert.pem
-
-When a configuration file is used, additional command line arguments may
-override the configuration file settings.
-All command line arguments must start with `-`.
-
-For example: The above `libhttp.conf` file is used, and LibHTTP started as
-`libhttp -document_root D:\web`. Then the `D:\web` directory will be served
-as document root, because command line options take priority over the
-configuration file. The configuration options section below provides a good
-overview of the LibHTTP features.
-
-Note that configuration options on the command line must start with `-`,
-but their names are the same as in the config file. All option names are
-listed in the next section. Thus, the following two setups are equivalent:
-
-    # Using command line arguments
-    $ libhttp -listening_ports 1234 -document_root /var/www
-
-    # Using config file
-    $ cat libhttp.conf
-    listening_ports 1234
-    document_root /var/www
-    $libhttp 
-
-LibHTTP can also be used to modify `.htpasswd` passwords files:
-
-    libhttp -A <htpasswd_file> <realm> <user> <passwd>
 
 LibHTTP uses shell-like glob patterns. Pattern match starts at the beginning 
 of the string, so essentially patterns are prefix patterns. Syntax is as 
