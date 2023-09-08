@@ -59,7 +59,6 @@ make build
 
 | Make Options              | Description                              |
 | ------------------------- | ---------------------------------------- |
-| WITH_DEBUG=1              | build with GDB debug support             |
 | CRYPTO_LIB=libcrypto.so.0 | system versioned CRYPTO library          |
 | SSL_LIB=libssl.so.0       | use versioned SSL library                |
 | PREFIX=/usr/local         | sets the install directory               |
