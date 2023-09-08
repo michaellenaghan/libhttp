@@ -95,61 +95,13 @@ All other characters in the pattern match themselves. Examples:
 # Configuration Options
 
 Below is a list of configuration options understood by LibHTTP.
-Every option is followed by it's default value. If a default value is not
+Every option is followed by its default value. If a default value is not
 present, then the default is empty.
 
-### put\_delete\_auth\_file
-Passwords file for PUT and DELETE requests. Without a password file, it will not
-be possible to PUT new files to the server or DELETE existing ones.
-
-### protect\_uri
-Comma separated list of URI=PATH pairs, specifying that given
-URIs must be protected with password files specified by PATH.
-All Paths must be full file paths.
-
-### authentication\_domain `localhost`
-Authorization realm used for HTTP digest authentication. This domain is
-used in the encoding of the `.htpasswd` authorization files as well.
-Changing the domain retroactively will render the existing passwords useless.
-
-### access\_log\_file
-Path to a file for access logs. Either full path, or relative to the current
-working directory. If absent (default), then accesses are not logged.
-
-### enable\_directory\_listing `no`
-Enable directory listing, either `yes` or `no`.
-
-### error\_log\_file
-Path to a file for error logs. Either full path, or relative to the current
-working directory. If absent (default), then errors are not logged.
-
-### global\_auth\_file
-Path to a global passwords file, either full path or relative to the current
-working directory. If set, per-directory `.htpasswd` files are ignored,
-and all requests are authorized against that file.
-
-The file has to include the realm set through `authentication_domain` and the
-password in digest format:
-
-    user:realm:digest
-    test:test.com:ce0220efc2dd2fad6185e1f1af5a4327
-
-Password files may be generated using `libhttp -A` as explained above, or
-online tools e.g. [this generator](http://www.askapache.com/online-tools/htpasswd-generator).
-
-### index\_files `index.html`
-Comma-separated list of files to be treated as directory index files.
-If more than one matching file is present in a directory, the one listed to the left
-is used as a directory index.
-
-### enable\_keep\_alive `yes`
-Enable connection keep alive, either `yes` or `no`.
-
-Experimental feature. Allows clients to reuse TCP connection for subsequent
-HTTP requests, which improves performance.
-For this to work when using request handlers it is important to add the
-correct Content-Length HTTP header for each request. If this is forgotten the
-client will time out.
+### access\_control\_allow\_origin
+Access-Control-Allow-Origin header field, used for cross-origin resource
+sharing (CORS).
+See the [Wikipedia page on CORS](http://en.wikipedia.org/wiki/Cross-origin_resource_sharing).
 
 ### access\_control\_list
 An Access Control List (ACL) allows restrictions to be put on the list of IP
@@ -168,11 +120,84 @@ the last match wins. Examples:
 To learn more about subnet masks, see the
 [Wikipedia page on Subnetwork](http://en.wikipedia.org/wiki/Subnetwork).
 
+### access\_log\_file
+Path to a file for access logs. Either full path, or relative to the current
+working directory. If absent (default), then accesses are not logged.
+
+### allow\_sendfile\_call `yes`
+This option can be used to enable or disable the use of the Linux `sendfile` system call. It is only available for Linux systems and only affects HTTP (not HTTPS) connections. While using the `sendfile` call will lead to a performance boost for HTTP connections, this call may be broken for some file systems and some operating system versions.
+
+### authentication\_domain `localhost`
+Authorization realm used for HTTP digest authentication. This domain is
+used in the encoding of the `.htpasswd` authorization files as well.
+Changing the domain retroactively will render the existing passwords useless.
+
+### decode\_url `yes`
+URL encoded request strings are decoded in the server, unless it is disabled
+by setting this option to `no`.
+
+### document\_root `.`
+A directory to serve. By default, the current working directory is served.
+The current directory is commonly referenced as dot (`.`).
+It is recommended to use an absolute path for document\_root, in order to 
+avoid accidentally serving the wrong directory.
+
+### enable\_directory\_listing `no`
+Enable directory listing, either `yes` or `no`.
+
+### enable\_keep\_alive `yes`
+Enable connection keep alive, either `yes` or `no`.
+
+Experimental feature. Allows clients to reuse TCP connection for subsequent
+HTTP requests, which improves performance.
+For this to work when using request handlers it is important to add the
+correct Content-Length HTTP header for each request. If this is forgotten the
+client will time out.
+
+### error\_log\_file
+Path to a file for error logs. Either full path, or relative to the current
+working directory. If absent (default), then errors are not logged.
+
+### error\_pages
+This option may be used to specify a directory for user defined error pages.
+The error pages may be specified for an individual http status code (e.g.,
+404 - page requested by the client not found), a group of http status codes
+(e.g., 4xx - all client errors) or all errors. The corresponding error pages
+must be called error404.ext, error4xx.ext or error.ext, whereas the file
+extention may be one of the extentions specified for the index_files option.
+See the [Wikipedia page on HTTP status codes](http://en.wikipedia.org/wiki/HTTP_status_code).
+
 ### extra\_mime\_types
 Extra mime types, in tha form `extension1=type1,exten-sion2=type2,...`.
 See the [Wikipedia page on Internet media types](http://en.wikipedia.org/wiki/Internet_media_type).
 Extension must include a leading dot. Example:
 `.cpp=plain/text,.java=plain/text`
+
+### global\_auth\_file
+Path to a global passwords file, either full path or relative to the current
+working directory. If set, per-directory `.htpasswd` files are ignored,
+and all requests are authorized against that file.
+
+The file has to include the realm set through `authentication_domain` and the
+password in digest format:
+
+    user:realm:digest
+    test:test.com:ce0220efc2dd2fad6185e1f1af5a4327
+
+Password files may be generated using `libhttp -A` as explained above, or
+online tools e.g. [this generator](http://www.askapache.com/online-tools/htpasswd-generator).
+
+### hide\_files\_patterns `.?*`
+A pattern for the files to hide. Files that match the pattern will not
+show up in directory listing and return `404 Not Found` if requested. Pattern
+must be for a file name only, not including directory names. Example:
+
+    libhttp -hide_files_patterns secret.txt|*.hide
+
+### index\_files `index.html`
+Comma-separated list of files to be treated as directory index files.
+If more than one matching file is present in a directory, the one listed to the left
+is used as a directory index.
 
 ### listening\_ports `8080`
 Comma-separated list of ports to listen on. If the port is SSL, a
@@ -207,23 +232,24 @@ It is possible to use network interface addresses (e.g., `192.0.2.3:80`,
 addresses, use `ipconfig` (in a `cmd` window in Windows) or `ifconfig` 
 (in a Linux shell).
 
-### document\_root `.`
-A directory to serve. By default, the current working directory is served.
-The current directory is commonly referenced as dot (`.`).
-It is recommended to use an absolute path for document\_root, in order to 
-avoid accidentally serving the wrong directory.
-
-### ssl\_certificate
-Path to the SSL certificate file. This option is only required when at least
-one of the `listening\_ports` is SSL. The file must be in PEM format,
-and it must have both, private key and certificate, see for example
-[ssl_cert.pem](https://github.com/lammertb/libhttp/blob/master/resources/ssl_cert.pem)
-A description how to create a certificate can be found in doc/OpenSSL.md
-
 ### num\_threads `50`
 Number of worker threads. LibHTTP handles each incoming connection in a
 separate thread. Therefore, the value of this option is effectively the number
 of concurrent HTTP connections LibHTTP can handle.
+
+### protect\_uri
+Comma separated list of URI=PATH pairs, specifying that given
+URIs must be protected with password files specified by PATH.
+All Paths must be full file paths.
+
+### put\_delete\_auth\_file
+Passwords file for PUT and DELETE requests. Without a password file, it will not
+be possible to PUT new files to the server or DELETE existing ones.
+
+### request\_timeout `10000`
+Timeout for network read and network write operations, in milliseconds.
+If a client intends to keep long-running connection, either increase this
+value or (better) use keep-alive messages.
 
 ### run\_as\_user
 Switch to given user credentials after startup. Usually, this option is
@@ -234,87 +260,9 @@ privileges. Example:
 
     libhttp -listening_ports 80 -run_as_user webserver
 
-### url\_rewrite\_patterns
-Comma-separated list of URL rewrites in the form of
-`uri_pattern=file_or_directory_path`. When LibHTTP receives any request,
-it constructs the file name to show by combining `document_root` and the URI.
-However, if the rewrite option is used and `uri_pattern` matches the
-requested URI, then `document_root` is ignored. Instead,
-`file_or_directory_path` is used, which should be a full path name or
-a path relative to the web server's current working directory. Note that
-`uri_pattern`, as all LibHTTP patterns, is a prefix pattern.
-
-This makes it possible to serve many directories outside from `document_root`,
-redirect all requests to scripts, and do other tricky things. For example,
-to imitate support for user home directories, do:
-
-    libhttp -url_rewrite_patterns /~joe/=/home/joe/,/~bill=/home/bill/
-
-### hide\_files\_patterns `.?*`
-A pattern for the files to hide. Files that match the pattern will not
-show up in directory listing and return `404 Not Found` if requested. Pattern
-must be for a file name only, not including directory names. Example:
-
-    libhttp -hide_files_patterns secret.txt|*.hide
-
-### request\_timeout `10000`
-Timeout for network read and network write operations, in milliseconds.
-If a client intends to keep long-running connection, either increase this
-value or (better) use keep-alive messages.
-
-### websocket\_root
-Since websockets use a different URL scheme (ws, wss) than other http pages
-(http, https), the files for websockets may also be served from a different 
-directory. By default, the document_root is used as websocket_root as well.
-
-### websocket\_timeout `360000`
-Timeout for network read and network write operations, in milliseconds.
-If a client intends to keep long-running connection, either increase this
-value or (better) use keep-alive messages. (`0` means "use the 
-`request_timeout`".)
-
-### access\_control\_allow\_origin
-Access-Control-Allow-Origin header field, used for cross-origin resource
-sharing (CORS).
-See the [Wikipedia page on CORS](http://en.wikipedia.org/wiki/Cross-origin_resource_sharing).
-
-### error\_pages
-This option may be used to specify a directory for user defined error pages.
-The error pages may be specified for an individual http status code (e.g.,
-404 - page requested by the client not found), a group of http status codes
-(e.g., 4xx - all client errors) or all errors. The corresponding error pages
-must be called error404.ext, error4xx.ext or error.ext, whereas the file
-extention may be one of the extentions specified for the index_files option.
-See the [Wikipedia page on HTTP status codes](http://en.wikipedia.org/wiki/HTTP_status_code).
-
-### tcp\_nodelay `0`
-Enable TCP_NODELAY socket option on client connections.
-
-If set the socket option will disable Nagle's algorithm on the connection
-which means that packets will be sent as soon as possible instead of waiting
-for a full buffer or timeout to occur.
-
-    0    Keep the default: Nagel's algorithm enabled
-    1    Disable Nagel's algorithm for all sockets
-
-### static\_file\_max\_age `3600`
-Set the maximum time (in seconds) a cache may store a static files.
-
-This option will set the `Cache-Control: max-age` value for static files.
-Dynamically generated content, i.e., content created by a script or callback,
-must send cache control headers by themselfes.
-
-A value >0 corresponds to a maximum allowed caching time in seconds.
-This value should not exceed one year (RFC 2616, Section 14.21).
-A value of 0 will send "do not cache" headers for all static files.
-For values <0 and values >31622400, the behavior is undefined.
-
-### decode\_url `yes`
-URL encoded request strings are decoded in the server, unless it is disabled
-by setting this option to `no`.
-
-### ssl\_verify\_peer `no`
-Enable client's certificate verification by the server.
+### ssl\_ca\_file
+Path to a .pem file containing trusted certificates. The file may contain
+more than one certificate.
 
 ### ssl\_ca\_path
 Name of a directory containing trusted CA certificates. Each file in the
@@ -323,16 +271,12 @@ by the subject name’s hash and an extension of “.0”. If there is more than
 certificate with the same subject name they should have extensions ".0", ".1",
 ".2" and so on respectively.
 
-### ssl\_ca\_file
-Path to a .pem file containing trusted certificates. The file may contain
-more than one certificate.
-
-### ssl\_verify\_depth `9`
-Sets maximum depth of certificate chain. If client's certificate chain is longer
-than the depth set here connection is refused.
-
-### ssl\_default\_verify\_paths `yes`
-Loads default trusted certificates locations set at openssl compile time.
+### ssl\_certificate
+Path to the SSL certificate file. This option is only required when at least
+one of the `listening\_ports` is SSL. The file must be in PEM format,
+and it must have both, private key and certificate, see for example
+[ssl_cert.pem](https://github.com/lammertb/libhttp/blob/master/resources/ssl_cert.pem)
+A description how to create a certificate can be found in doc/OpenSSL.md
 
 ### ssl\_cipher\_list
 List of ciphers to present to the client. Entries should be separated by
@@ -344,6 +288,9 @@ colons, commas or spaces.
 
 See [this entry](https://www.openssl.org/docs/manmaster/apps/ciphers.html) in
 OpenSSL documentation for full list of options and additional examples.
+
+### ssl\_default\_verify\_paths `yes`
+Loads default trusted certificates locations set at openssl compile time.
 
 ### ssl\_protocol\_version `0`
 Sets the minimal accepted version of SSL/TLS protocol according to the table:
@@ -368,8 +315,61 @@ increase performance while swapping the certificate.
 Disk IO performance can be improved when keeping the certificates and keys stored
 on a tmpfs (linux) on a system with very high throughput.
 
-### allow\_sendfile\_call `yes`
-This option can be used to enable or disable the use of the Linux `sendfile` system call. It is only available for Linux systems and only affects HTTP (not HTTPS) connections. While using the `sendfile` call will lead to a performance boost for HTTP connections, this call may be broken for some file systems and some operating system versions.
+### ssl\_verify\_depth `9`
+Sets maximum depth of certificate chain. If client's certificate chain is longer
+than the depth set here connection is refused.
+
+### ssl\_verify\_peer `no`
+Enable client's certificate verification by the server.
+
+### static\_file\_max\_age `3600`
+Set the maximum time (in seconds) a cache may store a static files.
+
+This option will set the `Cache-Control: max-age` value for static files.
+Dynamically generated content, i.e., content created by a script or callback,
+must send cache control headers by themselfes.
+
+A value >0 corresponds to a maximum allowed caching time in seconds.
+This value should not exceed one year (RFC 2616, Section 14.21).
+A value of 0 will send "do not cache" headers for all static files.
+For values <0 and values >31622400, the behavior is undefined.
+
+### tcp\_nodelay `0`
+Enable TCP_NODELAY socket option on client connections.
+
+If set the socket option will disable Nagle's algorithm on the connection
+which means that packets will be sent as soon as possible instead of waiting
+for a full buffer or timeout to occur.
+
+    0    Keep the default: Nagel's algorithm enabled
+    1    Disable Nagel's algorithm for all sockets
+
+### url\_rewrite\_patterns
+Comma-separated list of URL rewrites in the form of
+`uri_pattern=file_or_directory_path`. When LibHTTP receives any request,
+it constructs the file name to show by combining `document_root` and the URI.
+However, if the rewrite option is used and `uri_pattern` matches the
+requested URI, then `document_root` is ignored. Instead,
+`file_or_directory_path` is used, which should be a full path name or
+a path relative to the web server's current working directory. Note that
+`uri_pattern`, as all LibHTTP patterns, is a prefix pattern.
+
+This makes it possible to serve many directories outside from `document_root`,
+redirect all requests to scripts, and do other tricky things. For example,
+to imitate support for user home directories, do:
+
+    libhttp -url_rewrite_patterns /~joe/=/home/joe/,/~bill=/home/bill/
+
+### websocket\_root
+Since websockets use a different URL scheme (ws, wss) than other http pages
+(http, https), the files for websockets may also be served from a different 
+directory. By default, the document_root is used as websocket_root as well.
+
+### websocket\_timeout `360000`
+Timeout for network read and network write operations, in milliseconds.
+If a client intends to keep long-running connection, either increase this
+value or (better) use keep-alive messages. (`0` means "use the 
+`request_timeout`".)
 
 
 # Common Problems
