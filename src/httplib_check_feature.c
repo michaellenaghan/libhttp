@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -42,6 +42,9 @@ unsigned httplib_check_feature( unsigned feature ) {
  * preprocessor defines. It is a single const value at runtime. */
 #if !defined(NO_SSL)
 	                                    | 0x0002u
+#endif
+#if !defined(NO_SSL_DL)
+	                                    | 0x0004u
 #endif
 
 /* Set some extra bits not defined in the API documentation.
