@@ -358,7 +358,7 @@ no_callback_resource:
 
 	/*
 	 * 9. This request is either for a static file or resource handled
-	 * by a script file. Thus, a DOCUMENT_ROOT must exist.
+	 * by a script file. Thus, a `document_root` must exist.
 	 */
 
 	if ( ctx->document_root == NULL ) {

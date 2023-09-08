@@ -55,7 +55,6 @@
 # end application to different environments.
 #
 
-DOCUMENT_ROOT = $(HTMLDIR)
 PORTS = 8080
 
 # only set main compile options if none were chosen
