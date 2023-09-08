@@ -99,16 +99,5 @@ TARGET_OS is used to determine some compile details as will as code function.
 TARGET_OS values should be be one found in *resources/Makefile.in-os*.
 
 ```
-make CC=arm-none-linux-gnueabi-gcc COPT="-march=armv7-a  -mfpu=vfp -mfloat-abi=softfp" TARGET_OS=FROG
-```
-
-## Cocoa DMG Packaging (OSX Only)
-
-Use the alternate *Makefile.osx* to do the build.  The entire build has
-to be done using *Makefile.osx* because additional compile and link options
-are required.  This Makefile has all the same options as the other one plus
-one additional *package* rule.
-
-```
-make -f Makefile.osx package
+make CC=arm-none-linux-gnueabi-gcc COPT="-march=armv7-a -mfpu=vfp -mfloat-abi=softfp" TARGET_OS=FROG
 ```

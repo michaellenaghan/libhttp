@@ -22,10 +22,6 @@ endif
 test: clean
 	@echo PASSED
 
-dmg:
-	@echo "================"
-	$(MAKE) -C $(TOP) -f Makefile.osx clean package
-
 buildexamples:
 	@echo "================"
 	$(MAKE) -C $(TOP)/examples/embedded_c clean all
