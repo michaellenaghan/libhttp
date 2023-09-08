@@ -55,11 +55,6 @@
 # end application to different environments.
 #
 
-PORTS = 8080
-
-# only set main compile options if none were chosen
-
-
 ifdef CRYPTO_LIB
   CFLAGS += -DCRYPTO_LIB=\"$(CRYPTO_LIB)\"
 endif

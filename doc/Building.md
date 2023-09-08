@@ -63,7 +63,6 @@ make build WITH_IPV6=1
 | WITH_DEBUG=1              | build with GDB debug support             |
 | WITH_IPV6=1               | with IPV6 support                        |
 | WITH_WEBSOCKET=1          | build with web socket support            |
-| PORTS=8080                | listening ports override when installing |
 | CRYPTO_LIB=libcrypto.so.0 | system versioned CRYPTO library          |
 | SSL_LIB=libssl.so.0       | use versioned SSL library                |
 | PREFIX=/usr/local         | sets the install directory               |
