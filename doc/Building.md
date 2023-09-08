@@ -35,9 +35,9 @@ make install
 Install on the system, Linux only.
 
 ```
-make lib WITH_IPV6=1
+make lib
 ```
-Build the static and shared libraries.
+Build the static library.
 The additional make options configure the library just as it would the application.
 
 The *slib* option should be done on a separate clean build as position
@@ -53,14 +53,13 @@ Clean up files generated during the build
 
 Make options can be set on the command line with the make command like so.
 ```
-make build WITH_IPV6=1
+make build
 ```
 
 
 | Make Options              | Description                              |
 | ------------------------- | ---------------------------------------- |
 | WITH_DEBUG=1              | build with GDB debug support             |
-| WITH_IPV6=1               | with IPV6 support                        |
 | CRYPTO_LIB=libcrypto.so.0 | system versioned CRYPTO library          |
 | SSL_LIB=libssl.so.0       | use versioned SSL library                |
 | PREFIX=/usr/local         | sets the install directory               |

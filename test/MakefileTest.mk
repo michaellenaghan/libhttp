@@ -45,8 +45,6 @@ buildexamples:
 buildoptions:
 	@echo "================"
 	$(MAKE) -C $(TOP) clean build
-	@echo "================"
-	$(MAKE) -C $(TOP) clean build WITH_IPV6=1
 
 threaded:
 	@echo "================"

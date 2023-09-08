@@ -12,7 +12,7 @@ fi
 rm -rf cov_int/
 make clean
 
-../cov-analysis-linux64-7.6.0/bin/cov-build  --dir cov-int make WITH_IPV6=1
+../cov-analysis-linux64-7.6.0/bin/cov-build  --dir cov-int make
 
 rm civetweb_coverity_check.tgz
 tar czvf civetweb_coverity_check.tgz cov-int
