@@ -2,8 +2,8 @@
 Overview
 =====
 
-LibHTTP is small and easy to use web server. It may be embedded into 
-C host applications or used as a stand-alone server. See `Embedding.md` 
+LibHTTP is small and easy to use web server. It may be embedded into
+C host applications or used as a stand-alone server. See `Embedding.md`
 for information on embedding LibHTTP into host applications.
 
 The stand-alone server is self-contained, and does not require any external
@@ -13,8 +13,8 @@ software to run. Some Windows users may need to install the
 Installation
 ----
 
-LibHTTP uses shell-like glob patterns. Pattern match starts at the beginning 
-of the string, so essentially patterns are prefix patterns. Syntax is as 
+LibHTTP uses shell-like glob patterns. Pattern match starts at the beginning
+of the string, so essentially patterns are prefix patterns. Syntax is as
 follows:
 
      **      Matches everything
@@ -69,6 +69,8 @@ Authorization realm used for HTTP digest authentication. This domain is
 used in the encoding of the `.htpasswd` authorization files as well.
 Changing the domain retroactively will render the existing passwords useless.
 
+### debug\_level `LH_DEBUG_WARNING`
+
 ### decode\_url `yes`
 URL encoded request strings are decoded in the server, unless it is disabled
 by setting this option to `no`.
@@ -76,7 +78,7 @@ by setting this option to `no`.
 ### document\_root `.`
 A directory to serve. By default, the current working directory is served.
 The current directory is commonly referenced as dot (`.`).
-It is recommended to use an absolute path for document\_root, in order to 
+It is recommended to use an absolute path for document\_root, in order to
 avoid accidentally serving the wrong directory.
 
 ### enable\_directory\_listing `no`
@@ -158,7 +160,7 @@ e.g. `[::1]:8080` for the IPv6 loopback interface.
 [::]:80 will bind to port 80 IPv6 only. In order to use port 80 for
 all interfaces, both IPv4 and IPv6, use either the configuration
 `80,[::]:80` (create one socket for IPv4 and one for IPv6 only),
-or `+80` (create one socket for both, IPv4 and IPv6). 
+or `+80` (create one socket for both, IPv4 and IPv6).
 The `+`-notation to use IPv4 and IPv6 will only work in no network
 interface is specified. Depending on your IPv6 network environment,
 some configurations might not work (properly), so you have to test
@@ -166,7 +168,7 @@ to find the configuration most suitable for your needs.
 
 It is possible to use network interface addresses (e.g., `192.0.2.3:80`,
 `[2001:0db8::1234]:80`). To get a list of available network interface
-addresses, use `ipconfig` (in a `cmd` window in Windows) or `ifconfig` 
+addresses, use `ipconfig` (in a `cmd` window in Windows) or `ifconfig`
 (in a Linux shell).
 
 ### num\_threads `50`
@@ -226,9 +228,6 @@ colons, commas or spaces.
 See [this entry](https://www.openssl.org/docs/manmaster/apps/ciphers.html) in
 OpenSSL documentation for full list of options and additional examples.
 
-### ssl\_default\_verify\_paths `yes`
-Loads default trusted certificates locations set at openssl compile time.
-
 ### ssl\_protocol\_version `0`
 Sets the minimal accepted version of SSL/TLS protocol according to the table:
 
@@ -255,6 +254,9 @@ on a tmpfs (linux) on a system with very high throughput.
 ### ssl\_verify\_depth `9`
 Sets maximum depth of certificate chain. If client's certificate chain is longer
 than the depth set here connection is refused.
+
+### ssl\_verify\_paths `yes`
+Loads default trusted certificates locations set at openssl compile time.
 
 ### ssl\_verify\_peer `no`
 Enable client's certificate verification by the server.
@@ -299,13 +301,13 @@ to imitate support for user home directories, do:
 
 ### websocket\_root
 Since websockets use a different URL scheme (ws, wss) than other http pages
-(http, https), the files for websockets may also be served from a different 
+(http, https), the files for websockets may also be served from a different
 directory. By default, the document_root is used as websocket_root as well.
 
 ### websocket\_timeout `360000`
 Timeout for network read and network write operations, in milliseconds.
 If a client intends to keep long-running connection, either increase this
-value or (better) use keep-alive messages. (`0` means "use the 
+value or (better) use keep-alive messages. (`0` means "use the
 `request_timeout`".)
 
 
