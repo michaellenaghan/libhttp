@@ -250,7 +250,7 @@ to imitate support for user home directories, do:
 
     libhttp -url_rewrite_patterns /~joe/=/home/joe/,/~bill=/home/bill/
 
-### hide\_files\_patterns
+### hide\_files\_patterns `.?*`
 A pattern for the files to hide. Files that match the pattern will not
 show up in directory listing and return `404 Not Found` if requested. Pattern
 must be for a file name only, not including directory names. Example:

@@ -52,11 +52,20 @@ int XX_httplib_match_prefix(const char *pattern, size_t pattern_len, const char 
 
 	while ( i<pattern_len ) {
 
-		if ( pattern[i] == '?'  &&  str[j] != '\0' ) continue;
-		if ( pattern[i] == '$'                     ) return (str[j] == '\0') ? j : -1;
-		
-		if (pattern[i] == '*') {
+		// TODO: Fix
+		// What if "pattern[i] == '?' && str[j] == '/'"?
+		if ( pattern[i] == '?' && str[j] != '/' && str[j] != '\0' ) {
+			i++;
+			j++;
+			continue;
+		}
 
+		if ( pattern[i] == '$' ) return (str[j] == '\0') ? j : -1;
+		
+		if ( pattern[i] == '*' ) {
+
+			// TODO: Fix
+			// What if "i == pattern_len - 1"?
 			i++;
 			if ( pattern[i] == '*' ) {
 
