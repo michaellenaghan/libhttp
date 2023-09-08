@@ -43,7 +43,7 @@ bool XX_httplib_init_options( struct lh_ctx_t *ctx ) {
 	ctx->debug_level                 = LH_DEBUG_WARNING;
 	ctx->decode_url                  = true;
 	ctx->document_root               = NULL;
-	ctx->enable_directory_listing    = true;
+	ctx->enable_directory_listing    = false;
 	ctx->enable_keep_alive           = false;
 	ctx->error_log_file              = NULL;
 	ctx->error_pages                 = NULL;

@@ -717,12 +717,10 @@ main(int argc, char *argv[])
 {
 	const struct lh_opt_t options[] = {
 	    {"document_root", DOCUMENT_ROOT},
+		{"enable_directory_listing", "yes"},
+	    {"error_log_file", "error.log"},
 	    {"listening_ports", PORT},
 	    {"request_timeout_ms", "10000"},
-	    {"error_log_file", "error.log"},
-#ifdef USE_WEBSOCKET
-	    {"websocket_timeout_ms", "3600000"},
-#endif
 #ifndef NO_SSL
 	    {"ssl_certificate", "../../resources/cert/server.pem"},
 	    {"ssl_protocol_version", "3"},
@@ -733,6 +731,9 @@ main(int argc, char *argv[])
 	    "DES-CBC3-SHA:AES128-SHA:AES128-GCM-SHA256",
 #endif
 		},
+#endif
+#ifdef USE_WEBSOCKET
+	    {"websocket_timeout_ms", "3600000"},
 #endif
 	    0};
 	struct lh_clb_t callbacks;

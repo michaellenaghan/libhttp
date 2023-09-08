@@ -116,7 +116,7 @@ Changing the domain retroactively will render the existing passwords useless.
 Path to a file for access logs. Either full path, or relative to the current
 working directory. If absent (default), then accesses are not logged.
 
-### enable\_directory\_listing `yes`
+### enable\_directory\_listing `no`
 Enable directory listing, either `yes` or `no`.
 
 ### error\_log\_file
