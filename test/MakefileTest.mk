@@ -31,9 +31,6 @@ buildexamples:
 	$(MAKE) -C $(TOP)/examples/embedded_c clean all
 	$(MAKE) -C $(TOP)/examples/embedded_c clean
 	@echo "================"
-	$(MAKE) -C $(TOP)/examples/embedded_cpp clean all
-	$(MAKE) -C $(TOP)/examples/embedded_cpp clean
-	@echo "================"
 	$(MAKE) -C $(TOP)/examples/chat clean all
 	$(MAKE) -C $(TOP)/examples/chat clean
 	@echo "================"
@@ -73,10 +70,6 @@ buildlibs:
 	$(MAKE) -C $(TOP) clean lib
 	@echo "================"
 	$(MAKE) -C $(TOP) clean slib
-	@echo "================"
-	$(MAKE) -C $(TOP) clean lib WITH_CPP=1
-	@echo "================"
-	$(MAKE) -C $(TOP) clean slib WITH_CPP=1
 
 clean:
 	@echo "================"

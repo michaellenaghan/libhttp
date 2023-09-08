@@ -3,7 +3,7 @@ Overview
 =====
 
 LibHTTP is small and easy to use web server.
-It may be embedded into C/C++ host applications or used as a stand-alone
+It may be embedded into C host applications or used as a stand-alone
 server. See `Embedding.md` for information on embedding LibHTTP into
 host applications.
 

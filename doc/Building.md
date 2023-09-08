@@ -2,7 +2,7 @@ Building LibHTTP
 =========
 
 This guide covers the build instructions for the stand-alone web server.
-See [Embedding.md](Embedding.md) for information on extending an existing C or C++ application. A brief overview of the source code files can be found in [Embedding.md](Embedding.md) as well.
+See [Embedding.md](Embedding.md) for information on extending an existing C application. A brief overview of the source code files can be found in [Embedding.md](Embedding.md) as well.
 
 #### Where to get the source code?
 
@@ -35,11 +35,10 @@ make install
 Install on the system, Linux only.
 
 ```
-make lib WITH_CPP=1 WITH_IPV6=1
-make clean slib WITH_CPP=1 WITH_WEBSOCKET=1
+make lib WITH_IPV6=1
+make clean slib WITH_WEBSOCKET=1
 ```
 Build the static and shared libraries.
-The *WITH_CPP* make option is to include the LibHTTPServer class.
 The additional make options configure the library just as it would the application.
 
 The *slib* option should be done on a separate clean build as position
@@ -64,7 +63,6 @@ make build WITH_IPV6=1
 | WITH_DEBUG=1              | build with GDB debug support             |
 | WITH_IPV6=1               | with IPV6 support                        |
 | WITH_WEBSOCKET=1          | build with web socket support            |
-| WITH_CPP=1                | build libraries with c++ classes         |
 | CONFIG_FILE=file          | use 'file' as the config file            |
 | CONFIG_FILE2=file         | use 'file' as the backup config file     |
 | HTMLDIR=/path             | place to install initial web pages       |

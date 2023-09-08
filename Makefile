@@ -146,10 +146,10 @@ CFLAGS = -Ox -Ot -MT -GT -volatile:iso -I${INCDIR} -nologo -J -sdl -Wall -WX -wd
 endif
 
 ${OBJDIR}%${OBJEXT} : ${SRCDIR}%.c
-	${CC} -c ${CPPFLAGS} ${CFLAGS} ${DFLAGS} ${OFLAG}$@ $<
+	${CC} -c ${CFLAGS} ${DFLAGS} ${OFLAG}$@ $<
 
 ${TSTDIR}${OBJDIR}%${OBJEXT} : ${TSTDIR}%.c
-	${CC} -c ${CPPFLAGS} ${CFLAGS} ${DFLAGS} ${OFLAG}$@ $<
+	${CC} -c ${CFLAGS} ${DFLAGS} ${OFLAG}$@ $<
 
 all: ${LIBDIR}libhttp${LIBEXT} testmime${EXEEXT}
 

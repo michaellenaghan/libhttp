@@ -5,7 +5,7 @@
 Project Mission
 -----------------
 
-The project mission is to provide easy to use, powerful, C/C++ embeddable web
+The project mission is to provide easy to use, powerful, C embeddable web
 server with IPv6 and SSL support. LibHTTP has a MIT license so you can innovate without restrictions.
 
 LibHTTP can be used by developers as a library to add web server functionality to an existing application.
