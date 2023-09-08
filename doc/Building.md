@@ -36,7 +36,6 @@ Install on the system, Linux only.
 
 ```
 make lib WITH_IPV6=1
-make clean slib WITH_WEBSOCKET=1
 ```
 Build the static and shared libraries.
 The additional make options configure the library just as it would the application.
@@ -62,7 +61,6 @@ make build WITH_IPV6=1
 | ------------------------- | ---------------------------------------- |
 | WITH_DEBUG=1              | build with GDB debug support             |
 | WITH_IPV6=1               | with IPV6 support                        |
-| WITH_WEBSOCKET=1          | build with web socket support            |
 | CRYPTO_LIB=libcrypto.so.0 | system versioned CRYPTO library          |
 | SSL_LIB=libssl.so.0       | use versioned SSL library                |
 | PREFIX=/usr/local         | sets the install directory               |

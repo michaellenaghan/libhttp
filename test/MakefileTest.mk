@@ -47,10 +47,6 @@ buildoptions:
 	$(MAKE) -C $(TOP) clean build
 	@echo "================"
 	$(MAKE) -C $(TOP) clean build WITH_IPV6=1
-	@echo "================"
-	$(MAKE) -C $(TOP) clean build WITH_WEBSOCKET=1
-	@echo "================"
-	$(MAKE) -C $(TOP) clean build WITH_IPV6=1 WITH_WEBSOCKET=1
 
 threaded:
 	@echo "================"
