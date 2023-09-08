@@ -101,5 +101,5 @@ listening sockets. `poll()` is used to avoid `FD_SETSIZE` limitation of
 to use hi-performance alternatives like `epoll()` or `kqueue()`. Worker
 threads use blocking IO on accepted sockets for reading and writing data.
 All accepted sockets have `SO_RCVTIMEO` and `SO_SNDTIMEO` socket options set
-(controlled by the `request_timeout_ms` LibHTTP option, 30 seconds default)
+(controlled by the `request_timeout` LibHTTP option, 10 seconds default)
 which specifies a read/write timeout on client connections.

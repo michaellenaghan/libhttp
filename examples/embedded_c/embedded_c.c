@@ -720,7 +720,6 @@ main(int argc, char *argv[])
 		{"enable_directory_listing", "yes"},
 	    {"error_log_file", "error.log"},
 	    {"listening_ports", PORT},
-	    {"request_timeout_ms", "10000"},
 #ifndef NO_SSL
 	    {"ssl_certificate", "../../resources/cert/server.pem"},
 	    {"ssl_protocol_version", "3"},

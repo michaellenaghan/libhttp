@@ -2535,7 +2535,7 @@ START_TEST(test_keep_alive)
 	const char *OPTIONS[] =
 	{ "listening_ports",
 	  "8080",
-	  "request_timeout_ms",
+	  "request_timeout",
 	  "10000",
 	  "enable_keep_alive",
 	  "yes",

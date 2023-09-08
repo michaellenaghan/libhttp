@@ -257,7 +257,7 @@ must be for a file name only, not including directory names. Example:
 
     libhttp -hide_files_patterns secret.txt|*.hide
 
-### request\_timeout\_ms `30000`
+### request\_timeout `10000`
 Timeout for network read and network write operations, in milliseconds.
 If a client intends to keep long-running connection, either increase this
 value or (better) use keep-alive messages.

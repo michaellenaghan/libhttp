@@ -115,7 +115,7 @@ start_websocket_server()
 	                         SSL_CERT,
 	                         "listening_ports",
 	                         PORT,
-	                         "request_timeout_ms",
+	                         "request_timeout",
 	                         "5000",
 	                         0};
 	struct httplib_callbacks callbacks;

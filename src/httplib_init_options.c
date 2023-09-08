@@ -55,7 +55,7 @@ bool XX_httplib_init_options( struct lh_ctx_t *ctx ) {
 	ctx->num_threads                 = 50;
 	ctx->protect_uri                 = NULL;
 	ctx->put_delete_auth_file        = NULL;
-	ctx->request_timeout             = 30000;
+	ctx->request_timeout             = 10000;
 	ctx->run_as_user                 = NULL;
 	ctx->ssl_ca_file                 = NULL;
 	ctx->ssl_ca_path                 = NULL;
