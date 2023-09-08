@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -28,7 +28,7 @@
 #include "httplib_main.h"
 
 /* Return HTTP header value, or NULL if not found. */
-const char *XX_httplib_get_header( const struct lh_rqi_t *ri, const char *name ) {
+const char *XX_httplib_get_header( const struct httplib_request_info *ri, const char *name ) {
 
 	int i;
 
@@ -44,7 +44,7 @@ const char *XX_httplib_get_header( const struct lh_rqi_t *ri, const char *name )
 }  /* XX_httplib_get_header */
 
 
-const char *httplib_get_header( const struct lh_con_t *conn, const char *name ) {
+const char *httplib_get_header( const struct httplib_connection *conn, const char *name ) {
 
 	if ( conn == NULL ) return NULL;
 

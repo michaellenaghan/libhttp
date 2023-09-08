@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -29,13 +29,13 @@
 #include "httplib_utils.h"
 
 /*
- * void XX_httplib_put_file( struct lh_ctx_t *ctx, struct lh_con_t *conn, const char *path );
+ * void XX_httplib_put_file( struct httplib_context *ctx, struct httplib_connection *conn, const char *path );
  *
  * The function XX_httplib_put_file() processes a file PUT request coming from
  * a remote client.
  */
 
-void XX_httplib_put_file( struct lh_ctx_t *ctx, struct lh_con_t *conn, const char *path ) {
+void XX_httplib_put_file( struct httplib_context *ctx, struct httplib_connection *conn, const char *path ) {
 
 	struct file file = STRUCT_FILE_INITIALIZER;
 	const char *range;
@@ -69,7 +69,7 @@ void XX_httplib_put_file( struct lh_ctx_t *ctx, struct lh_con_t *conn, const cha
 			rc = 0;
 
 		}
-		
+
 		else {
 			/*
 			 * File exists and is not a directory.
@@ -99,14 +99,14 @@ void XX_httplib_put_file( struct lh_ctx_t *ctx, struct lh_con_t *conn, const cha
 				conn->status_code = 200;
 				rc                = 1;
 			}
-			
+
 			else {
 				XX_httplib_send_http_error( ctx, conn, 403, "Error: Put not possible\nReplacing %s is not allowed", path );
 				return;
 			}
 		}
 	}
-	
+
 	else {
 		/*
 		 * File should be created

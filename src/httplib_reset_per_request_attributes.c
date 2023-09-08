@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -28,13 +28,13 @@
 #include "httplib_main.h"
 
 /*
- * void XX_httplib_reset_per_request_attributes( struct lh_con_t *conn );
+ * void XX_httplib_reset_per_request_attributes( struct httplib_connection *conn );
  *
  * The function XX_httplib_reset_per_request_attributes() resets the request
  * attributes of a connection.
  */
 
-void XX_httplib_reset_per_request_attributes( struct lh_con_t *conn ) {
+void XX_httplib_reset_per_request_attributes( struct httplib_connection *conn ) {
 
 	if ( conn == NULL ) return;
 

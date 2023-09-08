@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -34,7 +34,7 @@
  * sets callback handlers to uri's.
  */
 
-void XX_httplib_set_handler_type( struct lh_ctx_t *ctx, const char *uri, int handler_type, int is_delete_request, httplib_request_handler handler, httplib_websocket_connect_handler connect_handler, httplib_websocket_ready_handler ready_handler, httplib_websocket_data_handler data_handler, httplib_websocket_close_handler close_handler, httplib_authorization_handler auth_handler, void *cbdata ) {
+void XX_httplib_set_handler_type( struct httplib_context *ctx, const char *uri, int handler_type, int is_delete_request, httplib_request_handler handler, httplib_websocket_connect_handler connect_handler, httplib_websocket_ready_handler ready_handler, httplib_websocket_data_handler data_handler, httplib_websocket_close_handler close_handler, httplib_authorization_handler auth_handler, void *cbdata ) {
 
 	struct httplib_handler_info *tmp_rh;
 	struct httplib_handler_info **lastref;
@@ -50,14 +50,14 @@ void XX_httplib_set_handler_type( struct lh_ctx_t *ctx, const char *uri, int han
 		if ( ! is_delete_request  &&  connect_handler == NULL  &&  ready_handler == NULL  &&  data_handler == NULL  &&  close_handler == NULL ) return;
 		if (   auth_handler != NULL                                                                                                           ) return;
 	}
-	
+
 	else if ( handler_type == REQUEST_HANDLER ) {
 
 		if (   connect_handler != NULL  ||  ready_handler != NULL  ||  data_handler != NULL  ||  close_handler != NULL ) return;
 		if ( ! is_delete_request  &&  handler == NULL                                                                  ) return;
 		if (   auth_handler != NULL                                                                                    ) return;
 	}
-	
+
 	else { /* AUTH_HANDLER */
 		if (   handler != NULL                                                                                         ) return;
 		if (   connect_handler != NULL  ||  ready_handler != NULL  ||  data_handler != NULL  ||  close_handler != NULL ) return;
@@ -90,7 +90,7 @@ void XX_httplib_set_handler_type( struct lh_ctx_t *ctx, const char *uri, int han
 
 						tmp_rh->handler = handler;
 					}
-					
+
 					else if ( handler_type == WEBSOCKET_HANDLER ) {
 
 						tmp_rh->connect_handler = connect_handler;
@@ -98,14 +98,14 @@ void XX_httplib_set_handler_type( struct lh_ctx_t *ctx, const char *uri, int han
 						tmp_rh->data_handler    = data_handler;
 						tmp_rh->close_handler   = close_handler;
 					}
-					
+
 					else { /* AUTH_HANDLER */
 						tmp_rh->auth_handler = auth_handler;
 					}
 
 					tmp_rh->cbdata = cbdata;
 				}
-				
+
 				else {
 					/*
 					 * remove existing handler
@@ -161,7 +161,7 @@ void XX_httplib_set_handler_type( struct lh_ctx_t *ctx, const char *uri, int han
 
 		tmp_rh->handler = handler;
 	}
-	
+
 	else if ( handler_type == WEBSOCKET_HANDLER ) {
 
 		tmp_rh->connect_handler = connect_handler;
@@ -169,7 +169,7 @@ void XX_httplib_set_handler_type( struct lh_ctx_t *ctx, const char *uri, int han
 		tmp_rh->data_handler    = data_handler;
 		tmp_rh->close_handler   = close_handler;
 	}
-	
+
 	else { /* AUTH_HANDLER */
 		tmp_rh->auth_handler = auth_handler;
 	}

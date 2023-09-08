@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -28,13 +28,13 @@
 #include "httplib_main.h"
 
 /*
- * bool XX_httplib_authorize( struct lh_ctx_t *ctx, struct lh_con_t *conn, struct file *filep );
+ * bool XX_httplib_authorize( struct httplib_context *ctx, struct httplib_connection *conn, struct file *filep );
  *
  * The function XX_httplib_authorize() authorizes agains the open passwords
  * file. It returns 1 if authorized.
  */
 
-bool XX_httplib_authorize( struct lh_ctx_t *ctx, struct lh_con_t *conn, struct file *filep ) {
+bool XX_httplib_authorize( struct httplib_context *ctx, struct httplib_connection *conn, struct file *filep ) {
 
 	struct read_auth_file_struct workdata;
 	char buf[MG_BUF_LEN];

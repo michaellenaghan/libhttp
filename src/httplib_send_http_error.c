@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -28,7 +28,7 @@
 #include "httplib_main.h"
 #include "httplib_utils.h"
 
-void XX_httplib_send_http_error( struct lh_ctx_t *ctx, struct lh_con_t *conn, int status, const char *fmt, ... ) {
+void XX_httplib_send_http_error( struct httplib_context *ctx, struct httplib_connection *conn, int status, const char *fmt, ... ) {
 
 	char buf[MG_BUF_LEN];
 	va_list ap;
@@ -170,7 +170,7 @@ void XX_httplib_send_http_error( struct lh_ctx_t *ctx, struct lh_con_t *conn, in
 				httplib_write( ctx, conn, buf, strlen(buf) );
 			}
 		}
-		
+
 		else {
 			/* No body allowed. Close the connection. */
 		}

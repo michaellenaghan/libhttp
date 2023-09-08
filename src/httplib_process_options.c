@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,16 +22,16 @@
 
 #include "httplib_main.h"
 
-static bool			check_bool( struct lh_ctx_t *ctx, const struct lh_opt_t *option, const char *name, bool *config  );
-static bool			check_dbg(  struct lh_ctx_t *ctx, const struct lh_opt_t *option, const char *name, enum lh_dbg_t *config );
-static bool			check_dir(  struct lh_ctx_t *ctx, const struct lh_opt_t *option, const char *name, char **config );
-static bool			check_file( struct lh_ctx_t *ctx, const struct lh_opt_t *option, const char *name, char **config );
-static bool			check_int(  struct lh_ctx_t *ctx, const struct lh_opt_t *option, const char *name, int *config, int minval, int maxval );
-static bool			check_patt( struct lh_ctx_t *ctx, const struct lh_opt_t *option, const char *name, char **config );
-static bool			check_str(  struct lh_ctx_t *ctx, const struct lh_opt_t *option, const char *name, char **config );
+static bool			check_bool( struct httplib_context *ctx, const struct httplib_option *option, const char *name, bool *config  );
+static bool			check_dbg(  struct httplib_context *ctx, const struct httplib_option *option, const char *name, enum httplib_debug *config );
+static bool			check_dir(  struct httplib_context *ctx, const struct httplib_option *option, const char *name, char **config );
+static bool			check_file( struct httplib_context *ctx, const struct httplib_option *option, const char *name, char **config );
+static bool			check_int(  struct httplib_context *ctx, const struct httplib_option *option, const char *name, int *config, int minval, int maxval );
+static bool			check_patt( struct httplib_context *ctx, const struct httplib_option *option, const char *name, char **config );
+static bool			check_str(  struct httplib_context *ctx, const struct httplib_option *option, const char *name, char **config );
 
 /*
- * bool XX_httplib_process_options( struct lh_ctx_t *ctx, const struct lh_opt_t *options );
+ * bool XX_httplib_process_options( struct httplib_context *ctx, const struct httplib_option *options );
  *
  * The function process_options() processes the user supplied options and adds
  * them to the central option list of the context. If en error occurs, the
@@ -40,7 +40,7 @@ static bool			check_str(  struct lh_ctx_t *ctx, const struct lh_opt_t *option, c
  * generated.
  */
 
-bool XX_httplib_process_options( struct lh_ctx_t *ctx, const struct lh_opt_t *options ) {
+bool XX_httplib_process_options( struct httplib_context *ctx, const struct httplib_option *options ) {
 
 	if ( ctx == NULL ) return true;
 
@@ -95,7 +95,7 @@ bool XX_httplib_process_options( struct lh_ctx_t *ctx, const struct lh_opt_t *op
 }  /* XX_httplib_process_options */
 
 /*
- * static bool check_bool( struct lh_ctx_t *ctx, const struct lh_opt_t *option, const char *name, bool *config );
+ * static bool check_bool( struct httplib_context *ctx, const struct httplib_option *option, const char *name, bool *config );
  *
  * The function check_bool() checks if an option is equal to a boolean config
  * parameter and stores the value if that is the case. If the value cannot be
@@ -105,7 +105,7 @@ bool XX_httplib_process_options( struct lh_ctx_t *ctx, const struct lh_opt_t *op
  * false is returned.
  */
 
-static bool check_bool( struct lh_ctx_t *ctx, const struct lh_opt_t *option, const char *name, bool *config ) {
+static bool check_bool( struct httplib_context *ctx, const struct httplib_option *option, const char *name, bool *config ) {
 
 	if ( ctx == NULL  ||  option == NULL  ||  option->name == NULL  ||  name == NULL  ||  config == NULL ) {
 
@@ -115,14 +115,14 @@ static bool check_bool( struct lh_ctx_t *ctx, const struct lh_opt_t *option, con
 
 	if (      httplib_strcasecmp(           option->name,  name   ) ) return false;
 	if ( ! XX_httplib_option_value_to_bool( option->value, config ) ) return false;
-			
+
 	XX_httplib_abort_start( ctx, "Invalid boolean value \"%s\" for option \"%s\"", option->value, option->name );
 	return true;
 
 }  /* check_bool */
 
 /*
- * static bool check_dir( struct lh_ctx_t *ctx, const struct lh_opt_t *option, const char *name, char **config );
+ * static bool check_dir( struct httplib_context *ctx, const struct httplib_option *option, const char *name, char **config );
  *
  * The function check_dir() checks if an option is equal to a directory config
  * parameter and stores the value if that is the case. If the value cannot be
@@ -132,7 +132,7 @@ static bool check_bool( struct lh_ctx_t *ctx, const struct lh_opt_t *option, con
  * false is returned.
  */
 
-static bool check_dir( struct lh_ctx_t *ctx, const struct lh_opt_t *option, const char *name, char **config ) {
+static bool check_dir( struct httplib_context *ctx, const struct httplib_option *option, const char *name, char **config ) {
 
 	if ( ctx == NULL  ||  option == NULL  ||  option->name == NULL  ||  name == NULL  ||  config == NULL ) {
 
@@ -155,7 +155,7 @@ static bool check_dir( struct lh_ctx_t *ctx, const struct lh_opt_t *option, cons
 }  /* check_dir */
 
 /*
- * static bool check_patt( struct lh_ctx_t *ctx, const struct lh_opt_t *option, const char *name, char **config );
+ * static bool check_patt( struct httplib_context *ctx, const struct httplib_option *option, const char *name, char **config );
  *
  * The function check_patt() checks if an option is equal to a pattern config
  * parameter and stores the value if that is the case. If the value cannot be
@@ -165,7 +165,7 @@ static bool check_dir( struct lh_ctx_t *ctx, const struct lh_opt_t *option, cons
  * false is returned.
  */
 
-static bool check_patt( struct lh_ctx_t *ctx, const struct lh_opt_t *option, const char *name, char **config ) {
+static bool check_patt( struct httplib_context *ctx, const struct httplib_option *option, const char *name, char **config ) {
 
 	if ( ctx == NULL  ||  option == NULL  ||  option->name == NULL  ||  name == NULL  ||  config == NULL ) {
 
@@ -188,7 +188,7 @@ static bool check_patt( struct lh_ctx_t *ctx, const struct lh_opt_t *option, con
 }  /* check_patt */
 
 /*
- * static bool check_file( struct lh_ctx_t *ctx, const struct lh_opt_t *option, const char *name, char **config );
+ * static bool check_file( struct httplib_context *ctx, const struct httplib_option *option, const char *name, char **config );
  *
  * The function check_file() checks if an option is equal to a filename config
  * parameter and stores the value if that is the case. If the value cannot be
@@ -198,7 +198,7 @@ static bool check_patt( struct lh_ctx_t *ctx, const struct lh_opt_t *option, con
  * false is returned.
  */
 
-static bool check_file( struct lh_ctx_t *ctx, const struct lh_opt_t *option, const char *name, char **config ) {
+static bool check_file( struct httplib_context *ctx, const struct httplib_option *option, const char *name, char **config ) {
 
 	if ( ctx == NULL  ||  option == NULL  ||  option->name == NULL  ||  name == NULL  ||  config == NULL ) {
 
@@ -221,7 +221,7 @@ static bool check_file( struct lh_ctx_t *ctx, const struct lh_opt_t *option, con
 }  /* check_file */
 
 /*
- * static bool check_str( struct lh_ctx_t *ctx, const struct lh_opt_t *option, const char *name, char **config );
+ * static bool check_str( struct httplib_context *ctx, const struct httplib_option *option, const char *name, char **config );
  *
  * The function check_str() checks if an option is equal to a string config
  * parameter and stores the value if that is the case. If the value cannot be
@@ -231,7 +231,7 @@ static bool check_file( struct lh_ctx_t *ctx, const struct lh_opt_t *option, con
  * false is returned.
  */
 
-static bool check_str( struct lh_ctx_t *ctx, const struct lh_opt_t *option, const char *name, char **config ) {
+static bool check_str( struct httplib_context *ctx, const struct httplib_option *option, const char *name, char **config ) {
 
 	if ( ctx == NULL  ||  option == NULL  ||  option->name == NULL  ||  name == NULL  ||  config == NULL ) {
 
@@ -254,7 +254,7 @@ static bool check_str( struct lh_ctx_t *ctx, const struct lh_opt_t *option, cons
 }  /* check_str */
 
 /*
- * static bool check_int( struct lh_ctx_t *ctx, const struct httplib_opion_t *option, const char *name, int *config, int minval, int maxval );
+ * static bool check_int( struct httplib_context *ctx, const struct httplib_opion_t *option, const char *name, int *config, int minval, int maxval );
  *
  * The function check_int() checks in an option is equal to an integer config
  * parameter and stores the value if that is the case. If the value cannot be
@@ -264,7 +264,7 @@ static bool check_str( struct lh_ctx_t *ctx, const struct lh_opt_t *option, cons
  * valud, also false is returned.
  */
 
-static bool check_int( struct lh_ctx_t *ctx, const struct lh_opt_t *option, const char *name, int *config, int minval, int maxval ) {
+static bool check_int( struct httplib_context *ctx, const struct httplib_option *option, const char *name, int *config, int minval, int maxval ) {
 
 	int val;
 
@@ -291,7 +291,7 @@ static bool check_int( struct lh_ctx_t *ctx, const struct lh_opt_t *option, cons
 }  /* check_int */
 
 /*
- * static bool check_dbg( struct lh_ctx_t *ctx, const struct lh_opt_t *option, const char *name, enum lh_dbg_t *config );
+ * static bool check_dbg( struct httplib_context *ctx, const struct httplib_option *option, const char *name, enum httplib_debug *config );
  *
  * The function check_dbg() checks if an option is equal to a debug level
  * config parameter and stores the value if that is the case. If the value
@@ -301,7 +301,7 @@ static bool check_int( struct lh_ctx_t *ctx, const struct lh_opt_t *option, cons
  * valid, also false is returned.
  */
 
-static bool check_dbg( struct lh_ctx_t *ctx, const struct lh_opt_t *option, const char *name, enum lh_dbg_t *config ) {
+static bool check_dbg( struct httplib_context *ctx, const struct httplib_option *option, const char *name, enum httplib_debug *config ) {
 
 	int val;
 

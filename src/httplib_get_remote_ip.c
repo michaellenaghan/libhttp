@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -28,13 +28,13 @@
 #include "httplib_main.h"
 
 /*
- * uint32_t XX_httplib_get_remote_ip( const struct lh_con_t *conn );
+ * uint32_t XX_httplib_get_remote_ip( const struct httplib_connection *conn );
  *
  * The function XX_httplib_get_remote_ip() returns the IPv4 address of the
  * remote peer.
  */
 
-uint32_t XX_httplib_get_remote_ip( const struct lh_con_t *conn ) {
+uint32_t XX_httplib_get_remote_ip( const struct httplib_connection *conn ) {
 
 	if ( conn == NULL ) return 0;
 

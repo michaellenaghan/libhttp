@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -28,13 +28,13 @@
 #include "httplib_main.h"
 
 /*
- * void XX_httplib_close_socket_gracefully( struct lh_ctx_t *ctx, struct lh_con_t *conn );
+ * void XX_httplib_close_socket_gracefully( struct httplib_context *ctx, struct httplib_connection *conn );
  *
  * The function XX_httplib_close_socket_gracefully() closes a socket in a
  * graceful way.
  */
 
-void XX_httplib_close_socket_gracefully( struct lh_ctx_t *ctx, struct lh_con_t *conn ) {
+void XX_httplib_close_socket_gracefully( struct httplib_context *ctx, struct httplib_connection *conn ) {
 
 #if defined(_WIN32)
 	char buf[MG_BUF_LEN];
@@ -63,7 +63,7 @@ void XX_httplib_close_socket_gracefully( struct lh_ctx_t *ctx, struct lh_con_t *
 	if (error_code == ECONNRESET) {
 		/* Socket already closed by client/peer, close socket without linger */
 	}
-	
+
 	else {
 		if ( setsockopt( conn->client.sock, SOL_SOCKET, SO_LINGER, (char *)&linger, sizeof(linger) ) != 0 ) {
 

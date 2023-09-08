@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -28,7 +28,7 @@
 #include "httplib_main.h"
 
 /*
- * int httplib_get_response( const struct lh_ctx_t *ctx, struct lh_con_t *conn, int timeout );
+ * int httplib_get_response( const struct httplib_context *ctx, struct httplib_connection *conn, int timeout );
  *
  * The function httplib_get_response() tries to get a response from a remote
  * peer. This function does some dirty action by temporarily replacing the
@@ -39,11 +39,11 @@
  * place.
  */
 
-int httplib_get_response( const struct lh_ctx_t *ctx, struct lh_con_t *conn, int timeout ) {
+int httplib_get_response( const struct httplib_context *ctx, struct httplib_connection *conn, int timeout ) {
 
 	int err;
 	int ret;
-	struct lh_ctx_t rctx;
+	struct httplib_context rctx;
 
 	if ( ctx == NULL  ||  conn == NULL ) return -1;
 
@@ -59,7 +59,7 @@ int httplib_get_response( const struct lh_ctx_t *ctx, struct lh_con_t *conn, int
 		rctx.request_timeout = timeout;
 		XX_httplib_set_sock_timeout( conn->client.sock, timeout );
 	}
-	
+
 	else rctx.request_timeout = 0;
 
 	ret = XX_httplib_getreq( &rctx, conn, &err );

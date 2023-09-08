@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -28,13 +28,13 @@
 #include "httplib_main.h"
 
 /*
- * int XX_httplib_remove_directory( struct lh_ctx_t *ctx, struct lh_con_t *conn, const char *dir );
+ * int XX_httplib_remove_directory( struct httplib_context *ctx, struct httplib_connection *conn, const char *dir );
  *
  * The function XX_httplib_remove_directory() removes recursively a directory
  * tree.
  */
 
-int XX_httplib_remove_directory( struct lh_ctx_t *ctx, struct lh_con_t *conn, const char *dir ) {
+int XX_httplib_remove_directory( struct httplib_context *ctx, struct httplib_connection *conn, const char *dir ) {
 
 	char path[PATH_MAX];
 	char error_string[ERROR_STRING_LEN];
@@ -50,7 +50,7 @@ int XX_httplib_remove_directory( struct lh_ctx_t *ctx, struct lh_con_t *conn, co
 
 	dirp = httplib_opendir( dir );
 	if ( dirp == NULL ) return 0;
-	
+
 	de.conn = conn;
 
 	while ( (dp = httplib_readdir( dirp )) != NULL ) {
@@ -99,10 +99,10 @@ int XX_httplib_remove_directory( struct lh_ctx_t *ctx, struct lh_con_t *conn, co
 
 				if ( XX_httplib_remove_directory( ctx, conn, path ) == 0 ) ok = 0;
 			}
-			
+
 			else if ( httplib_remove( path ) == 0 ) ok = 0;
 		}
-		
+
 		else {
 			/*
 			 * file is in memory. It can not be deleted.

@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -28,17 +28,17 @@
 #include "httplib_main.h"
 #include "httplib_ssl.h"
 
-static const char *header_val( const struct lh_con_t *conn, const char *header );
+static const char *header_val( const struct httplib_connection *conn, const char *header );
 
 /*
- * void XX_httplib_log_access( struct lh_ctx_t *ctx, const struct lh_con_t *conn );
+ * void XX_httplib_log_access( struct httplib_context *ctx, const struct httplib_connection *conn );
  *
  * The function XX_httplib_log_access() logs an access of a client.
  */
 
-void XX_httplib_log_access( struct lh_ctx_t *ctx, const struct lh_con_t *conn ) {
+void XX_httplib_log_access( struct httplib_context *ctx, const struct httplib_connection *conn ) {
 
-	const struct lh_rqi_t *ri;
+	const struct httplib_request_info *ri;
 	struct file fi;
 	char date[64];
 	char src_addr[IP_ADDR_STR_LEN];
@@ -110,13 +110,13 @@ void XX_httplib_log_access( struct lh_ctx_t *ctx, const struct lh_con_t *conn ) 
 
 
 /*
- * static const char *header_val( const struct lh_con_t *conn, const char *header );
+ * static const char *header_val( const struct httplib_connection *conn, const char *header );
  *
  * The function header_val() returns the value of a specific header of a
  * connection.
  */
 
-static const char *header_val( const struct lh_con_t *conn, const char *header ) {
+static const char *header_val( const struct httplib_connection *conn, const char *header ) {
 
 	const char *header_value;
 

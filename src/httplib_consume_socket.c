@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -31,7 +31,7 @@
 #define QUEUE_SIZE(ctx) ((int)(ARRAY_SIZE(ctx->queue)))
 
 /*
- * int XX_httplib_consume_socket( struct lh_ctx_t *ctx, struct socket *sp, int thread_index );
+ * int XX_httplib_consume_socket( struct httplib_context *ctx, struct socket *sp, int thread_index );
  *
  * The function XX_httplib_consume_socket() takes an accepted socket from the
  * queue for further processing.
@@ -39,7 +39,7 @@
 
 #if defined(ALTERNATIVE_QUEUE)
 
-int XX_httplib_consume_socket( struct lh_ctx_t *ctx, struct socket *sp, int thread_index ) {
+int XX_httplib_consume_socket( struct httplib_context *ctx, struct socket *sp, int thread_index ) {
 
 	ctx->client_socks[thread_index].in_use = 0;
 	event_wait( ctx->client_wait_events[thread_index] );
@@ -52,7 +52,7 @@ int XX_httplib_consume_socket( struct lh_ctx_t *ctx, struct socket *sp, int thre
 #else /* ALTERNATIVE_QUEUE */
 
 /* Worker threads take accepted socket from the queue */
-int XX_httplib_consume_socket( struct lh_ctx_t *ctx, struct socket *sp, int thread_index ) {
+int XX_httplib_consume_socket( struct httplib_context *ctx, struct socket *sp, int thread_index ) {
 
 	UNUSED_PARAMETER(thread_index);
 

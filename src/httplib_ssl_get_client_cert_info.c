@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016-2019 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -33,13 +33,13 @@
 static bool	hexdump2string( void *mem, int memlen, char *buf, int buflen );
 
 /*
- * void XX_httplib_ssl_get_client_cert_info( struct lh_con_t *conn );
+ * void XX_httplib_ssl_get_client_cert_info( struct httplib_connection *conn );
  *
  * The function XX_httplib_ssl_get_client_cert_info() returns information from
  * a client provided certificate and hooks it up to the connection info.
  */
 
-void XX_httplib_ssl_get_client_cert_info( struct lh_con_t *conn ) {
+void XX_httplib_ssl_get_client_cert_info( struct httplib_connection *conn ) {
 
 	char str_subject[1024];
 	char str_issuer[1024];
@@ -90,7 +90,7 @@ void XX_httplib_ssl_get_client_cert_info( struct lh_con_t *conn ) {
 
 		if ( ! hexdump2string( buf, len2, str_serial, (int)sizeof(str_serial) ) ) *str_serial = 0;
 	}
-	
+
 	else *str_serial = 0;
 
 	/*
@@ -111,7 +111,7 @@ void XX_httplib_ssl_get_client_cert_info( struct lh_con_t *conn ) {
 		conn->request_info.client_cert->serial  = httplib_strdup( str_serial  );
 		conn->request_info.client_cert->finger  = httplib_strdup( str_finger  );
 	}
-	
+
 	else {
 		/* TODO: write some OOM message */
 	}

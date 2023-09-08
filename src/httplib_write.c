@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -25,14 +25,14 @@
 #include "httplib_main.h"
 
 /*
- * int httplib_write( const struct lh_ctx_t *ctx, struct lh_con_t *conn, const void *buffie, size_t lennie );
+ * int httplib_write( const struct httplib_context *ctx, struct httplib_connection *conn, const void *buffie, size_t lennie );
  *
  * The function httplib_write() writes a number of bytes over a connection.
  * The amount of characters written is returned. If an error occurs
  * the value 0 is returned.
  */
 
-int httplib_write( const struct lh_ctx_t *ctx, struct lh_con_t *conn, const void *buffie, size_t lennie ) {
+int httplib_write( const struct httplib_context *ctx, struct httplib_connection *conn, const void *buffie, size_t lennie ) {
 
 	int64_t len;
 	int64_t total;

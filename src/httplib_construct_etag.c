@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -28,13 +28,13 @@
 #include "httplib_main.h"
 
 /*
- * void XX_httplib_construct_etag( struct lh_ctx_t *ctx, char *buf, size_t buf_len, const struct file *filep );
+ * void XX_httplib_construct_etag( struct httplib_context *ctx, char *buf, size_t buf_len, const struct file *filep );
  *
  * The function XX_httplib_construct_etag() is used to construct an etag which
  * can be used to identify a file on a specific moment.
  */
 
-void XX_httplib_construct_etag( struct lh_ctx_t *ctx, char *buf, size_t buf_len, const struct file *filep ) {
+void XX_httplib_construct_etag( struct httplib_context *ctx, char *buf, size_t buf_len, const struct file *filep ) {
 
 	if ( filep != NULL  &&  buf != NULL  &&  buf_len > 0 ) {
 

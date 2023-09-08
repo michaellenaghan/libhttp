@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -29,13 +29,13 @@
 #include "httplib_utils.h"
 
 /*
- * static void print_props( struct lh_ctx_t *ctx, struct lh_con_t *conn, const char *uri, struct file *filep );
+ * static void print_props( struct httplib_context *ctx, struct httplib_connection *conn, const char *uri, struct file *filep );
  *
  * The function print_props() writes the PROPFIND properties for a collection
  * event.
  */
 
-static void print_props( struct lh_ctx_t *ctx, struct lh_con_t *conn, const char *uri, struct file *filep ) {
+static void print_props( struct httplib_context *ctx, struct httplib_connection *conn, const char *uri, struct file *filep ) {
 
 	char mtime[64];
 
@@ -62,18 +62,18 @@ static void print_props( struct lh_ctx_t *ctx, struct lh_con_t *conn, const char
 }  /* print_props */
 
 /*
- * static void print_dav_dir_entry( struct lh_ctx_t *ctx, struct de *de, void *data );
+ * static void print_dav_dir_entry( struct httplib_context *ctx, struct de *de, void *data );
  *
  * The function print_dav_dir_entry() is used to send the properties of a
  * webdav directory to the remote client.
  */
 
-static void print_dav_dir_entry( struct lh_ctx_t *ctx, struct de *de, void *data ) {
+static void print_dav_dir_entry( struct httplib_context *ctx, struct de *de, void *data ) {
 
 	char href[PATH_MAX];
 	char href_encoded[PATH_MAX * 3 /* worst case */];
 	bool truncated;
-	struct lh_con_t *conn;
+	struct httplib_connection *conn;
 
 	conn = data;
 
@@ -90,12 +90,12 @@ static void print_dav_dir_entry( struct lh_ctx_t *ctx, struct de *de, void *data
 }  /* print_dav_dir_entry */
 
 /*
- * void XX_httplib_handle_propfind( struct lh_ctx_t *ctx, struct lh_con_t *conn, const char *path, struct file *filep );
+ * void XX_httplib_handle_propfind( struct httplib_context *ctx, struct httplib_connection *conn, const char *path, struct file *filep );
  *
  * The function XX_httlib_handle_propfind() handles a propfind request.
  */
 
-void XX_httplib_handle_propfind( struct lh_ctx_t *ctx, struct lh_con_t *conn, const char *path, struct file *filep ) {
+void XX_httplib_handle_propfind( struct httplib_context *ctx, struct httplib_connection *conn, const char *path, struct file *filep ) {
 
 	const char *depth;
 	char date[64];

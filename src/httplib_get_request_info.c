@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -27,7 +27,7 @@
 
 #include "httplib_main.h"
 
-const struct lh_rqi_t *httplib_get_request_info( const struct lh_con_t *conn ) {
+const struct httplib_request_info *httplib_get_request_info( const struct httplib_connection *conn ) {
 
 	if ( conn == NULL ) return NULL;
 

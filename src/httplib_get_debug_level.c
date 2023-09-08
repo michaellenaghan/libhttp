@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,13 +23,13 @@
 #include "httplib_main.h"
 
 /*
- * enum lh_dbg_t httplib_get_debug_level( struct lh_ctx_t *ctx );
+ * enum httplib_debug httplib_get_debug_level( struct httplib_context *ctx );
  *
  * The function httplib_get_debug_level() returns the debug level for a
  * context.
  */
 
-enum lh_dbg_t httplib_get_debug_level( struct lh_ctx_t *ctx ) {
+enum httplib_debug httplib_get_debug_level( struct httplib_context *ctx ) {
 
 	if ( ctx == NULL ) return LH_DEBUG_NONE;
 	return ctx->debug_level;

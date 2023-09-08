@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016-2019 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -31,13 +31,13 @@
 #include "httplib_ssl.h"
 
 /*
- * int XX_httplib_get_first_ssl_listener_index( const struct lh_ctx_t *ctx );
+ * int XX_httplib_get_first_ssl_listener_index( const struct httplib_context *ctx );
  *
  * The function XX_httplib_get_first_ssl_listener_index() returns the first
  * index of a listening socket where SSL encryption is active.
  */
 
-int XX_httplib_get_first_ssl_listener_index( const struct lh_ctx_t *ctx ) {
+int XX_httplib_get_first_ssl_listener_index( const struct httplib_context *ctx ) {
 
 	unsigned int i;
 	int idx;

@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -28,7 +28,7 @@
 #include "httplib_main.h"
 
 /* Return 1 if request is authorised, 0 otherwise. */
-bool XX_httplib_check_authorization( struct lh_ctx_t *ctx, struct lh_con_t *conn, const char *path ) {
+bool XX_httplib_check_authorization( struct httplib_context *ctx, struct httplib_connection *conn, const char *path ) {
 
 	char fname[PATH_MAX];
 	char error_string[ERROR_STRING_LEN];

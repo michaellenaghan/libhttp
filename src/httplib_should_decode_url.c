@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -24,7 +24,7 @@
 
 #include "httplib_main.h"
 
-bool XX_httplib_should_decode_url( const struct lh_ctx_t *ctx ) {
+bool XX_httplib_should_decode_url( const struct httplib_context *ctx ) {
 
 	return ( ctx != NULL  &&  ctx->decode_url );
 

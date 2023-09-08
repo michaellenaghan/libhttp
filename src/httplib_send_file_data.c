@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -34,7 +34,7 @@
  * Send len bytes from the opened file to the client.
  */
 
-void XX_httplib_send_file_data( struct lh_ctx_t *ctx, struct lh_con_t *conn, struct file *filep, int64_t offset, int64_t len ) {
+void XX_httplib_send_file_data( struct httplib_context *ctx, struct httplib_connection *conn, struct file *filep, int64_t offset, int64_t len ) {
 
 	char buf[MG_BUF_LEN];
 	char error_string[ERROR_STRING_LEN];
@@ -71,7 +71,7 @@ void XX_httplib_send_file_data( struct lh_ctx_t *ctx, struct lh_con_t *conn, str
 		httplib_write( ctx, conn, filep->membuf + offset, (size_t)len );
 
 	}
-	
+
 	else if ( len > 0  &&  filep->fp != NULL ) {
 
 /* file stored on disk */
@@ -88,7 +88,7 @@ void XX_httplib_send_file_data( struct lh_ctx_t *ctx, struct lh_con_t *conn, str
 			loop_cnt = 0;
 
 			do {
-				/* 
+				/*
 				 * 2147479552 (0x7FFFF000) is a limit found by experiment on
 				 * 64 bit Linux (2^31 minus one memory page of 4k?).
 				 */
@@ -114,7 +114,7 @@ void XX_httplib_send_file_data( struct lh_ctx_t *ctx, struct lh_con_t *conn, str
 
 					break;
 				}
-				
+
 				else if ( sf_sent == 0 ) {
 
 					/*
@@ -143,7 +143,7 @@ void XX_httplib_send_file_data( struct lh_ctx_t *ctx, struct lh_con_t *conn, str
 			httplib_cry( LH_DEBUG_ERROR, ctx, conn, "%s: fseeko() failed: %s", __func__, httplib_error_string( ERRNO, error_string, ERROR_STRING_LEN ) );
 			XX_httplib_send_http_error( ctx, conn, 500, "%s", "Error: Unable to access file at requested position." );
 		}
-		
+
 		else {
 			while ( len > 0 ) {
 

@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -25,7 +25,7 @@
 #include "httplib_main.h"
 
 /*
- * void *httplib_get_user_connection_data( const struct lh_con_t *conn );
+ * void *httplib_get_user_connection_data( const struct httplib_connection *conn );
  *
  * The function httplib_get_user_connection_data() returns a pointer to user
  * data associated with a connection which was previously registered with a
@@ -33,7 +33,7 @@
  * NULL is returned.
  */
 
-LIBHTTP_API void * httplib_get_user_connection_data( const struct lh_con_t *conn ) {
+LIBHTTP_API void * httplib_get_user_connection_data( const struct httplib_connection *conn ) {
 
 	if ( conn == NULL ) return NULL;
 

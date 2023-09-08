@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -44,7 +44,7 @@
  * is_put_or_delete_request:	out: put/delete file?
  */
 
-void XX_httplib_interpret_uri( struct lh_ctx_t *ctx, struct lh_con_t *conn, char *filename, size_t filename_buf_len, struct file *filep, bool *is_found, bool *is_script_resource, bool *is_websocket_request, bool *is_put_or_delete_request ) {
+void XX_httplib_interpret_uri( struct httplib_context *ctx, struct httplib_connection *conn, char *filename, size_t filename_buf_len, struct file *filep, bool *is_found, bool *is_script_resource, bool *is_websocket_request, bool *is_put_or_delete_request ) {
 
 /* TODO (high): Restructure this function */
 

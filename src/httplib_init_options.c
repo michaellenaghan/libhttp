@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,7 +23,7 @@
 #include "httplib_main.h"
 
 /*
- * bool XX_httplib_init_options( struct lh_ctx_t *ctx );
+ * bool XX_httplib_init_options( struct httplib_context *ctx );
  *
  * The function XX_httplib_init_options() sets the options of a newly created
  * context to reasonablei default values. When succesful, the function returns
@@ -31,7 +31,7 @@
  * cleanup.
  */
 
-bool XX_httplib_init_options( struct lh_ctx_t *ctx ) {
+bool XX_httplib_init_options( struct httplib_context *ctx ) {
 
 	if ( ctx == NULL ) return true;
 

@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -35,7 +35,7 @@
  * request for a static file.
  */
 
-void XX_httplib_handle_static_file_request( struct lh_ctx_t *ctx, struct lh_con_t *conn, const char *path, struct file *filep, const char *mime_type, const char *additional_headers ) {
+void XX_httplib_handle_static_file_request( struct httplib_context *ctx, struct httplib_connection *conn, const char *path, struct file *filep, const char *mime_type, const char *additional_headers ) {
 
 	char date[64];
 	char lm[64];
@@ -64,7 +64,7 @@ void XX_httplib_handle_static_file_request( struct lh_ctx_t *ctx, struct lh_con_
 	encoding = "";
 
 	if ( mime_type == NULL ) XX_httplib_get_mime_type( ctx, path, &mime_vec );
-	
+
 	else {
 		mime_vec.ptr = mime_type;
 		mime_vec.len = strlen( mime_type );

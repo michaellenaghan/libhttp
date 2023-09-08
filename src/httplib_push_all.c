@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016-2019 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -36,7 +36,7 @@
 #endif
 
 /*
- * static int64_t push( const struct lh_ctx_t *ctx, FILE *fp, SOCKET sock, SSL *ssl, const char *buf, int64_t len, double timeout );
+ * static int64_t push( const struct httplib_context *ctx, FILE *fp, SOCKET sock, SSL *ssl, const char *buf, int64_t len, double timeout );
  *
  * The function push() writes data to the I/O channel, opened file descriptor,
  * socket or SSL descriptor. The function returns the number of bytes which
@@ -50,7 +50,7 @@
  * been written.
  */
 
-static int64_t push( const struct lh_ctx_t *ctx, FILE *fp, SOCKET sock, SSL *ssl, const char *buf, int64_t len, double timeout ) {
+static int64_t push( const struct httplib_context *ctx, FILE *fp, SOCKET sock, SSL *ssl, const char *buf, int64_t len, double timeout ) {
 
 	struct timespec start;
 	struct timespec now;
@@ -82,10 +82,10 @@ static int64_t push( const struct lh_ctx_t *ctx, FILE *fp, SOCKET sock, SSL *ssl
 				else return -1;
 
 			}
-			
+
 			else err = 0;
 		}
-		
+
 		else
 #endif  /* NO_SSL */
 		if ( fp != NULL ) {
@@ -96,10 +96,10 @@ static int64_t push( const struct lh_ctx_t *ctx, FILE *fp, SOCKET sock, SSL *ssl
 				n   = -1;
 				err = ERRNO;
 			}
-			
+
 			else err = 0;
 		}
-		
+
 		else {
 			n = (int)send( sock, buf, (len_t)len, MSG_NOSIGNAL );
 			err = ( n < 0 ) ? ERRNO : 0;
@@ -148,13 +148,13 @@ static int64_t push( const struct lh_ctx_t *ctx, FILE *fp, SOCKET sock, SSL *ssl
 
 
 /*
- * int64_t XX_httplib_push_all( const struct lh_ctx_t *ctx, FILE *fp, SOCKET sock, SSL *ssl, const char *buf, int64_t len );
+ * int64_t XX_httplib_push_all( const struct httplib_context *ctx, FILE *fp, SOCKET sock, SSL *ssl, const char *buf, int64_t len );
  *
  * The function XX_httplib_push_all() pushes all data in a buffer to a socket.
  * The number of bytes written is returned.
  */
 
-int64_t XX_httplib_push_all( const struct lh_ctx_t *ctx, FILE *fp, SOCKET sock, SSL *ssl, const char *buf, int64_t len ) {
+int64_t XX_httplib_push_all( const struct httplib_context *ctx, FILE *fp, SOCKET sock, SSL *ssl, const char *buf, int64_t len ) {
 
 	double timeout;
 	int64_t n;
@@ -174,9 +174,9 @@ int64_t XX_httplib_push_all( const struct lh_ctx_t *ctx, FILE *fp, SOCKET sock, 
 			if ( nwritten == 0 ) return n;
 			else                 return nwritten;
 		}
-		
+
 		if ( n == 0 ) return nwritten;
-		
+
 		nwritten += n;
 		len      -= n;
 	}

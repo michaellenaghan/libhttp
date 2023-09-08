@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -28,14 +28,14 @@
 #include "httplib_main.h"
 
 /*
- * bool XX_httplib_read_auth_file( struct lh_ctx_t *ctx, struct file *filep, struct read_auth_file_struct *workdata );
+ * bool XX_httplib_read_auth_file( struct httplib_context *ctx, struct file *filep, struct read_auth_file_struct *workdata );
  *
  * The function XX_httpib_read_auth_file() loops over the password file to
  * read its contents. Include statements are honored which lets the routine
  * also open and scan child files.
  */
 
-bool XX_httplib_read_auth_file( struct lh_ctx_t *ctx, struct file *filep, struct read_auth_file_struct *workdata ) {
+bool XX_httplib_read_auth_file( struct httplib_context *ctx, struct file *filep, struct read_auth_file_struct *workdata ) {
 
 	int is_authorized;
 	struct file fp;
@@ -66,7 +66,7 @@ bool XX_httplib_read_auth_file( struct lh_ctx_t *ctx, struct file *filep, struct
 				l--;
 				workdata->buf[l] = 0;
 			}
-			
+
 			else break;
 		}
 
@@ -82,7 +82,7 @@ bool XX_httplib_read_auth_file( struct lh_ctx_t *ctx, struct file *filep, struct
 			 */
 
 			if ( workdata->f_user[1] == '#' ) continue;  /* :# is a comment */
-			
+
 			else if ( ! strncmp( workdata->f_user + 1, "include=", 8 ) ) {
 
 				if ( XX_httplib_fopen( ctx, workdata->conn, workdata->f_user + 9, "r", &fp ) ) {
@@ -90,7 +90,7 @@ bool XX_httplib_read_auth_file( struct lh_ctx_t *ctx, struct file *filep, struct
 					is_authorized = XX_httplib_read_auth_file( ctx, &fp, workdata );
 					XX_httplib_fclose( &fp );
 				}
-				
+
 				else httplib_cry( LH_DEBUG_ERROR, ctx, workdata->conn, "%s: cannot open authorization file: %s", __func__, workdata->buf );
 
 				continue;

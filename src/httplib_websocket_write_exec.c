@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -28,13 +28,13 @@
 #include "httplib_main.h"
 
 /*
- * int XX_httplib_websocket_write_exec( const struct lh_ctx_t *ctx, struct lh_con_t *conn, int opcode, const char *data, size_t data_len, uint32_t masking_key );
+ * int XX_httplib_websocket_write_exec( const struct httplib_context *ctx, struct httplib_connection *conn, int opcode, const char *data, size_t data_len, uint32_t masking_key );
  *
  * The function XX_httplib_websocket_write_exec() does the heavy lifting in
  * writing data over a websocket connectin to a remote peer.
  */
 
-int XX_httplib_websocket_write_exec( const struct lh_ctx_t *ctx, struct lh_con_t *conn, int opcode, const char *data, size_t data_len, uint32_t masking_key ) {
+int XX_httplib_websocket_write_exec( const struct httplib_context *ctx, struct httplib_connection *conn, int opcode, const char *data, size_t data_len, uint32_t masking_key ) {
 
 	unsigned char header[14];
 	size_t header_len;
@@ -62,7 +62,7 @@ int XX_httplib_websocket_write_exec( const struct lh_ctx_t *ctx, struct lh_con_t
 		header[1]  = (unsigned char)data_len;
 		header_len = 2;
 	}
-	
+
 	else if ( data_len <= 65535 ) {
 
 		/*
@@ -74,7 +74,7 @@ int XX_httplib_websocket_write_exec( const struct lh_ctx_t *ctx, struct lh_con_t
 		header_len = 4;
 		memcpy( header+2, & len, 2 );
 	}
-	
+
 	else {
 		/*
 		 * 64-bit length field

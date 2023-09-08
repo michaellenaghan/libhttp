@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016-2019 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -31,13 +31,13 @@
 #include "httplib_ssl.h"
 
 /*
- * int XX_httplib_ssl_use_pem_file( struct lh_ctx_t *ctx, const char *pem );
+ * int XX_httplib_ssl_use_pem_file( struct httplib_context *ctx, const char *pem );
  *
  * The function XX_httplib_ssl_use_pem_file() tries to use a certificate which
  * is passed as a parameter with the filename of the certificate.
  */
 
-int XX_httplib_ssl_use_pem_file( struct lh_ctx_t *ctx, const char *pem ) {
+int XX_httplib_ssl_use_pem_file( struct httplib_context *ctx, const char *pem ) {
 
 	if ( ctx == NULL  ||  pem == NULL ) return 0;
 

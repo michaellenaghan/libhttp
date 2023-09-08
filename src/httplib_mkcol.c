@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -29,14 +29,14 @@
 #include "httplib_utils.h"
 
 /*
- * void XX_httplib_mkcol( struct lh_ctx_t *ctx, struct lh_con_t *conn, const char *path );
+ * void XX_httplib_mkcol( struct httplib_context *ctx, struct httplib_connection *conn, const char *path );
  *
  * The function XX_httplib_mkcol() handles a MKCOL command from a remote
  * client. The MKCOL method is used to create a new collection resource at the
  * location specificied by the request URI.
  */
 
-void XX_httplib_mkcol( struct lh_ctx_t *ctx, struct lh_con_t *conn, const char *path ) {
+void XX_httplib_mkcol( struct httplib_context *ctx, struct httplib_connection *conn, const char *path ) {
 
 	int rc;
 	int body_len;
@@ -89,7 +89,7 @@ void XX_httplib_mkcol( struct lh_ctx_t *ctx, struct lh_con_t *conn, const char *
 		XX_httplib_send_static_cache_header( ctx, conn );
 		httplib_printf( ctx, conn, "Content-Length: 0\r\n" "Connection: %s\r\n\r\n", XX_httplib_suggest_connection_header( ctx, conn ) );
 	}
-	
+
 	else if ( rc == -1 ) {
 
 		if      ( errno == EEXIST ) XX_httplib_send_http_error( ctx, conn, 405, "Error: mkcol(%s): %s", path, httplib_error_string( ERRNO, error_string, ERROR_STRING_LEN ) );

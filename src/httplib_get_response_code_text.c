@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -28,13 +28,13 @@
 #include "httplib_main.h"
 
 /*
- * const char *httplib_get_response_code_text( struct lh_ctx_t *ctx, struct lh_con_t *conn, int response_code );
+ * const char *httplib_get_response_code_text( struct httplib_context *ctx, struct httplib_connection *conn, int response_code );
  *
  * The function httplib_get_response_code_text() returns a text associated with an
  * HTTP response code.
  */
 
-const char *httplib_get_response_code_text( struct lh_ctx_t *ctx, struct lh_con_t *conn, int response_code ) {
+const char *httplib_get_response_code_text( struct httplib_context *ctx, struct httplib_connection *conn, int response_code ) {
 
 	/*
 	 * See IANA HTTP status code assignment:

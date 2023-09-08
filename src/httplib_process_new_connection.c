@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -28,15 +28,15 @@
 #include "httplib_main.h"
 
 /*
- * void XX_httplib_process_new_connection( struct lh_ctx_t *ctx, struct lh_con_t *conn );
+ * void XX_httplib_process_new_connection( struct httplib_context *ctx, struct httplib_connection *conn );
  *
  * The function XX_httplib_process_new_connection() is used to process a new
  * incoming connection on a socket.
  */
 
-void XX_httplib_process_new_connection( struct lh_ctx_t *ctx, struct lh_con_t *conn ) {
+void XX_httplib_process_new_connection( struct httplib_context *ctx, struct httplib_connection *conn ) {
 
-	struct lh_rqi_t *ri;
+	struct httplib_request_info *ri;
 	int keep_alive;
 	int discard_len;
 	bool was_error;
@@ -73,7 +73,7 @@ void XX_httplib_process_new_connection( struct lh_ctx_t *ctx, struct lh_con_t *c
 
 			was_error = true;
 		}
-		
+
 		else if ( strcmp( ri->http_version, "1.0" )  &&  strcmp( ri->http_version, "1.1" ) ) {
 
 			httplib_cry( LH_DEBUG_ERROR, ctx, conn, "%s: bad HTTP version \"%s\"", __func__, ri->http_version );
@@ -134,7 +134,7 @@ void XX_httplib_process_new_connection( struct lh_ctx_t *ctx, struct lh_con_t *c
 				if ( ctx->callbacks.end_request != NULL ) ctx->callbacks.end_request( ctx, conn, conn->status_code );
 				XX_httplib_log_access( ctx, conn );
 			}
-			
+
 			else {
 				/*
 				 * TODO: handle non-local request (PROXY)
@@ -142,7 +142,7 @@ void XX_httplib_process_new_connection( struct lh_ctx_t *ctx, struct lh_con_t *c
 				conn->must_close = true;
 			}
 		}
-		
+
 		else conn->must_close = true;
 
 		if ( ri->remote_user != NULL ) {

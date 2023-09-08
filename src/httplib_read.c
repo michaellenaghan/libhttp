@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -27,7 +27,7 @@
 
 #include "httplib_main.h"
 
-static int httplib_read_inner( const struct lh_ctx_t *ctx, struct lh_con_t *conn, void *buffie, size_t len ) {
+static int httplib_read_inner( const struct httplib_context *ctx, struct httplib_connection *conn, void *buffie, size_t len ) {
 
 	int64_t n;
 	int64_t buffered_len;
@@ -101,7 +101,7 @@ static int httplib_read_inner( const struct lh_ctx_t *ctx, struct lh_con_t *conn
 }  /* httplib_read_inner */
 
 
-static char httplib_getc( const struct lh_ctx_t *ctx, struct lh_con_t *conn ) {
+static char httplib_getc( const struct httplib_context *ctx, struct httplib_connection *conn ) {
 
 	char c;
 
@@ -115,7 +115,7 @@ static char httplib_getc( const struct lh_ctx_t *ctx, struct lh_con_t *conn ) {
 }  /* httplib_getc */
 
 
-int httplib_read( const struct lh_ctx_t *ctx, struct lh_con_t *conn, void *buf, size_t len ) {
+int httplib_read( const struct httplib_context *ctx, struct httplib_connection *conn, void *buf, size_t len ) {
 
 	if ( len > INT_MAX ) len = INT_MAX;
 
@@ -164,7 +164,7 @@ int httplib_read( const struct lh_ctx_t *ctx, struct lh_con_t *conn, void *buf, 
 					}
 				}
 			}
-			
+
 			else {
 				/*
 				 * fetch a new chunk

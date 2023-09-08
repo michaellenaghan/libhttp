@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -98,7 +98,7 @@ static int alloc_vprintf( char **out_buf, char *prealloc_buf, size_t prealloc_si
 		va_end( ap_copy );
 
 	}
-	
+
 	else if ( (size_t)(len) >= prealloc_size ) {
 
 		/*
@@ -125,7 +125,7 @@ static int alloc_vprintf( char **out_buf, char *prealloc_buf, size_t prealloc_si
 		va_end( ap_copy );
 
 	}
-	
+
 	else {
 		/*
 		 * The pre-allocated buffer is large enough.
@@ -144,7 +144,7 @@ static int alloc_vprintf( char **out_buf, char *prealloc_buf, size_t prealloc_si
 }  /* alloc_vprintf */
 
 
-int XX_httplib_vprintf( const struct lh_ctx_t *ctx, struct lh_con_t *conn, const char *fmt, va_list ap ) {
+int XX_httplib_vprintf( const struct httplib_context *ctx, struct httplib_connection *conn, const char *fmt, va_list ap ) {
 
 	char mem[MG_BUF_LEN];
 	char *buf;

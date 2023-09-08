@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -28,13 +28,13 @@
 #include "httplib_main.h"
 
 /*
- * void XX_httplib_redirect_to_https_port( const struct lh_ctx_t *ctx, struct lh_con_t *conn, int ssl_index );
+ * void XX_httplib_redirect_to_https_port( const struct httplib_context *ctx, struct httplib_connection *conn, int ssl_index );
  *
  * The function XX_httplib_redirect_to_https_port() redirects a request to an
  * encrypted connection over HTTPS.
  */
 
-void XX_httplib_redirect_to_https_port( const struct lh_ctx_t *ctx, struct lh_con_t *conn, int ssl_index ) {
+void XX_httplib_redirect_to_https_port( const struct httplib_context *ctx, struct httplib_connection *conn, int ssl_index ) {
 
 	char host[1024+1];
 	const char *host_header;
@@ -53,7 +53,7 @@ void XX_httplib_redirect_to_https_port( const struct lh_ctx_t *ctx, struct lh_co
 		pos = strchr(host, ':');
 		if (pos != NULL) *pos = '\0';
 	}
-	
+
 	else {
 		/*
 		 * Cannot get host from the Host: header.

@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -28,7 +28,7 @@
 #include "httplib_main.h"
 
 /*
- * int XX_httplib_check_acl( struct lh_ctx_t *ctx, uint32_t remote_ip );
+ * int XX_httplib_check_acl( struct httplib_context *ctx, uint32_t remote_ip );
  *
  * The function XX_httplib_check_acl() is used to check of the socket address
  * of a connection is allowed according to the access control list. The
@@ -36,7 +36,7 @@
  * allowed and 1 if the address is allowed.
  */
 
-int XX_httplib_check_acl( struct lh_ctx_t *ctx, uint32_t remote_ip ) {
+int XX_httplib_check_acl( struct httplib_context *ctx, uint32_t remote_ip ) {
 
 	int allowed;
 	int flag;

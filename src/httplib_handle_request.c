@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016-2019 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -30,7 +30,7 @@
 #include "httplib_utils.h"
 
 /*
- * void XX_httplib_handle_request( const struct lh_ctx_t *ctx, struct lh_con_t *conn );
+ * void XX_httplib_handle_request( const struct httplib_context *ctx, struct httplib_connection *conn );
  *
  * The function XX_httplib_handle_request() handles an incoming request. This
  * is the heart of the LibHTTP's logic. This function is called when the
@@ -38,9 +38,9 @@
  * to take: serve a file, or a directory, or call embedded function, etcetera.
  */
 
-void XX_httplib_handle_request( struct lh_ctx_t *ctx, struct lh_con_t *conn ) {
+void XX_httplib_handle_request( struct httplib_context *ctx, struct httplib_connection *conn ) {
 
-	struct lh_rqi_t *ri;
+	struct httplib_request_info *ri;
 	char path[PATH_MAX];
 	int uri_len;
 
@@ -114,7 +114,7 @@ void XX_httplib_handle_request( struct lh_ctx_t *ctx, struct lh_con_t *conn ) {
 		ssl_index = XX_httplib_get_first_ssl_listener_index( ctx );
 
 		if ( ssl_index >= 0 ) XX_httplib_redirect_to_https_port( ctx, conn, ssl_index );
-		
+
 		else {
 			/*
 			 * A http to https forward port has been specified,
@@ -178,13 +178,13 @@ void XX_httplib_handle_request( struct lh_ctx_t *ctx, struct lh_con_t *conn ) {
 			return;
 
 		}
-		
+
 		else if ( i == 0 ) {
 			/*
 			 * LibHTTP should process the request
 			 */
 		}
-		
+
 		else {
 			/*
 			 * unspecified - may change with the next version
@@ -208,7 +208,7 @@ void XX_httplib_handle_request( struct lh_ctx_t *ctx, struct lh_con_t *conn ) {
 
 	is_websocket_request = XX_httplib_is_websocket_protocol( conn );
 
-	/* 
+	/*
 	 * 5.2. check if the request will be handled by a callback
 	 */
 
@@ -231,7 +231,7 @@ void XX_httplib_handle_request( struct lh_ctx_t *ctx, struct lh_con_t *conn ) {
 		is_script_resource       = true;
 		is_put_or_delete_request = XX_httplib_is_put_or_delete_method( conn );
 	}
-	
+
 	else {
 
 no_callback_resource:
@@ -255,7 +255,7 @@ no_callback_resource:
 
 		if ( ! auth_handler( ctx, conn, auth_callback_data ) ) return;
 	}
-	
+
 	else if ( is_put_or_delete_request  &&  ! is_script_resource  &&  ! is_callback_resource ) {
 
 /*
@@ -323,7 +323,7 @@ no_callback_resource:
 				conn->status_code = i;
 				XX_httplib_discard_unread_request_data( ctx, conn );
 			}
-			
+
 			else {
 				/* TODO (high): what if the handler did NOT handle the request
 				 * The last version did handle this as a file request, but
@@ -337,7 +337,7 @@ no_callback_resource:
 				goto no_callback_resource;
 			}
 		}
-		
+
 		else {
 			XX_httplib_handle_websocket_request( ctx, conn, path, is_callback_resource, ws_connect_handler, ws_ready_handler, ws_data_handler, ws_close_handler, callback_data );
 		}
@@ -479,7 +479,7 @@ no_callback_resource:
 			 * define what should be possible in this case.
 			 */
 		}
-		
+
 		else {
 			/*
 			 * 14.2. no substitute file

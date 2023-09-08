@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,10 +24,10 @@
 #include "httplib_main.h"
 
 /*
- * struct lh_ip_t *lh_ip_to_ipt( const char *in, struct lh_ip_t *out );
+ * struct httplib_ipt *httplib_ip_to_ipt( const char *in, struct httplib_ipt *out );
  *
- * The function lh_ip_to_ipt() converts a character representation of an IP
- * address to an lh_ip_t structure. If the conversion succeeds, the function
+ * The function httplib_ip_to_ipt() converts a character representation of an IP
+ * address to an httplib_ipt structure. If the conversion succeeds, the function
  * returns a pointer to the storage location of the IP address. Otherwise NULL
  * is returned. The calling routine should provide the storage location for the
  * IP address.
@@ -36,7 +36,7 @@
  * in compressed and hybrid notation.
  */
 
-LIBHTTP_API char *lh_ip_to_ipt( const char *in, struct lh_ip_t *out ) {
+LIBHTTP_API char *httplib_ip_to_ipt( const char *in, struct httplib_ipt *out ) {
 
 	int block;
 	int num_colon;
@@ -231,4 +231,4 @@ LIBHTTP_API char *lh_ip_to_ipt( const char *in, struct lh_ip_t *out ) {
 
 	return NULL;
 
-}  /* lh_ipt_to_ip4 */
+}  /* httplib_ipt_to_ip4 */

@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,13 +23,13 @@
 #include "httplib_main.h"
 
 /*
- * void XX_httplib_free_config_options( struct lh_ctx_t *ctx );
+ * void XX_httplib_free_config_options( struct httplib_context *ctx );
  *
  * The function XX_httplib_free_config_options() returns all the from the heap
  * allocated space to store config options back to the heap.
  */
 
-void XX_httplib_free_config_options( struct lh_ctx_t *ctx ) {
+void XX_httplib_free_config_options( struct httplib_context *ctx ) {
 
 	if ( ctx == NULL ) return;
 

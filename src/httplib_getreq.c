@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016-2018 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -28,12 +28,12 @@
 #include "httplib_main.h"
 
 /*
- * bool XX_httplib_getreq( struct lh_ctx_t *ctx, struct lh_con_t *conn, int *err );
+ * bool XX_httplib_getreq( struct httplib_context *ctx, struct httplib_connection *conn, int *err );
  *
  * The function XX_httplib_getreq() processes a request from a remote client.
  */
 
-bool XX_httplib_getreq( struct lh_ctx_t *ctx, struct lh_con_t *conn, int *err ) {
+bool XX_httplib_getreq( struct httplib_context *ctx, struct httplib_connection *conn, int *err ) {
 
 	const char *cl;
 	uint32_t remote_ip;
@@ -64,7 +64,7 @@ bool XX_httplib_getreq( struct lh_ctx_t *ctx, struct lh_con_t *conn, int *err ) 
 	remote_ip = XX_httplib_get_remote_ip( conn );
 	snprintf( remote_ip_str, 16, "%d.%d.%d.%d", (remote_ip>>24), (remote_ip>>16)&0xff, (remote_ip>>8)&0xff, remote_ip&0xff );
 
-	/* 
+	/*
 	 * assert(conn->request_len < 0 || conn->data_len >= conn->request_len);
 	 */
 
@@ -81,7 +81,7 @@ bool XX_httplib_getreq( struct lh_ctx_t *ctx, struct lh_con_t *conn, int *err ) 
 		*err = 413;
 		return false;
 	}
-	
+
 	else if ( conn->request_len <= 0 ) {
 
 		if ( conn->data_len > 0 ) {
@@ -89,7 +89,7 @@ bool XX_httplib_getreq( struct lh_ctx_t *ctx, struct lh_con_t *conn, int *err ) 
 			httplib_cry( LH_DEBUG_ERROR, ctx, conn, "%s: %s client sent malformed request", __func__, remote_ip_str );
 			*err = 400;
 		}
-		
+
 		else {
 			/*
 			 * Server did not send anything -> just close the connection
@@ -102,14 +102,14 @@ bool XX_httplib_getreq( struct lh_ctx_t *ctx, struct lh_con_t *conn, int *err ) 
 		}
 		return false;
 	}
-	
+
 	else if ( XX_httplib_parse_http_message( conn->buf, conn->buf_size, &conn->request_info ) <= 0 ) {
 
 		httplib_cry( LH_DEBUG_ERROR, ctx, conn, "%s: %s bad request", __func__, remote_ip_str );
 		*err = 400;
 		return false;
 	}
-	
+
 	else {
 		/*
 		 * Message is a valid request or response
@@ -137,12 +137,12 @@ bool XX_httplib_getreq( struct lh_ctx_t *ctx, struct lh_con_t *conn, int *err ) 
 
 			conn->request_info.content_length = conn->content_len;
 		}
-		
+
 		else if ( (cl = XX_httplib_get_header( &conn->request_info, "Transfer-Encoding" )) != NULL  &&  ! httplib_strcasecmp( cl, "chunked" ) ) {
 
 			conn->is_chunked = 1;
 		}
-		
+
 		else if ( ! httplib_strcasecmp( conn->request_info.request_method, "POST" )  ||  ! httplib_strcasecmp( conn->request_info.request_method, "PUT" ) ) {
 
 			/*
@@ -151,7 +151,7 @@ bool XX_httplib_getreq( struct lh_ctx_t *ctx, struct lh_con_t *conn, int *err ) 
 
 			conn->content_len = -1;
 		}
-		
+
 		else if ( ! httplib_strncasecmp( conn->request_info.request_method, "HTTP/", 5 ) ) {
 
 			/*

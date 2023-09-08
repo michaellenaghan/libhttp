@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016-2019 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -35,13 +35,13 @@ static volatile int reload_lock		= 0;
 static long int data_check		= 0;
 
 /*
- * int XX_httplib_refresh_trust( struct lh_ctx_t *ctx, struct lh_con_t *conn );
+ * int XX_httplib_refresh_trust( struct httplib_context *ctx, struct httplib_connection *conn );
  *
  * The function XX_httplib_refresh_trust() is used to reload a certificate if
  * it only has a short trust span.
  */
 
-int XX_httplib_refresh_trust( struct lh_ctx_t *ctx, struct lh_con_t *conn ) {
+int XX_httplib_refresh_trust( struct httplib_context *ctx, struct httplib_connection *conn ) {
 
 	volatile int *p_reload_lock;
 	struct stat cert_buf;

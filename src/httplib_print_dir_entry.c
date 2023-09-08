@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -27,7 +27,7 @@
 
 #include "httplib_main.h"
 
-void XX_httplib_print_dir_entry( struct lh_ctx_t *ctx, struct de *de ) {
+void XX_httplib_print_dir_entry( struct httplib_context *ctx, struct de *de ) {
 
 	char size[64];
 	char mod[64];
@@ -55,7 +55,7 @@ void XX_httplib_print_dir_entry( struct lh_ctx_t *ctx, struct de *de ) {
 	 */
 
 	if ( httplib_localtime_r( &de->file.last_modified, &tmm ) != NULL ) strftime( mod, sizeof(mod), "%d-%b-%Y %H:%M", &tmm );
-	
+
 	else {
 		httplib_strlcpy( mod, "01-Jan-1970 00:00", sizeof(mod) );
 		mod[sizeof(mod) - 1] = '\0';

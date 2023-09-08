@@ -377,9 +377,9 @@ OBJLIST =									\
 	${OBJDIR}httplib_pthread_setspecific${OBJEXT}				\
 	${OBJDIR}httplib_gmtime_r${OBJEXT}					\
 	${OBJDIR}httplib_localtime_r${OBJEXT}					\
-	${OBJDIR}lh_ipt_to_ip${OBJEXT}						\
-	${OBJDIR}lh_ipt_to_ip4${OBJEXT}						\
-	${OBJDIR}lh_ipt_to_ip6${OBJEXT}
+	${OBJDIR}httplib_ipt_to_ip${OBJEXT}					\
+	${OBJDIR}httplib_ipt_to_ip4${OBJEXT}					\
+	${OBJDIR}httplib_ipt_to_ip6${OBJEXT}
 
 #
 # Creation of the library from the individually compiled object files
@@ -388,9 +388,9 @@ OBJLIST =									\
 ${LIBDIR}libhttp${LIBEXT} :	\
 	${OBJLIST}		\
 	Makefile
-		${RM}        ${LIBDIR}libhttp${LIBEXT}
-		${AR} ${ARQC}${LIBDIR}libhttp${LIBEXT} ${OBJLIST}
-		${RANLIB}    ${LIBDIR}libhttp${LIBEXT}
+		${RM}         ${LIBDIR}libhttp${LIBEXT}
+		${AR} ${ARQC} ${LIBDIR}libhttp${LIBEXT} ${OBJLIST}
+		${RANLIB}     ${LIBDIR}libhttp${LIBEXT}
 
 #
 # Individual source files with their header dependencies
@@ -1216,7 +1216,7 @@ ${OBJDIR}httplib_substitute_index_file${OBJEXT}				: ${SRCDIR}httplib_substitute
 									  ${SRCDIR}httplib_main.h					\
 									  ${INCDIR}libhttp.h
 
-${OBJDIR}httplib_system_exit${OBJEXT}					: ${SRCDIR}httplib_system_exit.c				\
+${OBJDIR}httplib_system_exit${OBJEXT} 					: ${SRCDIR}httplib_system_exit.c				\
 									  ${SRCDIR}httplib_main.h					\
 									  ${INCDIR}libhttp.h
 
@@ -1372,14 +1372,14 @@ ${OBJDIR}httplib_localtime_r${OBJEXT}					: ${SRCDIR}httplib_localtime_r.c				\
 									  ${SRCDIR}httplib_utils.h					\
 									  ${INCDIR}libhttp.h
 
-${OBJDIR}lh_ipt_to_ip${OBJEXT}						: ${SRCDIR}lh_ipt_to_ip.c					\
+${OBJDIR}httplib_ipt_to_ip${OBJEXT}					: ${SRCDIR}httplib_ipt_to_ip.c					\
 									  ${SRCDIR}httplib_main.h					\
 									  ${INCDIR}libhttp.h
 
-${OBJDIR}lh_ipt_to_ip4${OBJEXT}						: ${SRCDIR}lh_ipt_to_ip4.c					\
+${OBJDIR}httplib_ipt_to_ip4${OBJEXT}					: ${SRCDIR}httplib_ipt_to_ip4.c					\
 									  ${SRCDIR}httplib_main.h					\
 									  ${INCDIR}libhttp.h
 
-${OBJDIR}lh_ipt_to_ip6${OBJEXT}						: ${SRCDIR}lh_ipt_to_ip6.c					\
+${OBJDIR}httplib_ipt_to_ip6${OBJEXT}					: ${SRCDIR}httplib_ipt_to_ip6.c					\
 									  ${SRCDIR}httplib_main.h					\
 									  ${INCDIR}libhttp.h

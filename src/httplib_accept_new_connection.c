@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -29,13 +29,13 @@
 #include "httplib_ssl.h"
 
 /*
- * void XX_httplib_accept_new_connection( const struct socket *lostener, struct lh_ctx_t *ctx );
+ * void XX_httplib_accept_new_connection( const struct socket *lostener, struct httplib_context *ctx );
  *
  * The function XX_httplib_accept_new_connection() is used to process new
  * incoming connections to the server.
  */
 
-void XX_httplib_accept_new_connection( const struct socket *listener, struct lh_ctx_t *ctx ) {
+void XX_httplib_accept_new_connection( const struct socket *listener, struct httplib_context *ctx ) {
 
 	struct socket so;
 	char src_addr[IP_ADDR_STR_LEN];
@@ -58,7 +58,7 @@ void XX_httplib_accept_new_connection( const struct socket *listener, struct lh_
 		closesocket( so.sock );
 		so.sock = INVALID_SOCKET;
 	}
-	
+
 	else {
 
 		/*

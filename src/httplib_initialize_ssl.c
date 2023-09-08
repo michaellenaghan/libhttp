@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016-2019 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -45,13 +45,13 @@ static void *cryptolib_dll_handle; /* Store the crypto library handle. */
 
 
 /*
- * int XX_httplib_initialize_ssl( struct lh_ctx_t *ctx );
+ * int XX_httplib_initialize_ssl( struct httplib_context *ctx );
  *
  * The function XX_httplib_initialize_ssl() initializes the use of SSL
  * encrypted communication on the given context.
  */
 
-int XX_httplib_initialize_ssl( struct lh_ctx_t *ctx ) {
+int XX_httplib_initialize_ssl( struct httplib_context *ctx ) {
 
 	int i;
 	size_t size;

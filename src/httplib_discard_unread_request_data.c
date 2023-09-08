@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -28,14 +28,14 @@
 #include "httplib_main.h"
 
 /*
- * void XX_httplib_discard_unread_request_data( const struct lh_ctx_t *ctx, struct lh_con_t *conn );
+ * void XX_httplib_discard_unread_request_data( const struct httplib_context *ctx, struct httplib_connection *conn );
  *
  * The function XX_httplib_discard_unread_request_data() discards any request
  * data on a connection which is not further needed but has alread been
  * received.
  */
 
-void XX_httplib_discard_unread_request_data( const struct lh_ctx_t *ctx, struct lh_con_t *conn ) {
+void XX_httplib_discard_unread_request_data( const struct httplib_context *ctx, struct httplib_connection *conn ) {
 
 	char buf[MG_BUF_LEN];
 	size_t to_read;
@@ -59,7 +59,7 @@ void XX_httplib_discard_unread_request_data( const struct lh_ctx_t *ctx, struct 
 		}
 
 	}
-	
+
 	else {
 		/*
 		 * Not chunked: content length is known

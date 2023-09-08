@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,15 +23,15 @@
 #include "httplib_main.h"
 
 /*
- * enum lh_dbg_t httplib_set_debug_level( struct lh_ctx_t *ctx, enum lh_dbg_t new_level );
+ * enum httplib_debug httplib_set_debug_level( struct httplib_context *ctx, enum httplib_debug new_level );
  *
  * The function httplib_set_debug_level() sets the debug level for a context
  * and returns the previous debug level.
  */
 
-enum lh_dbg_t httplib_set_debug_level( struct lh_ctx_t *ctx, enum lh_dbg_t new_level ) {
+enum httplib_debug httplib_set_debug_level( struct httplib_context *ctx, enum httplib_debug new_level ) {
 
-	enum lh_dbg_t prev_level;
+	enum httplib_debug prev_level;
 
 	if ( ctx == NULL ) return LH_DEBUG_NONE;
 

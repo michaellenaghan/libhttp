@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -28,14 +28,14 @@
 #include "httplib_main.h"
 
 /*
- * bool XX_httplib_set_gpass_option( struct lh_ctx_t *ctx );
+ * bool XX_httplib_set_gpass_option( struct httplib_context *ctx );
  *
  * The function XX_httplib_set_gpass_option() sets the global password file
  * option for a context. The function returns false when an error occurs and
  * true when successful.
  */
 
-bool XX_httplib_set_gpass_option( struct lh_ctx_t *ctx ) {
+bool XX_httplib_set_gpass_option( struct httplib_context *ctx ) {
 
 	struct file file = STRUCT_FILE_INITIALIZER;
 	const char *path;

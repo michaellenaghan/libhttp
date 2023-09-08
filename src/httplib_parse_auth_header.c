@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -31,7 +31,7 @@
  * Return 1 on success. Always initializes the ah structure.
  */
 
-int XX_httplib_parse_auth_header( const struct lh_ctx_t *ctx, struct lh_con_t *conn, char *buf, size_t buf_size, struct ah *ah ) {
+int XX_httplib_parse_auth_header( const struct httplib_context *ctx, struct httplib_connection *conn, char *buf, size_t buf_size, struct ah *ah ) {
 
 	char *name;
 	char *value;
@@ -65,7 +65,7 @@ int XX_httplib_parse_auth_header( const struct lh_ctx_t *ctx, struct lh_con_t *c
 
 		name = XX_httplib_skip_quoted( &s, "=", " ", 0 );
 
-		/* 
+		/*
 		 * Value is either quote-delimited, or ends at first comma or space.
 		 */
 
@@ -75,7 +75,7 @@ int XX_httplib_parse_auth_header( const struct lh_ctx_t *ctx, struct lh_con_t *c
 			value = XX_httplib_skip_quoted( &s, "\"", " ", '\\' );
 			if (s[0] == ',') s++;
 		}
-		
+
 		else value = XX_httplib_skip_quoted( &s, ", ", " ", 0 ); /* IE uses commas, FF uses spaces */
 		if (*name == '\0') break;
 

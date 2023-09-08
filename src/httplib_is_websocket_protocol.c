@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -28,13 +28,13 @@
 #include "httplib_main.h"
 
 /*
- * int XX_httplib_is_websocket_protocol( const struct lh_con_t *conn );
+ * int XX_httplib_is_websocket_protocol( const struct httplib_connection *conn );
  *
  * The function XX_httplib_is_websocket_protocol() checks the request headers
  * to see if the connection is a valid websocket protocol.
  */
 
-bool XX_httplib_is_websocket_protocol( const struct lh_con_t *conn ) {
+bool XX_httplib_is_websocket_protocol( const struct httplib_connection *conn ) {
 
 	const char *upgrade;
 	const char *connection;

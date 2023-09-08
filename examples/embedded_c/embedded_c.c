@@ -44,11 +44,11 @@ int exitNow = 0;
 #endif
 
 int
-ExampleHandler(struct lh_ctx_t *ctx, struct lh_con_t *conn, void *cbdata)
+ExampleHandler(struct httplib_context *ctx, struct httplib_connection *conn, void *cbdata)
 {
 	char body[MAX_BODY];
 	snprintf(
-		body, sizeof(body), 
+		body, sizeof(body),
 		"<!DOCTYPE html>"
 		"<html><body>"
 		"<h2>This is the Example handler</h2>"
@@ -83,11 +83,11 @@ ExampleHandler(struct lh_ctx_t *ctx, struct lh_con_t *conn, void *cbdata)
 
 
 int
-ExitHandler(struct lh_ctx_t *ctx, struct lh_con_t *conn, void *cbdata)
+ExitHandler(struct httplib_context *ctx, struct httplib_connection *conn, void *cbdata)
 {
 	char body[MAX_BODY];
 	snprintf(
-		body, sizeof(body), 
+		body, sizeof(body),
 		"<!DOCTYPE html>"
 		"<html><body>"
 		"<p>Server will shut down.</p>"
@@ -110,11 +110,11 @@ ExitHandler(struct lh_ctx_t *ctx, struct lh_con_t *conn, void *cbdata)
 
 
 int
-AHandler(struct lh_ctx_t *ctx, struct lh_con_t *conn, void *cbdata)
+AHandler(struct httplib_context *ctx, struct httplib_connection *conn, void *cbdata)
 {
 	char body[MAX_BODY];
 	snprintf(
-		body, sizeof(body), 
+		body, sizeof(body),
 		"<!DOCTYPE html>"
 		"<html><body>"
 		"<h2>This is the A handler</h2>"
@@ -134,11 +134,11 @@ AHandler(struct lh_ctx_t *ctx, struct lh_con_t *conn, void *cbdata)
 
 
 int
-ABHandler(struct lh_ctx_t *ctx, struct lh_con_t *conn, void *cbdata)
+ABHandler(struct httplib_context *ctx, struct httplib_connection *conn, void *cbdata)
 {
 	char body[MAX_BODY];
 	snprintf(
-		body, sizeof(body), 
+		body, sizeof(body),
 		"<!DOCTYPE html>"
 		"<html><body>"
 		"<h2>This is the AB handler</h2>"
@@ -158,14 +158,14 @@ ABHandler(struct lh_ctx_t *ctx, struct lh_con_t *conn, void *cbdata)
 
 
 int
-BXHandler(struct lh_ctx_t *ctx, struct lh_con_t *conn, void *cbdata)
+BXHandler(struct httplib_context *ctx, struct httplib_connection *conn, void *cbdata)
 {
 	/* Handler may access the request info using httplib_get_request_info */
-	const struct lh_rqi_t *req_info = httplib_get_request_info(conn);
+	const struct httplib_request_info *req_info = httplib_get_request_info(conn);
 
 	char body[MAX_BODY];
 	snprintf(
-		body, sizeof(body), 
+		body, sizeof(body),
 		"<!DOCTYPE html>"
 		"<html><body>"
 		"<h2>This is the BX handler (callback data %ld)</h2>"
@@ -188,14 +188,14 @@ BXHandler(struct lh_ctx_t *ctx, struct lh_con_t *conn, void *cbdata)
 
 
 int
-FooHandler(struct lh_ctx_t *ctx, struct lh_con_t *conn, void *cbdata)
+FooHandler(struct httplib_context *ctx, struct httplib_connection *conn, void *cbdata)
 {
 	/* Handler may access the request info using httplib_get_request_info */
-	const struct lh_rqi_t *req_info = httplib_get_request_info(conn);
+	const struct httplib_request_info *req_info = httplib_get_request_info(conn);
 
 	char body[MAX_BODY];
 	snprintf(
-		body, sizeof(body), 
+		body, sizeof(body),
 		"<!DOCTYPE html>"
 		"<html><body>"
 		"<h2>This is the Foo handler</h2>"
@@ -219,14 +219,14 @@ FooHandler(struct lh_ctx_t *ctx, struct lh_con_t *conn, void *cbdata)
 
 
 int
-CloseHandler(struct lh_ctx_t *ctx, struct lh_con_t *conn, void *cbdata)
+CloseHandler(struct httplib_context *ctx, struct httplib_connection *conn, void *cbdata)
 {
 	/* Handler may access the request info using httplib_get_request_info */
-	const struct lh_rqi_t *req_info = httplib_get_request_info(conn);
+	const struct httplib_request_info *req_info = httplib_get_request_info(conn);
 
 	char body[MAX_BODY];
 	snprintf(
-		body, sizeof(body), 
+		body, sizeof(body),
 		"<!DOCTYPE html>"
 		"<html><body>"
 		"<h2>This is the Close handler</h2>"
@@ -257,7 +257,7 @@ CloseHandler(struct lh_ctx_t *ctx, struct lh_con_t *conn, void *cbdata)
 
 
 int
-FileHandler(struct lh_ctx_t *ctx, struct lh_con_t *conn, void *cbdata)
+FileHandler(struct httplib_context *ctx, struct httplib_connection *conn, void *cbdata)
 {
 	/* In this handler, we ignore the req_info and send the file "fileName". */
 	const char *fileName = (const char *)cbdata;
@@ -269,8 +269,8 @@ FileHandler(struct lh_ctx_t *ctx, struct lh_con_t *conn, void *cbdata)
 
 
 struct ctx_conn_t {
-	struct lh_ctx_t *ctx;
-	struct lh_con_t *conn;
+	struct httplib_context *ctx;
+	struct httplib_connection *conn;
 	char buffer[MAX_BUFFER];
 };
 
@@ -324,10 +324,10 @@ field_stored(const char *path, int64_t file_size, void *user_data)
 
 
 int
-FormHandler(struct lh_ctx_t *ctx, struct lh_con_t *conn, void *cbdata)
+FormHandler(struct httplib_context *ctx, struct httplib_connection *conn, void *cbdata)
 {
 	/* Handler may access the request info using httplib_get_request_info */
-	const struct lh_rqi_t *req_info = httplib_get_request_info(conn);
+	const struct httplib_request_info *req_info = httplib_get_request_info(conn);
 
 	/* It would be possible to check the request info here before calling
 	 * httplib_handle_form_request. */
@@ -341,7 +341,7 @@ FormHandler(struct lh_ctx_t *ctx, struct lh_con_t *conn, void *cbdata)
 
 	char body[MAX_BODY];
 	snprintf(
-		body, sizeof(body), 
+		body, sizeof(body),
 		"<!DOCTYPE html>"
 		"<html><body>"
 		"<h2>This is the Form handler</h2>"
@@ -365,11 +365,11 @@ FormHandler(struct lh_ctx_t *ctx, struct lh_con_t *conn, void *cbdata)
 
 
 int
-FileUploadForm(struct lh_ctx_t *ctx, struct lh_con_t *conn, void *cbdata)
+FileUploadForm(struct httplib_context *ctx, struct httplib_connection *conn, void *cbdata)
 {
 	char body[MAX_BODY];
 	snprintf(
-		body, sizeof(body), 
+		body, sizeof(body),
 		"<!DOCTYPE html>"
 		"<html><body>"
 		"<h2>This is the File Upload handler</h2>"
@@ -452,10 +452,10 @@ field_get_checksum(const char *key,
 
 
 int
-ChecksumHandler(struct lh_ctx_t *ctx, struct lh_con_t *conn, void *cbdata)
+ChecksumHandler(struct httplib_context *ctx, struct httplib_connection *conn, void *cbdata)
 {
 	/* Handler may access the request info using httplib_get_request_info */
-	const struct lh_rqi_t *req_info = httplib_get_request_info(conn);
+	const struct httplib_request_info *req_info = httplib_get_request_info(conn);
 
 	/* It would be possible to check the request info here before calling
 	 * httplib_handle_form_request. */
@@ -475,8 +475,8 @@ ChecksumHandler(struct lh_ctx_t *ctx, struct lh_con_t *conn, void *cbdata)
 
 		char file[MAX_BODY] = {0};
 		snprintf(
-			file, sizeof(file), 
-			"<p>File \"%s\" (%llu bytes): %02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x</p>", 
+			file, sizeof(file),
+			"<p>File \"%s\" (%llu bytes): %02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x</p>",
 			chksums.file[i].name,
 			chksums.file[i].length,
 			(unsigned int)digest[ 0],
@@ -501,7 +501,7 @@ ChecksumHandler(struct lh_ctx_t *ctx, struct lh_con_t *conn, void *cbdata)
 
 	char body[MAX_BODY];
 	snprintf(
-		body, sizeof(body), 
+		body, sizeof(body),
 		"<!DOCTYPE html>"
 		"<html><body>"
 		"<h2>This is the File Checksum handler</h2>"
@@ -525,10 +525,10 @@ ChecksumHandler(struct lh_ctx_t *ctx, struct lh_con_t *conn, void *cbdata)
 
 
 int
-CookieHandler(struct lh_ctx_t *ctx, struct lh_con_t *conn, void *cbdata)
+CookieHandler(struct httplib_context *ctx, struct httplib_connection *conn, void *cbdata)
 {
 	/* Handler may access the request info using httplib_get_request_info */
-	const struct lh_rqi_t *req_info = httplib_get_request_info(conn);
+	const struct httplib_request_info *req_info = httplib_get_request_info(conn);
 
 	const char *cookie = httplib_get_header(conn, "Cookie");
 
@@ -545,7 +545,7 @@ CookieHandler(struct lh_ctx_t *ctx, struct lh_con_t *conn, void *cbdata)
 	if (first) {
 		char body[MAX_BODY];
 		snprintf(
-			body, sizeof(body), 
+			body, sizeof(body),
 			"<!DOCTYPE html>"
 			"<html><body>"
 			"<h2>This is the Cookie handler</h2>"
@@ -577,7 +577,7 @@ CookieHandler(struct lh_ctx_t *ctx, struct lh_con_t *conn, void *cbdata)
 	} else {
 		char body[MAX_BODY];
 		snprintf(
-			body, sizeof(body), 
+			body, sizeof(body),
 			"<!DOCTYPE html>"
 			"<html><body>"
 			"<h2>This is the Cookie handler</h2>"
@@ -606,11 +606,11 @@ CookieHandler(struct lh_ctx_t *ctx, struct lh_con_t *conn, void *cbdata)
 
 
 int
-WebSocketStartHandler(struct lh_ctx_t *ctx, struct lh_con_t *conn, void *cbdata)
+WebSocketStartHandler(struct httplib_context *ctx, struct httplib_connection *conn, void *cbdata)
 {
 	char body[MAX_BODY];
 	snprintf(
-		body, sizeof(body), 
+		body, sizeof(body),
 #ifdef USE_WEBSOCKET
 		"<!DOCTYPE html>"
 		"<html>"
@@ -666,7 +666,7 @@ WebSocketStartHandler(struct lh_ctx_t *ctx, struct lh_con_t *conn, void *cbdata)
 #define MAX_WS_CLIENTS (5)
 
 struct t_ws_client {
-	struct lh_con_t *conn;
+	struct httplib_connection *conn;
 	int state;
 } static ws_clients[MAX_WS_CLIENTS];
 
@@ -680,7 +680,7 @@ struct t_ws_client {
 
 
 int
-WebSocketConnectHandler(struct lh_ctx_t *ctx, const struct lh_con_t *conn, void *cbdata)
+WebSocketConnectHandler(struct httplib_context *ctx, const struct httplib_connection *conn, void *cbdata)
 {
 	int reject = 1;
 	int i;
@@ -688,7 +688,7 @@ WebSocketConnectHandler(struct lh_ctx_t *ctx, const struct lh_con_t *conn, void 
 	httplib_lock_context(ctx);
 	for (i = 0; i < MAX_WS_CLIENTS; i++) {
 		if (ws_clients[i].conn == NULL) {
-			ws_clients[i].conn = (struct lh_con_t *)conn;
+			ws_clients[i].conn = (struct httplib_connection *)conn;
 			ws_clients[i].state = 1;
 			httplib_set_user_connection_data(ws_clients[i].conn, (void *)(ws_clients + i));
 			reject = 0;
@@ -703,7 +703,7 @@ WebSocketConnectHandler(struct lh_ctx_t *ctx, const struct lh_con_t *conn, void 
 
 
 void
-WebSocketReadyHandler(struct lh_ctx_t *ctx, struct lh_con_t *conn, void *cbdata)
+WebSocketReadyHandler(struct httplib_context *ctx, struct httplib_connection *conn, void *cbdata)
 {
 	const char *text = "Hello from the websocket ready handler";
 	struct t_ws_client *client = httplib_get_user_connection_data(conn);
@@ -718,7 +718,7 @@ WebSocketReadyHandler(struct lh_ctx_t *ctx, struct lh_con_t *conn, void *cbdata)
 
 
 int
-WebsocketDataHandler(struct lh_ctx_t *ctx, struct lh_con_t *conn, int bits, char *data, size_t len, void *cbdata)
+WebsocketDataHandler(struct httplib_context *ctx, struct httplib_connection *conn, int bits, char *data, size_t len, void *cbdata)
 {
 	struct t_ws_client *client = httplib_get_user_connection_data(conn);
 	ASSERT(client->conn == conn);
@@ -735,7 +735,7 @@ WebsocketDataHandler(struct lh_ctx_t *ctx, struct lh_con_t *conn, int bits, char
 
 
 void
-WebSocketCloseHandler(struct lh_ctx_t *ctx, const struct lh_con_t *conn, void *cbdata)
+WebSocketCloseHandler(struct httplib_context *ctx, const struct httplib_connection *conn, void *cbdata)
 {
 	struct t_ws_client *client = httplib_get_user_connection_data(conn);
 	ASSERT(client->conn == conn);
@@ -751,7 +751,7 @@ WebSocketCloseHandler(struct lh_ctx_t *ctx, const struct lh_con_t *conn, void *c
 
 
 void
-InformWebsockets(struct lh_ctx_t *ctx)
+InformWebsockets(struct httplib_context *ctx)
 {
 	static unsigned long cnt = 0;
 	char text[32];
@@ -826,7 +826,7 @@ get_dh2236()
 
 #ifndef NO_SSL
 int
-init_ssl(struct lh_ctx_t *ctx, void *ssl_context, void *user_data)
+init_ssl(struct httplib_context *ctx, void *ssl_context, void *user_data)
 {
 	/* Add application specific SSL initialization */
 	struct ssl_ctx_st *ssl_ctx = (struct ssl_ctx_st *)ssl_context;
@@ -857,7 +857,7 @@ init_ssl(struct lh_ctx_t *ctx, void *ssl_context, void *user_data)
 int
 main(int argc, char *argv[])
 {
-	const struct lh_opt_t options[] = {
+	const struct httplib_option options[] = {
 	    {"document_root", DOCUMENT_ROOT},
 	    {"enable_directory_listing", "yes"},
 	    {"error_log_file", "error.log"},
@@ -874,9 +874,9 @@ main(int argc, char *argv[])
 	    },
 #endif
 	    0};
-	struct lh_clb_t callbacks;
-	struct lh_ctx_t *ctx;
-	struct lh_slp_t ports[32];
+	struct httplib_callbacks callbacks;
+	struct httplib_context *ctx;
+	struct httplib_server_ports ports[32];
 	int port_cnt, n;
 	int err = 0;
 

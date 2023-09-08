@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016-2019 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -67,8 +67,8 @@ LIBHTTP_THREAD XX_httplib_worker_thread( void *thread_func_param ) {
 
 static void worker_thread_run( struct worker_thread_args *thread_args ) {
 
-	struct lh_ctx_t *ctx;
-	struct lh_con_t *conn;
+	struct httplib_context *ctx;
+	struct httplib_connection *conn;
 	struct httplib_workerTLS tls;
 #if !defined(NO_SSL)
 	union {
@@ -92,7 +92,7 @@ static void worker_thread_run( struct worker_thread_args *thread_args ) {
 
 	conn = httplib_calloc( 1, sizeof(*conn) + MAX_REQUEST_SIZE );
 	if ( conn == NULL ) httplib_cry( LH_DEBUG_ERROR, ctx, NULL, "%s: cannot create new connection struct, OOM", __func__ );
-	
+
 	else {
 		httplib_pthread_setspecific( XX_httplib_sTlsKey, &tls );
 
@@ -151,7 +151,7 @@ static void worker_thread_run( struct worker_thread_args *thread_args ) {
 				}
 #endif
 			}
-			
+
 			else XX_httplib_process_new_connection( ctx, conn );
 
 			XX_httplib_close_connection( ctx, conn );

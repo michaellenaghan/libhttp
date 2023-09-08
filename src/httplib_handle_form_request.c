@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2016 the Civetweb developers
  *
@@ -26,7 +26,7 @@
 
 #include "httplib_main.h"
 
-static int url_encoded_field_found( struct lh_ctx_t *ctx, const struct lh_con_t *conn, const char *key, size_t key_len, const char *filename, size_t filename_len, char *path, size_t path_len, struct httplib_form_data_handler *fdh ) {
+static int url_encoded_field_found( struct httplib_context *ctx, const struct httplib_connection *conn, const char *key, size_t key_len, const char *filename, size_t filename_len, char *path, size_t path_len, struct httplib_form_data_handler *fdh ) {
 
 	char key_dec[1024];
 	char filename_dec[1024];
@@ -77,7 +77,7 @@ static int url_encoded_field_found( struct lh_ctx_t *ctx, const struct lh_con_t 
 }
 
 
-static int url_encoded_field_get( struct lh_ctx_t *ctx, const struct lh_con_t *conn, const char *key, size_t key_len, const char *value, size_t value_len, struct httplib_form_data_handler *fdh ) {
+static int url_encoded_field_get( struct httplib_context *ctx, const struct httplib_connection *conn, const char *key, size_t key_len, const char *value, size_t value_len, struct httplib_form_data_handler *fdh ) {
 
 	char key_dec[1024];
 
@@ -98,7 +98,7 @@ static int url_encoded_field_get( struct lh_ctx_t *ctx, const struct lh_con_t *c
 	httplib_url_decode( key, (int)key_len, key_dec, (int)sizeof(key_dec), 1 );
 
 	value_dec_len = httplib_url_decode( value, (int)value_len, value_dec, (int)value_len + 1, 1 );
-	ret           = fdh->field_get( key_dec, value_dec, (size_t)value_dec_len, fdh->user_data ); 
+	ret           = fdh->field_get( key_dec, value_dec, (size_t)value_dec_len, fdh->user_data );
 	value_dec     = httplib_free( value_dec );
 
 	return ret;
@@ -106,7 +106,7 @@ static int url_encoded_field_get( struct lh_ctx_t *ctx, const struct lh_con_t *c
 }  /* url_encoded_field_get */
 
 
-static int unencoded_field_get(const struct lh_con_t *conn,
+static int unencoded_field_get(const struct httplib_connection *conn,
                     const char *key,
                     size_t key_len,
                     const char *value,
@@ -124,7 +124,7 @@ static int unencoded_field_get(const struct lh_con_t *conn,
 }  /* unencoded_field_get */
 
 
-static int field_stored( const struct lh_con_t *conn, const char *path, int64_t file_size, struct httplib_form_data_handler *fdh ) {
+static int field_stored( const struct httplib_connection *conn, const char *path, int64_t file_size, struct httplib_form_data_handler *fdh ) {
 
 	/*
 	 * Equivalent to "upload" callback of "httplib_upload".
@@ -155,7 +155,7 @@ static const char * search_boundary(const char *buf, size_t buf_len, const char 
 }
 
 
-int httplib_handle_form_request( struct lh_ctx_t *ctx, struct lh_con_t *conn, struct httplib_form_data_handler *fdh ) {
+int httplib_handle_form_request( struct httplib_context *ctx, struct httplib_connection *conn, struct httplib_form_data_handler *fdh ) {
 
 	const char *content_type;
 	char path[512];
@@ -242,7 +242,7 @@ int httplib_handle_form_request( struct lh_ctx_t *ctx, struct lh_con_t *conn, st
 				vallen = next - val;
 				next++;
 			}
-			
+
 			else {
 				vallen = (ptrdiff_t)strlen(val);
 				next = val + vallen;
@@ -288,7 +288,7 @@ int httplib_handle_form_request( struct lh_ctx_t *ctx, struct lh_con_t *conn, st
 
 							field_stored( conn, path, file_size, fdh );
 						}
-						
+
 						else {
 							httplib_cry( LH_DEBUG_ERROR, ctx, conn, "%s: Error saving file %s", __func__, path );
 							XX_httplib_remove_bad_file( ctx, conn, path );
@@ -416,7 +416,7 @@ int httplib_handle_form_request( struct lh_ctx_t *ctx, struct lh_con_t *conn, st
 					next++;
 					end_of_key_value_pair_found = 1;
 				}
-				
+
 				else {
 					vallen = (ptrdiff_t)strlen(val);
 					next = val + vallen;
@@ -492,7 +492,7 @@ int httplib_handle_form_request( struct lh_ctx_t *ctx, struct lh_con_t *conn, st
 					 */
 					field_stored( conn, path, file_size, fdh );
 				}
-				
+
 				else {
 					httplib_cry( LH_DEBUG_ERROR, ctx, conn, "%s: Error saving file %s", __func__, path );
 					XX_httplib_remove_bad_file( ctx, conn, path );
@@ -524,7 +524,7 @@ int httplib_handle_form_request( struct lh_ctx_t *ctx, struct lh_con_t *conn, st
 		const char *boundary;
 		size_t bl;
 		ptrdiff_t used;
-		struct lh_rqi_t part_header;
+		struct httplib_request_info part_header;
 		char *hbuf;
 		char *hend;
 		char *fbeg;
@@ -818,7 +818,7 @@ int httplib_handle_form_request( struct lh_ctx_t *ctx, struct lh_con_t *conn, st
 
 						field_stored( conn, path, file_size, fdh );
 					}
-					
+
 					else {
 						httplib_cry( LH_DEBUG_ERROR, ctx, conn, "%s: Error saving file %s", __func__, path );
 						XX_httplib_remove_bad_file( ctx, conn, path );

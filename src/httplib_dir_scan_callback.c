@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -27,7 +27,7 @@
 
 #include "httplib_main.h"
 
-void XX_httplib_dir_scan_callback( struct lh_ctx_t *ctx, struct de *de, void *data ) {
+void XX_httplib_dir_scan_callback( struct httplib_context *ctx, struct de *de, void *data ) {
 
 	struct dir_scan_data *dsd;
 	struct de* old_entries;
@@ -53,7 +53,7 @@ void XX_httplib_dir_scan_callback( struct lh_ctx_t *ctx, struct de *de, void *da
 
 		dsd->num_entries = 0;
 	}
-	
+
 	else {
 		dsd->entries[dsd->num_entries].file_name = httplib_strdup( de->file_name );
 		dsd->entries[dsd->num_entries].file      = de->file;

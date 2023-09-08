@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -28,13 +28,13 @@
 #include "httplib_main.h"
 
 /*
- * void httplib_stop( struct lh_ctx_t *ctx );
+ * void httplib_stop( struct httplib_context *ctx );
  *
  * The function httplib_stop() is used to stop an instance of a LibHTTP server
  * completely and return all its resources.
  */
 
-void httplib_stop( struct lh_ctx_t *ctx ) {
+void httplib_stop( struct httplib_context *ctx ) {
 
 	pthread_t mt;
 

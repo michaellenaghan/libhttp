@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -28,13 +28,13 @@
 #include "httplib_main.h"
 
 /*
- * bool XX_httplib_forward_body_data( struct lh_ctx_t *ctx, struct lh_con_t *conn, FILE *fp, SOCKET sock, SSL *ssl );
+ * bool XX_httplib_forward_body_data( struct httplib_context *ctx, struct httplib_connection *conn, FILE *fp, SOCKET sock, SSL *ssl );
  *
  * The function XX_httplib_forward_body_data() forwards body data to the
  * client. The function returns true if successful, and false otherwise.
  */
 
-bool XX_httplib_forward_body_data( struct lh_ctx_t *ctx, struct lh_con_t *conn, FILE *fp, SOCKET sock, SSL *ssl ) {
+bool XX_httplib_forward_body_data( struct httplib_context *ctx, struct httplib_connection *conn, FILE *fp, SOCKET sock, SSL *ssl ) {
 
 	const char *expect;
 	const char *body;
@@ -66,7 +66,7 @@ bool XX_httplib_forward_body_data( struct lh_ctx_t *ctx, struct lh_con_t *conn, 
 		XX_httplib_send_http_error( ctx, conn, 411, "%s", "Error: Client did not specify content length" );
 
 	}
-	
+
 	else if ( expect != NULL  &&  httplib_strcasecmp( expect, "100-continue" ) != 0 ) {
 
 		/*
@@ -76,14 +76,14 @@ bool XX_httplib_forward_body_data( struct lh_ctx_t *ctx, struct lh_con_t *conn, 
 		XX_httplib_send_http_error( ctx, conn, 417, "Error: Can not fulfill expectation %s", expect );
 
 	}
-	
+
 	else {
 		if ( expect != NULL ) {
 
 			httplib_printf( ctx, conn, "%s", "HTTP/1.1 100 Continue\r\n\r\n" );
 			conn->status_code = 100;
 		}
-		
+
 		else conn->status_code = 200;
 
 		buffered_len = (int64_t)(conn->data_len) - (int64_t)conn->request_len - conn->consumed_content;

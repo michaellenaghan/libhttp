@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -28,13 +28,13 @@
 #include "httplib_main.h"
 
 /*
- * void XX_httplib_delete_file( struct lh_ctx_t *ctx, struct lh_con_t *conn, const char *path );
+ * void XX_httplib_delete_file( struct httplib_context *ctx, struct httplib_connection *conn, const char *path );
  *
  * The function XX_httplib_delete_file() deletes a file after a request over a
  * connection.
  */
 
-void XX_httplib_delete_file( struct lh_ctx_t *ctx, struct lh_con_t *conn, const char *path ) {
+void XX_httplib_delete_file( struct httplib_context *ctx, struct httplib_connection *conn, const char *path ) {
 
 	struct de de;
 	char error_string[ERROR_STRING_LEN];
@@ -78,7 +78,7 @@ void XX_httplib_delete_file( struct lh_ctx_t *ctx, struct lh_con_t *conn, const 
 
 			XX_httplib_send_http_error( ctx, conn, 204, "%s", "" );
 		}
-		
+
 		else {
 			/*
 			 * Delete is not successful: Return 500 (Server error).

@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -28,14 +28,14 @@
 #include "httplib_main.h"
 
 /*
- * int64_t httplib_store_body( struct lh_ctx_t *ctx, struct lh_con_t *conn, const char *path );
+ * int64_t httplib_store_body( struct httplib_context *ctx, struct httplib_connection *conn, const char *path );
  *
  * The function httplib_store_body() stores in incoming body for future
  * processing. The function returns the number of bytes actually read, or a
  * negative number to indicate a failure.
  */
 
-int64_t httplib_store_body( struct lh_ctx_t *ctx, struct lh_con_t *conn, const char *path ) {
+int64_t httplib_store_body( struct httplib_context *ctx, struct httplib_connection *conn, const char *path ) {
 
 	char buf[MG_BUF_LEN];
 	int64_t len;

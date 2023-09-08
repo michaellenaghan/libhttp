@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -35,9 +35,9 @@
  * and 0 otherwise.
  */
 
-int XX_httplib_get_request_handler( struct lh_ctx_t *ctx, struct lh_con_t *conn, int handler_type, httplib_request_handler *handler, httplib_websocket_connect_handler *connect_handler, httplib_websocket_ready_handler *ready_handler, httplib_websocket_data_handler *data_handler, httplib_websocket_close_handler *close_handler, httplib_authorization_handler *auth_handler, void **cbdata ) {
+int XX_httplib_get_request_handler( struct httplib_context *ctx, struct httplib_connection *conn, int handler_type, httplib_request_handler *handler, httplib_websocket_connect_handler *connect_handler, httplib_websocket_ready_handler *ready_handler, httplib_websocket_data_handler *data_handler, httplib_websocket_close_handler *close_handler, httplib_authorization_handler *auth_handler, void **cbdata ) {
 
-	const struct lh_rqi_t *request_info;
+	const struct httplib_request_info *request_info;
 	const char *uri;
 	size_t urilen;
 	struct httplib_handler_info *tmp_rh;
@@ -97,7 +97,7 @@ int XX_httplib_get_request_handler( struct lh_ctx_t *ctx, struct lh_con_t *conn,
 					*data_handler    = tmp_rh->data_handler;
 					*close_handler   = tmp_rh->close_handler;
 				}
-				
+
 				else if ( handler_type == REQUEST_HANDLER ) *handler      = tmp_rh->handler;
 				else                                        *auth_handler = tmp_rh->auth_handler;
 
@@ -126,7 +126,7 @@ int XX_httplib_get_request_handler( struct lh_ctx_t *ctx, struct lh_con_t *conn,
 					*data_handler    = tmp_rh->data_handler;
 					*close_handler   = tmp_rh->close_handler;
 				}
-				
+
 				else if ( handler_type == REQUEST_HANDLER ) *handler      = tmp_rh->handler;
 				else                                        *auth_handler = tmp_rh->auth_handler;
 

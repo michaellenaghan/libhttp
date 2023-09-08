@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -40,8 +40,8 @@
 LIBHTTP_THREAD XX_httplib_websocket_client_thread( void *data ) {
 
 	struct websocket_client_thread_data *cdata;
-	struct lh_ctx_t *ctx;
-	struct lh_con_t *conn;
+	struct httplib_context *ctx;
+	struct httplib_connection *conn;
 
 	if ( (cdata = data       ) == NULL ) return LIBHTTP_THREAD_RETNULL;
 	if ( (conn  = cdata->conn) == NULL ) return LIBHTTP_THREAD_RETNULL;

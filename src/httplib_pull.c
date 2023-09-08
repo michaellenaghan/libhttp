@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -34,7 +34,7 @@
  * Return negative value on error, or number of bytes read on success.
  */
 
-int XX_httplib_pull( const struct lh_ctx_t *ctx, FILE *fp, struct lh_con_t *conn, char *buf, int len, double timeout ) {
+int XX_httplib_pull( const struct httplib_context *ctx, FILE *fp, struct httplib_connection *conn, char *buf, int len, double timeout ) {
 
 	int nread;
 	int err;
@@ -70,7 +70,7 @@ int XX_httplib_pull( const struct lh_ctx_t *ctx, FILE *fp, struct lh_con_t *conn
 
 #ifndef NO_SSL
 		}
-		
+
 		else if ( conn->ssl != NULL ) {
 
 			nread = SSL_read( conn->ssl, buf, len );
@@ -81,14 +81,14 @@ int XX_httplib_pull( const struct lh_ctx_t *ctx, FILE *fp, struct lh_con_t *conn
 
 				if      ( err == SSL_ERROR_SYSCALL    &&  nread == -1                 ) err   = ERRNO;
 				else if ( err == SSL_ERROR_WANT_READ  ||  err == SSL_ERROR_WANT_WRITE ) nread = 0;
-				
+
 				else return -1;
 			}
 			else err = 0;
 #endif
 
 		}
-		
+
 		else {
 			nread = (int)recv( conn->client.sock, buf, (len_t)len, 0 );
 			err   = (nread < 0) ? ERRNO : 0;
@@ -120,14 +120,14 @@ int XX_httplib_pull( const struct lh_ctx_t *ctx, FILE *fp, struct lh_con_t *conn
 
 				return -1;
 			}
-			
+
 			else if ( err == WSAETIMEDOUT ) {
 
 				/*
 				 * timeout is handled by the while loop
 				 */
 			}
-			
+
 			else return -1;
 #else
 			/*
@@ -153,7 +153,7 @@ int XX_httplib_pull( const struct lh_ctx_t *ctx, FILE *fp, struct lh_con_t *conn
 				 */
 
 			}
-			
+
 			else return -1;
 #endif
 		}

@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -28,13 +28,13 @@
 #include "httplib_main.h"
 
 /*
- * void httplib_send_file( struct lh_ctx_t *ctx, struct lh_con_t *conn, const char *path, const char *mime_type, const char *additional_headers );
+ * void httplib_send_file( struct httplib_context *ctx, struct httplib_connection *conn, const char *path, const char *mime_type, const char *additional_headers );
  *
  * The function httplib_send_file() sends a file to the other peer. Optionally
  * the MIME type and additional headers can be specified.
  */
 
-void httplib_send_file( struct lh_ctx_t *ctx, struct lh_con_t *conn, const char *path, const char *mime_type, const char *additional_headers ) {
+void httplib_send_file( struct httplib_context *ctx, struct httplib_connection *conn, const char *path, const char *mime_type, const char *additional_headers ) {
 
 	struct file file = STRUCT_FILE_INITIALIZER;
 
@@ -47,10 +47,10 @@ void httplib_send_file( struct lh_ctx_t *ctx, struct lh_con_t *conn, const char 
 			if ( ctx->enable_directory_listing ) XX_httplib_handle_directory_request( ctx, conn, path );
 			else XX_httplib_send_http_error( ctx, conn, 403, "%s", "Error: Directory listing denied" );
 		}
-		
+
 		else XX_httplib_handle_static_file_request( ctx, conn, path, &file, mime_type, additional_headers );
 	}
-	
+
 	else XX_httplib_send_http_error( ctx, conn, 404, "%s", "Error: File not found" );
 
 }  /* httplib_send_file */

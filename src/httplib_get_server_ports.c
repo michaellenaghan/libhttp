@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -27,7 +27,7 @@
 
 #include "httplib_main.h"
 
-int httplib_get_server_ports( const struct lh_ctx_t *ctx, int size, struct lh_slp_t *ports ) {
+int httplib_get_server_ports( const struct httplib_context *ctx, int size, struct httplib_server_ports *ports ) {
 
 	int i;
 	int cnt;

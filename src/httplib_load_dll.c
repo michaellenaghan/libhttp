@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -60,7 +60,7 @@ static int dlclose( void *handle ) {
 #endif  /* _WIN32 */
 
 /*
- * XX_httplib_load_dll( struct lh_ctx_t *ctx, const char *dll_name, struct ssl_func *sw );
+ * XX_httplib_load_dll( struct httplib_context *ctx, const char *dll_name, struct ssl_func *sw );
  *
  * The function XX_httplib_load_dll() is used to load the SSL library in a
  * dynamic way. The function returns either a handle to the dll, or NULL if an
@@ -69,7 +69,7 @@ static int dlclose( void *handle ) {
 
 #if !defined(NO_SSL)  &&  !defined(NO_SSL_DL)
 
-void *XX_httplib_load_dll( struct lh_ctx_t *ctx, const char *dll_name, struct ssl_func *sw ) {
+void *XX_httplib_load_dll( struct httplib_context *ctx, const char *dll_name, struct ssl_func *sw ) {
 
 	union {
 		void *p;
@@ -114,7 +114,7 @@ void *XX_httplib_load_dll( struct lh_ctx_t *ctx, const char *dll_name, struct ss
 
 			return NULL;
 		}
-		
+
 		else fp->ptr = u.fp;
 	}
 

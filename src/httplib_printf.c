@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -27,7 +27,7 @@
 
 #include "httplib_main.h"
 
-int httplib_printf( const struct lh_ctx_t *ctx, struct lh_con_t *conn, const char *fmt, ... ) {
+int httplib_printf( const struct httplib_context *ctx, struct httplib_connection *conn, const char *fmt, ... ) {
 
 	va_list ap;
 	int result;

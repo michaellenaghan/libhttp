@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -32,7 +32,7 @@
  * or search for .htpasswd in the requested directory.
  */
 
-void XX_httplib_open_auth_file( struct lh_ctx_t *ctx, struct lh_con_t *conn, const char *path, struct file *filep ) {
+void XX_httplib_open_auth_file( struct httplib_context *ctx, struct httplib_connection *conn, const char *path, struct file *filep ) {
 
 	char name[PATH_MAX];
 	char error_string[ERROR_STRING_LEN];
@@ -63,7 +63,7 @@ void XX_httplib_open_auth_file( struct lh_ctx_t *ctx, struct lh_con_t *conn, con
 		 */
 
 	}
-	
+
 	else if ( XX_httplib_stat( ctx, conn, path, &file )  &&  file.is_directory ) {
 
 		XX_httplib_snprintf( ctx, conn, &truncated, name, sizeof(name), "%s/%s", path, PASSWORDS_FILE_NAME );
@@ -73,7 +73,7 @@ void XX_httplib_open_auth_file( struct lh_ctx_t *ctx, struct lh_con_t *conn, con
 			httplib_cry( LH_DEBUG_INFO, ctx, conn, "%s: fopen(%s): %s", __func__, name, httplib_error_string( ERRNO, error_string, ERROR_STRING_LEN ) );
 		}
 	}
-	
+
 	else {
 		/*
 		 * Try to find .htpasswd in requested directory.

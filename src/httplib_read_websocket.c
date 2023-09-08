@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -28,12 +28,12 @@
 #include "httplib_main.h"
 
 /*
- * void XX_httplib_read_websocket( struct lh_ctx_t *ctx, struct lh_con_t *conn, httplib_websocket_data_handler ws_data_handler, void *calback_data );
+ * void XX_httplib_read_websocket( struct httplib_context *ctx, struct httplib_connection *conn, httplib_websocket_data_handler ws_data_handler, void *calback_data );
  *
  * The function XX_httplib_read_websocket() reads from a websocket connection.
  */
 
-void XX_httplib_read_websocket( struct lh_ctx_t *ctx, struct lh_con_t *conn, httplib_websocket_data_handler ws_data_handler, void *callback_data ) {
+void XX_httplib_read_websocket( struct httplib_context *ctx, struct httplib_connection *conn, httplib_websocket_data_handler ws_data_handler, void *callback_data ) {
 
 	/* Pointer to the beginning of the portion of the incoming websocket
 	 * message queue.
@@ -44,7 +44,7 @@ void XX_httplib_read_websocket( struct lh_ctx_t *ctx, struct lh_con_t *conn, htt
 	int error;
 	int exit_by_callback;
 
-	/* 
+	/*
 	 * body_len is the length of the entire queue in bytes
 	 * len is the length of the current message
 	 * data_len is the length of the current message's data payload
@@ -112,13 +112,13 @@ void XX_httplib_read_websocket( struct lh_ctx_t *ctx, struct lh_con_t *conn, htt
 				data_len   = len;
 				header_len = 2 + mask_len;
 			}
-			
+
 			else if ( len == 126  &&  body_len >= mask_len+4 ) {
 
 				header_len = mask_len+4;
 				data_len   = (((size_t)buf[2]) << 8) + buf[3];
 			}
-			
+
 			else if ( body_len >= 10+mask_len+10 ) {
 
 				header_len = mask_len+10;
@@ -192,7 +192,7 @@ void XX_httplib_read_websocket( struct lh_ctx_t *ctx, struct lh_con_t *conn, htt
 
 					len += (size_t)n;
 				}
-				
+
 				if (error) {
 
 					httplib_cry( LH_DEBUG_ERROR, ctx, conn, "%s: websocket pull failed; closing connection", __func__ );
@@ -201,7 +201,7 @@ void XX_httplib_read_websocket( struct lh_ctx_t *ctx, struct lh_con_t *conn, htt
 
 				conn->data_len = conn->request_len;
 			}
-			
+
 			else {
 				/*
 				 * current mask and opcode, overwritten by
@@ -263,7 +263,7 @@ void XX_httplib_read_websocket( struct lh_ctx_t *ctx, struct lh_con_t *conn, htt
 			 * Not breaking the loop, process next websocket frame.
 			 */
 		}
-		
+
 		else {
 			/*
 			 * Read from the socket into the next available location in the

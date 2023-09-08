@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -28,7 +28,7 @@
 #include "httplib_main.h"
 
 /*
- * bool XX_httplib_fopen( struct lh_ctx_t *ctx, const struct lh_con_t *conn, const char *path, const char *mode, struct file *filep );
+ * bool XX_httplib_fopen( struct httplib_context *ctx, const struct httplib_connection *conn, const char *path, const char *mode, struct file *filep );
  *
  * The function XX_httplib_fopen() can be used to open a file which is either
  * in memory or on the disk. The path is in UTF-8 and therefore needs
@@ -44,7 +44,7 @@
  * of the same structure (bad cohesion).
  */
 
-bool XX_httplib_fopen( struct lh_ctx_t *ctx, const struct lh_con_t *conn, const char *path, const char *mode, struct file *filep ) {
+bool XX_httplib_fopen( struct httplib_context *ctx, const struct httplib_connection *conn, const char *path, const char *mode, struct file *filep ) {
 
 	struct stat st;
 

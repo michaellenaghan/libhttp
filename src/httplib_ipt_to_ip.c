@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,9 +23,9 @@
 #include "httplib_main.h"
 
 /*
- * char *lh_ipt_to_ip( const struct lh_ip_t *in, char *buffer, size_t buflen )
+ * char *httplib_ipt_to_ip( const struct httplib_ipt *in, char *buffer, size_t buflen )
  *
- * The function lh_ipt_to_ip() converts an IP address encoded in a lh_ip_t
+ * The function httplib_ipt_to_ip() converts an IP address encoded in a httplib_ipt
  * structure to a string representation. This can either be an IPv4 or IPv6
  * address, depending on the value of the IP address. Compression of IPv6
  * addresses is controlled with a parameter and another parameter selects if
@@ -39,7 +39,7 @@
  * In hybrid notation, the IP address is returned as ::ffff:aaa.bbb.ccc.ddd
  */
 
-LIBHTTP_API char *lh_ipt_to_ip( const struct lh_ip_t *in, char *buffer, size_t buflen, bool compress, bool hybrid ) {
+LIBHTTP_API char *httplib_ipt_to_ip( const struct httplib_ipt *in, char *buffer, size_t buflen, bool compress, bool hybrid ) {
 
 	bool ipv4;
 
@@ -48,7 +48,7 @@ LIBHTTP_API char *lh_ipt_to_ip( const struct lh_ip_t *in, char *buffer, size_t b
 	ipv4 = ( (  in->high_quad                         == 0x0000000000000000ull )  &&
 	         ( (in->low_quad & 0xFFFFFFFF00000000ull) == 0x0000FFFF00000000ull )      );
 
-	if ( ipv4 ) return lh_ipt_to_ip4( in, buffer, buflen, hybrid   );
-	else        return lh_ipt_to_ip6( in, buffer, buflen, compress );
+	if ( ipv4 ) return httplib_ipt_to_ip4( in, buffer, buflen, hybrid   );
+	else        return httplib_ipt_to_ip6( in, buffer, buflen, compress );
 
-}  /* lh_ipt_to_ip */
+}  /* httplib_ipt_to_ip */

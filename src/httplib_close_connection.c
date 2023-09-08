@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -30,13 +30,13 @@
 #include "httplib_ssl.h"
 
 /*
- * void XX_httplib_close_connection( struct lh_ctx_t *ctx, struct lh_con_t *conn );
+ * void XX_httplib_close_connection( struct httplib_context *ctx, struct httplib_connection *conn );
  *
  * The function XX_httplib_close_connection() is the internal function which
  * does the heavy lifting to close a connection.
  */
 
-void XX_httplib_close_connection( struct lh_ctx_t *ctx, struct lh_con_t *conn ) {
+void XX_httplib_close_connection( struct httplib_context *ctx, struct httplib_connection *conn ) {
 
 	if ( ctx == NULL  ||  conn == NULL ) return;
 
@@ -82,16 +82,16 @@ void XX_httplib_close_connection( struct lh_ctx_t *ctx, struct lh_con_t *conn ) 
 
 
 /*
- * void httplib_close_connection( const struct lh_ctx_t *ctx, struct lh_con_t *conn );
+ * void httplib_close_connection( const struct httplib_context *ctx, struct httplib_connection *conn );
  *
  * The function httplib_close_connection() closes the connection passed as a
  * parameter to this function. The function does not return a success or
  * failure value.
  */
 
-void httplib_close_connection( struct lh_ctx_t *ctx, struct lh_con_t *conn ) {
+void httplib_close_connection( struct httplib_context *ctx, struct httplib_connection *conn ) {
 
-	struct lh_ctx_t *client_ctx;
+	struct httplib_context *client_ctx;
 	int i;
 
 	if ( ctx == NULL  ||  conn == NULL ) return;
@@ -106,7 +106,7 @@ void httplib_close_connection( struct lh_ctx_t *ctx, struct lh_con_t *conn ) {
 
 #ifndef NO_SSL
 	if ( conn->client_ssl_ctx != NULL ) {
-		
+
 		SSL_CTX_free( (SSL_CTX *)conn->client_ssl_ctx );
 		conn->client_ssl_ctx = NULL;
 	}

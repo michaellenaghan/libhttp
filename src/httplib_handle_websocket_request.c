@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -34,7 +34,7 @@
  * request on a connection.
  */
 
-void XX_httplib_handle_websocket_request( struct lh_ctx_t *ctx, struct lh_con_t *conn, const char *path, int is_callback_resource, httplib_websocket_connect_handler ws_connect_handler, httplib_websocket_ready_handler ws_ready_handler, httplib_websocket_data_handler ws_data_handler, httplib_websocket_close_handler ws_close_handler, void *cbData ) {
+void XX_httplib_handle_websocket_request( struct httplib_context *ctx, struct httplib_connection *conn, const char *path, int is_callback_resource, httplib_websocket_connect_handler ws_connect_handler, httplib_websocket_ready_handler ws_ready_handler, httplib_websocket_data_handler ws_data_handler, httplib_websocket_close_handler ws_close_handler, void *cbData ) {
 
 	const char *websock_key;
 	const char *version;
@@ -138,7 +138,7 @@ void XX_httplib_handle_websocket_request( struct lh_ctx_t *ctx, struct lh_con_t 
 	if ( ! is_callback_resource ) {
 
 		/*
-		 * There is no callback. 
+		 * There is no callback.
 		 */
 		/* Reply with a 404 Not Found or with nothing at all?
 		 * TODO (mid): check the websocket standards, how to reply to

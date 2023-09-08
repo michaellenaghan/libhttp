@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -31,14 +31,14 @@
 static bool parse_port_string( const struct vec *vec, struct socket *so, int *ip_version );
 
 /*
- * int XX_httplib_set_ports_option( struct lh_ctx_t *ctx );
+ * int XX_httplib_set_ports_option( struct httplib_context *ctx );
  *
  * The function XX_httplib_set_ports_option() set the port options for a
  * context. The function returns the total number of ports opened, or 0 if no
  * ports have been opened.
  */
 
-int XX_httplib_set_ports_option( struct lh_ctx_t *ctx ) {
+int XX_httplib_set_ports_option( struct httplib_context *ctx ) {
 
 	const char *list;
 	char error_string[ERROR_STRING_LEN];
@@ -319,7 +319,7 @@ static bool parse_port_string( const struct vec *vec, struct socket *so, int *ip
 
 		*ip_version = 4 + 6;
 	}
-	
+
 	else if ( sscanf( vec->ptr, "%u%n", &port, &len ) == 1 ) {
 
 		/*
@@ -330,7 +330,7 @@ static bool parse_port_string( const struct vec *vec, struct socket *so, int *ip
 		*ip_version = 4;
 
 	}
-	
+
 	else {
 		/*
 		 * Parsing failure. Make port invalid.

@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -40,7 +40,7 @@
  * has been established.
  */
 
-bool XX_httplib_connect_socket( struct lh_ctx_t *ctx, const char *host, int port, int use_ssl, SOCKET *sock, union usa *sa ) {
+bool XX_httplib_connect_socket( struct httplib_context *ctx, const char *host, int port, int use_ssl, SOCKET *sock, union usa *sa ) {
 
 	int ip_ver;
 	char error_string[ERROR_STRING_LEN];
@@ -79,13 +79,13 @@ bool XX_httplib_connect_socket( struct lh_ctx_t *ctx, const char *host, int port
 		sa->sin.sin_port = htons((uint16_t)port);
 		ip_ver = 4;
 	}
-	
+
 	else if ( XX_httplib_inet_pton( AF_INET6, host, &sa->sin6, sizeof(sa->sin6) ) ) {
 
 		sa->sin6.sin6_port = htons( (uint16_t)port );
 		ip_ver = 6;
 	}
-	
+
 	else if ( host[0] == '[' ) {
 
 		/*

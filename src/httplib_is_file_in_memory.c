@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -28,13 +28,13 @@
 #include "httplib_main.h"
 
 /*
- * bool XX_httplib_is_file_in_memory( struct lh_ctx_t *ctx, const struct lh_con_t *conn, const char *path, struct file *filep );
+ * bool XX_httplib_is_file_in_memory( struct httplib_context *ctx, const struct httplib_connection *conn, const char *path, struct file *filep );
  *
  * The function XX_httplib_is_file_in_memory() returns true, if a file defined
  * by a specific path is located in memory.
  */
 
-bool XX_httplib_is_file_in_memory( struct lh_ctx_t *ctx, const struct lh_con_t *conn, const char *path, struct file *filep ) {
+bool XX_httplib_is_file_in_memory( struct httplib_context *ctx, const struct httplib_connection *conn, const char *path, struct file *filep ) {
 
 	size_t size;
 

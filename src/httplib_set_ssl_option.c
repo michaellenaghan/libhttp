@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016-2019 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -33,13 +33,13 @@
 static void *ssllib_dll_handle;    /* Store the ssl library handle. */
 
 /*
- * bool XX_httplib_set_ssl_option( struct lh_ctx_t *ctx );
+ * bool XX_httplib_set_ssl_option( struct httplib_context *ctx );
  *
  * The function XX_httplib_set_ssl_option() loads the SSL library in a dynamic
  * way. The function returns false if an error occured, otherwise true.
  */
 
-bool XX_httplib_set_ssl_option( struct lh_ctx_t *ctx ) {
+bool XX_httplib_set_ssl_option( struct httplib_context *ctx ) {
 
 	const char *pem;
 	int callback_ret;

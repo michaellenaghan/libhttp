@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -29,30 +29,30 @@
 #include "httplib_pthread.h"
 #include "httplib_ssl.h"
 
-static struct lh_con_t *	httplib_connect_client_impl( struct lh_ctx_t *ctx, const struct httplib_client_options *client_options, int use_ssl );
+static struct httplib_connection *	httplib_connect_client_impl( struct httplib_context *ctx, const struct httplib_client_options *client_options, int use_ssl );
 
 /*
- * struct lh_con_t *httplib_connect_client_secure( struct lh_ctx_t *ctx, const struct httplib_client_options *client options );
+ * struct httplib_connection *httplib_connect_client_secure( struct httplib_context *ctx, const struct httplib_client_options *client options );
  *
  * The function httplib_connect_client_secure() creates a secure connection as a
  * client to a remote server and returns a pointer to the connection
  * information, or NULL if an error occured.
  */
 
-LIBHTTP_API struct lh_con_t *httplib_connect_client_secure( struct lh_ctx_t *ctx, const struct httplib_client_options *client_options ) {
+LIBHTTP_API struct httplib_connection *httplib_connect_client_secure( struct httplib_context *ctx, const struct httplib_client_options *client_options ) {
 
 	return httplib_connect_client_impl( ctx, client_options, true );
 
 }  /* httplib_connect_client_secure */
 
 /*
- * struct lh_con_t *httplib_connect_client( struct lh_ctx_t *ctx, const char *host, int port, int use_ssl );
+ * struct httplib_connection *httplib_connect_client( struct httplib_context *ctx, const char *host, int port, int use_ssl );
  *
  * The function httplib_connect_client() connects to a remote server as a client
  * with the options of the connection provided as parameters.
  */
 
-struct lh_con_t *httplib_connect_client( struct lh_ctx_t *ctx, const char *host, int port, int use_ssl ) {
+struct httplib_connection *httplib_connect_client( struct httplib_context *ctx, const char *host, int port, int use_ssl ) {
 
 	struct httplib_client_options opts;
 
@@ -67,15 +67,15 @@ struct lh_con_t *httplib_connect_client( struct lh_ctx_t *ctx, const char *host,
 
 
 /*
- * static struct lh_con_t *httplib_connect_client_impl( struct lh_ctx_t *ctx, const struct httplib_client_options *client_options, int use_ssl );
+ * static struct httplib_connection *httplib_connect_client_impl( struct httplib_context *ctx, const struct httplib_client_options *client_options, int use_ssl );
  *
  * The function httplib_connect_client_impl() is the background function doing the
  * heavy lifting to make connections as a client to remote servers.
  */
 
-static struct lh_con_t *httplib_connect_client_impl( struct lh_ctx_t *ctx, const struct httplib_client_options *client_options, int use_ssl ) {
+static struct httplib_connection *httplib_connect_client_impl( struct httplib_context *ctx, const struct httplib_client_options *client_options, int use_ssl ) {
 
-	struct lh_con_t *conn;
+	struct httplib_connection *conn;
 	SOCKET sock;
 	union usa sa;
 	socklen_t len;
@@ -85,14 +85,14 @@ static struct lh_con_t *httplib_connect_client_impl( struct lh_ctx_t *ctx, const
 	if ( ctx == NULL ) return NULL;
 
 	if ( ! XX_httplib_connect_socket( ctx, client_options->host, client_options->port, use_ssl, &sock, &sa ) ) return NULL;
-	
+
 	if ( (conn = httplib_calloc( 1, sizeof(*conn) + MAX_REQUEST_SIZE )) == NULL ) {
 
 		httplib_cry( LH_DEBUG_ERROR, ctx, NULL, "%s: calloc(): %s", __func__, httplib_error_string( ERRNO, error_string, ERROR_STRING_LEN ) );
 		closesocket( sock );
 	}
 #ifndef NO_SSL
-	
+
 	else if ( use_ssl  &&  (conn->client_ssl_ctx = SSL_CTX_new(SSLv23_client_method())) == NULL ) {
 
 		httplib_cry( LH_DEBUG_ERROR, ctx, conn, "%s: SSL_CTX_new error", __func__ );
@@ -147,7 +147,7 @@ static struct lh_con_t *httplib_connect_client_impl( struct lh_ctx_t *ctx, const
 				SSL_CTX_load_verify_locations( conn->client_ssl_ctx, client_options->server_cert, NULL );
 				SSL_CTX_set_verify( conn->client_ssl_ctx, SSL_VERIFY_PEER, NULL );
 			}
-			
+
 			else SSL_CTX_set_verify( conn->client_ssl_ctx, SSL_VERIFY_NONE, NULL );
 
 			if ( ! XX_httplib_sslize( ctx, conn, conn->client_ssl_ctx, SSL_connect ) ) {

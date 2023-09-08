@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -27,7 +27,7 @@
 
 #include "httplib_main.h"
 
-int XX_httplib_pull_all( const struct lh_ctx_t *ctx, FILE *fp, struct lh_con_t *conn, char *buf, int len ) {
+int XX_httplib_pull_all( const struct httplib_context *ctx, FILE *fp, struct httplib_connection *conn, char *buf, int len ) {
 
 	int n;
 	int nread;
@@ -47,9 +47,9 @@ int XX_httplib_pull_all( const struct lh_ctx_t *ctx, FILE *fp, struct lh_con_t *
 			if ( nread == 0 ) nread = n; /* Propagate the error */
 			break;
 		}
-		
+
 		else if (n == 0) break; /* No more data to read */
-		
+
 		else {
 			conn->consumed_content += n;
 			nread                  += n;

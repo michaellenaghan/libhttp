@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -28,13 +28,13 @@
 #include "httplib_main.h"
 
 /*
- * void XX_httplib_handle_file_based_request( struct lh_ctx_t *ctx, struct lh_con_t *conn, const char *path, struct file *file );
+ * void XX_httplib_handle_file_based_request( struct httplib_context *ctx, struct httplib_connection *conn, const char *path, struct file *file );
  *
  * The function XX_httplib_handle_file_based_request() handles a request which
  * involves a file.
  */
 
-void XX_httplib_handle_file_based_request( struct lh_ctx_t *ctx, struct lh_con_t *conn, const char *path, struct file *file ) {
+void XX_httplib_handle_file_based_request( struct httplib_context *ctx, struct httplib_connection *conn, const char *path, struct file *file ) {
 
 	if ( ctx == NULL  ||  conn == NULL ) return;
 
@@ -42,7 +42,7 @@ void XX_httplib_handle_file_based_request( struct lh_ctx_t *ctx, struct lh_con_t
 
 		XX_httplib_handle_not_modified_static_file_request( ctx, conn, file );
 	}
-	
+
 	else XX_httplib_handle_static_file_request( ctx, conn, path, file, NULL, NULL );
 
 }  /* XX_httplib_handle_file_based_request */

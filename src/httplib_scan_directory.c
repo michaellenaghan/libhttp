@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -27,7 +27,7 @@
 
 #include "httplib_main.h"
 
-int XX_httplib_scan_directory( struct lh_ctx_t *ctx, struct lh_con_t *conn, const char *dir, void *data, void (*cb)(struct lh_ctx_t *ctx, struct de *, void *) ) {
+int XX_httplib_scan_directory( struct httplib_context *ctx, struct httplib_connection *conn, const char *dir, void *data, void (*cb)(struct httplib_context *ctx, struct de *, void *) ) {
 
 	char path[PATH_MAX];
 	char error_string[ERROR_STRING_LEN];

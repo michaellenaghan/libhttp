@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016-2019 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -31,12 +31,12 @@
 #include "httplib_ssl.h"
 
 /*
- * int XX_httplib_sslize( lh_con_t *conn, SSL_CTX *s, int (*func)(SSL *) );
+ * int XX_httplib_sslize( httplib_connection *conn, SSL_CTX *s, int (*func)(SSL *) );
  *
  * The fucntion XX_httplib_sslize() initiates SSL on a connection.
  */
 
-int XX_httplib_sslize( struct lh_ctx_t *ctx, struct lh_con_t *conn, SSL_CTX *s, int (*func)(SSL *) ) {
+int XX_httplib_sslize( struct httplib_context *ctx, struct httplib_connection *conn, SSL_CTX *s, int (*func)(SSL *) ) {
 
 	int ret;
 	int err;

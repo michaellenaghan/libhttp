@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,7 +23,7 @@
 #include "httplib_main.h"
 
 /*
- * struct lh_ctx_t *httplib_create_client_context( const struct lh_clb_t *callbacks, const struct lh_opt_t *options );
+ * struct httplib_context *httplib_create_client_context( const struct httplib_callbacks *callbacks, const struct httplib_option *options );
  *
  * The function httplib_create_client_context() creates a context to be used
  * for one simultaneous client connection. It is not possible to use one client
@@ -31,13 +31,13 @@
  * contains SSL context information which is specific for one connection.
  */
 
-struct lh_ctx_t *httplib_create_client_context( const struct lh_clb_t *callbacks, const struct lh_opt_t *options ) {
+struct httplib_context *httplib_create_client_context( const struct httplib_callbacks *callbacks, const struct httplib_option *options ) {
 
-	struct lh_ctx_t *ctx;
-	void (*exit_callback)(struct lh_ctx_t *ctx);
+	struct httplib_context *ctx;
+	void (*exit_callback)(struct httplib_context *ctx);
 
 	exit_callback = NULL;
-	ctx           = httplib_calloc( 1, sizeof(struct lh_ctx_t) );
+	ctx           = httplib_calloc( 1, sizeof(struct httplib_context) );
 	if ( ctx == NULL ) return NULL;
 
 	if ( callbacks != NULL ) {

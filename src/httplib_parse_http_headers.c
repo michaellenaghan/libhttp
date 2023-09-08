@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -28,7 +28,7 @@
 #include "httplib_main.h"
 
 /*
- * int XX_httplib_parse_http_headers( char **buf, struct lh_rqi_t *ri );
+ * int XX_httplib_parse_http_headers( char **buf, struct httplib_request_info *ri );
  *
  * The function XX_httplib_parse_http_headers() parses the HTTP headers from
  * the given buffer. The buf pointer is advanced to the point where parsing
@@ -36,7 +36,7 @@
  * headers read is returned, or a negative value if an error occured.
  */
 
-int XX_httplib_parse_http_headers( char **buf, struct lh_rqi_t *ri ) {
+int XX_httplib_parse_http_headers( char **buf, struct httplib_request_info *ri ) {
 
 	int i;
 
@@ -80,7 +80,7 @@ int XX_httplib_parse_http_headers( char **buf, struct lh_rqi_t *ri ) {
 			(*buf)[1] = 0;
 			*buf     += 2;
 		}
-		
+
 		else {
 			*buf = dp;
 			break;

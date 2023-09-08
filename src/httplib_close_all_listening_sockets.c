@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -28,13 +28,13 @@
 #include "httplib_main.h"
 
 /*
- * void XX_httplib_close_all_listening_sockets( struct lh_ctx_t *ctx );
+ * void XX_httplib_close_all_listening_sockets( struct httplib_context *ctx );
  *
  * The function XX_httplib_close_all_listening_sockets() closes all listening
  * sockets of a given context.
  */
 
-void XX_httplib_close_all_listening_sockets( struct lh_ctx_t *ctx ) {
+void XX_httplib_close_all_listening_sockets( struct httplib_context *ctx ) {
 
 	unsigned int i;
 

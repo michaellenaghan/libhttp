@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -27,7 +27,7 @@
 
 #include "httplib_main.h"
 
-int XX_httplib_send_no_cache_header( const struct lh_ctx_t *ctx, struct lh_con_t *conn ) {
+int XX_httplib_send_no_cache_header( const struct httplib_context *ctx, struct httplib_connection *conn ) {
 
 	/*
 	 * Send all current and obsolete cache opt-out directives.

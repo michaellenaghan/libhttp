@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -25,9 +25,9 @@
 #define BUFLEN		64
 
 /*
- * char *lh_ipt_to_ip6( const struct lh_ip_t *in, char *buffer, size_t buflen, bool compress );
+ * char *httplib_ipt_to_ip6( const struct httplib_ipt *in, char *buffer, size_t buflen, bool compress );
  *
- * The function lh_ipt_to_ip6() converts an IP address encoded in a lh_ip_t
+ * The function httplib_ipt_to_ip6() converts an IP address encoded in a httplib_ipt
  * structure to an IPv6 address. The function can generate both a version with
  * all zeros, and a compressed version where the maximum possible amount of
  * zero values has been eliminated. If an error occurs, NULL is returned,
@@ -36,7 +36,7 @@
  * NUL terminator.
  */
 
-LIBHTTP_API char *lh_ipt_to_ip6( const struct lh_ip_t *in, char *buffer, size_t buflen, bool compress ) {
+LIBHTTP_API char *httplib_ipt_to_ip6( const struct httplib_ipt *in, char *buffer, size_t buflen, bool compress ) {
 
 	int a;
 	int cur_loc;
@@ -196,4 +196,4 @@ end:
 
 	return buffer;
 
-}  /* lh_ipt_to_ip6 */
+}  /* httplib_ipt_to_ip6 */

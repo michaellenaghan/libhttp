@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -28,15 +28,15 @@
 #include "httplib_main.h"
 
 /*
- * struct lh_con_t *httplib_download();
+ * struct httplib_connection *httplib_download();
  *
  * The function httplib_download() is used to download a file from a remote location
  * and returns a pointer to the connection on success, or NULL on error.
  */
 
-struct lh_con_t *httplib_download( struct lh_ctx_t *ctx, const char *host, int port, int use_ssl, const char *fmt, ... ) {
+struct httplib_connection *httplib_download( struct httplib_context *ctx, const char *host, int port, int use_ssl, const char *fmt, ... ) {
 
-	struct lh_con_t *conn;
+	struct httplib_connection *conn;
 	va_list ap;
 	int i;
 	int reqerr;
@@ -52,7 +52,7 @@ struct lh_con_t *httplib_download( struct lh_ctx_t *ctx, const char *host, int p
 		i = XX_httplib_vprintf( ctx, conn, fmt, ap );
 
 		if ( i <= 0 ) httplib_cry( LH_DEBUG_ERROR, ctx, conn, "%s: error sending request", __func__ );
-		
+
 		else {
 			XX_httplib_getreq( ctx, conn, &reqerr );
 

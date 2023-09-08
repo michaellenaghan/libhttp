@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -53,7 +53,7 @@ typedef struct tagTHREADNAME_INFO {
 
 #endif  /* __linux__ */
 
-void XX_httplib_set_thread_name( struct lh_ctx_t *ctx, const char *name ) {
+void XX_httplib_set_thread_name( struct httplib_context *ctx, const char *name ) {
 
 	char thread_name[16+1]; /* 16 = Max. thread length in Linux/OSX/.. */
 

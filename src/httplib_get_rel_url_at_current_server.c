@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -28,13 +28,13 @@
 #include "httplib_main.h"
 
 /*
- * const char *XX_httplib_get_rel_url_at_current_server( const struct lh_ctx_t *ctx, const char *uri, const struct lh_con_t *conn );
+ * const char *XX_httplib_get_rel_url_at_current_server( const struct httplib_context *ctx, const char *uri, const struct httplib_connection *conn );
  *
  * The function XX_httplib_get_rel_url_at_current_server() returns the relative
  * uri at the current server.
  */
 
-const char *XX_httplib_get_rel_url_at_current_server( const struct lh_ctx_t *ctx, const char *uri, const struct lh_con_t *conn ) {
+const char *XX_httplib_get_rel_url_at_current_server( const struct httplib_context *ctx, const char *uri, const struct httplib_connection *conn ) {
 
 	const char *server_domain;
 	size_t server_domain_len;
@@ -65,7 +65,7 @@ const char *XX_httplib_get_rel_url_at_current_server( const struct lh_ctx_t *ctx
 
 	for (i=0; XX_httplib_abs_uri_protocols[i].proto != NULL; i++) {
 
-		if ( httplib_strncasecmp( uri, XX_httplib_abs_uri_protocols[i].proto, XX_httplib_abs_uri_protocols[i].proto_len ) == 0 ) { 
+		if ( httplib_strncasecmp( uri, XX_httplib_abs_uri_protocols[i].proto, XX_httplib_abs_uri_protocols[i].proto_len ) == 0 ) {
 
 			hostbegin = uri + XX_httplib_abs_uri_protocols[i].proto_len;
 			hostend   = strchr( hostbegin, '/' );
@@ -79,7 +79,7 @@ const char *XX_httplib_get_rel_url_at_current_server( const struct lh_ctx_t *ctx
 				port = XX_httplib_abs_uri_protocols[i].default_port;
 				request_domain_len = (size_t)(hostend - hostbegin);
 			}
-			
+
 			else {
 				port = strtoul( portbegin + 1, &portend, 10 );
 				if ( portend != hostend  ||  ! port  ||  ! XX_httplib_is_valid_port( port ) ) return NULL;

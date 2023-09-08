@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -48,7 +48,7 @@ static bool path_is_ok( const char *path ) {
 }
 
 
-int XX_httplib_stat( struct lh_ctx_t *ctx, struct lh_con_t *conn, const char *path, struct file *filep ) {
+int XX_httplib_stat( struct httplib_context *ctx, struct httplib_connection *conn, const char *path, struct file *filep ) {
 
 	wchar_t wbuf[PATH_MAX];
 	WIN32_FILE_ATTRIBUTE_DATA info;
@@ -121,7 +121,7 @@ int XX_httplib_stat( struct lh_ctx_t *ctx, struct lh_con_t *conn, const char *pa
 
 #else
 
-int XX_httplib_stat( struct lh_ctx_t *ctx, struct lh_con_t *conn, const char *path, struct file *filep ) {
+int XX_httplib_stat( struct httplib_context *ctx, struct httplib_connection *conn, const char *path, struct file *filep ) {
 
 	struct stat st;
 

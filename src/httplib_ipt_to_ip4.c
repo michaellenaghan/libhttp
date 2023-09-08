@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,9 +23,9 @@
 #include "httplib_main.h"
 
 /*
- * char *lh_ipt_to_ip4( const struct lh_ip_t *in, char *buffer, size_t buflen, bool hybrid );
+ * char *httplib_ipt_to_ip4( const struct httplib_ipt *in, char *buffer, size_t buflen, bool hybrid );
  *
- * The function lh_ipt_to_ip4() converts an IP address encoded in a lh_ip_t
+ * The function httplib_ipt_to_ip4() converts an IP address encoded in a httplib_ipt
  * structure to an IPv4 address. The address must be encoded in ::FFFF:0:0/96
  * format. If an error occurs, NULL is returned, otherwise a string containing
  * the IP address. The caller must supply a buffer which is large enough to
@@ -34,7 +34,7 @@
  * In hybrid notation, the IP address is returned as ::ffff:aaa.bbb.ccc.ddd
  */
 
-LIBHTTP_API char *lh_ipt_to_ip4( const struct lh_ip_t *in, char *buffer, size_t buflen, bool hybrid ) {
+LIBHTTP_API char *httplib_ipt_to_ip4( const struct httplib_ipt *in, char *buffer, size_t buflen, bool hybrid ) {
 
 	bool truncated;
 
@@ -59,4 +59,4 @@ LIBHTTP_API char *lh_ipt_to_ip4( const struct lh_ip_t *in, char *buffer, size_t 
 
 	return buffer;
 
-}  /* lh_ipt_to_ip4 */
+}  /* httplib_ipt_to_ip4 */
