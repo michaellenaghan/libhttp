@@ -61,7 +61,6 @@ make build
 | ------------------------- | ---------------------------------------- |
 | CRYPTO_LIB=libcrypto.so.0 | system versioned CRYPTO library          |
 | SSL_LIB=libssl.so.0       | use versioned SSL library                |
-| PREFIX=/usr/local         | sets the install directory               |
 | COPT='-DNO_SSL'           | method to insert compile flags           |
 
 Note that the WITH_* options used for *make* are not identical to the

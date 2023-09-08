@@ -12,7 +12,7 @@ include $(TOP)/resources/Makefile.in-os
 
 all: test
 
-test: buildoptions buildlibs buildinstall
+test: buildoptions buildlibs
 test: buildexamples threaded
 
 ifeq ($(TARGET_OS),OSX)
@@ -51,10 +51,6 @@ threaded:
 	$(MAKE) -j 8 -C $(TOP) clean
 	$(MAKE) -j 8 -C $(TOP) build
 
-buildinstall:
-	@echo "================"
-	$(MAKE) -C $(TOP) clean install PREFIX=$(TEST_OUT)
-
 buildlibs:
 	@echo "================"
 	$(MAKE) -C $(TOP) clean lib
@@ -66,4 +62,4 @@ clean:
 	$(MAKE) -C $(TOP) clean
 	rm -rf $(TOP)/$(TEST_OUT)
 
-.PHONY: all buildoptions buildinstall clean os linux
+.PHONY: all buildoptions clean os linux
