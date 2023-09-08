@@ -5,7 +5,7 @@
 ### Fields
 
 | Field | Description |
-| :--- | :--- | 
+| :--- | :--- |
 |**`begin_request`**|**`int (*begin_request)( struct httplib_connection * conn );`**|
 | |The `begin_request()` callback function is called when LibHTTP has received a new HTTP request. If the callback function does not process the request, it should return 0. In that case LibHTTP will handle the request with the default callback routine. If the callback function returns a value between 1 and 999, LibHTTP does nothing and the callback function should do all the processing, including sending the proper HTTP headers etc. Starting at LibHTTP version 1.7, the function `begin_request()` is called before any authorization is done. If an authorization check is required, `request_handler()` should be used instead. The return value of the callback function is not only used to signal LibHTTP to not further process the request. The returned value is also stored as HTTP status code in the access log. |
 |**`connection_close`**|**`void (*connection_close)( const struct httplib_connection *conn );`**|
@@ -24,7 +24,7 @@
 | |The callback function `init_thread()` is called when a new thread is created by LibHTTP. The `thread_type` parameter indicates which type of thread has been created. following thread types are recognized:|
 | |**0** - The master thread is created |
 | |**1** - A worker thread which handles client connections has been created|
-| |**2** - An internal helper thread (timer thread) has been created|
+| |**2** - An internal helper thread has been created|
 |**`log_access`**|**`int (*log_access)( const struct httplib_connection *conn, const char *message );`**|
 | |The callback function `log_access()` is called when LibHTTP is about to log a message. If the callback function returns 0, LibHTTP will use the default internal access log routines to log the access. If a non-zero value is returned, LibHTTP assumes that access logging has already been done and no further action is performed.|
 |**`log_message`**|**`int (*log_message)( const struct httplib_context *ctx, const struct httplib_connection *conn, const char *message );`**|

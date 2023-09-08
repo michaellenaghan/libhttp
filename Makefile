@@ -85,7 +85,7 @@ EXEEXT =
 OFLAG  = -o
 XFLAG  = -o
 AR     = ar
-ARQC   = qc 
+ARQC   = qc
 ARQ    = q
 RANLIB = ranlib
 LIBS   = -lpthread -lm
@@ -344,7 +344,6 @@ OBJLIST =									\
 	${OBJDIR}httplib_suggest_connection_header${OBJEXT}			\
 	${OBJDIR}httplib_system_exit${OBJEXT}					\
 	${OBJDIR}httplib_system_init${OBJEXT}					\
-	${OBJDIR}httplib_timer${OBJEXT}						\
 	${OBJDIR}httplib_tls_dtor${OBJEXT}					\
 	${OBJDIR}httplib_uninitialize_ssl${OBJEXT}				\
 	${OBJDIR}httplib_url_decode${OBJEXT}					\
@@ -1226,10 +1225,6 @@ ${OBJDIR}httplib_system_init${OBJEXT}					: ${SRCDIR}httplib_system_init.c				\
 									  ${INCDIR}libhttp.h
 
 ${OBJDIR}httplib_suggest_connection_header${OBJEXT}			: ${SRCDIR}httplib_suggest_connection_header.c			\
-									  ${SRCDIR}httplib_main.h					\
-									  ${INCDIR}libhttp.h
-
-${OBJDIR}httplib_timer${OBJEXT}						: ${SRCDIR}httplib_timer.c					\
 									  ${SRCDIR}httplib_main.h					\
 									  ${INCDIR}libhttp.h
 

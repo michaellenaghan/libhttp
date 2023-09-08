@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016-2019 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -106,7 +106,7 @@ struct lh_ctx_t *httplib_start( const struct lh_clb_t *callbacks, void *user_dat
 		}
 #endif  /* NO_SSL */
 	}
-	
+
 	else {
 		/*
 		 * TODO (low): istead of sleeping, check if XX_httplib_sTlsKey is already
@@ -186,10 +186,6 @@ struct lh_ctx_t *httplib_start( const struct lh_clb_t *callbacks, void *user_dat
 #endif
 	}
 
-#if defined(USE_TIMERS)
-	if ( timers_init( ctx ) != 0 ) return XX_httplib_abort_start( ctx, "Error creating timers" );
-#endif
-
 	/*
 	 * Context has been created - init user libraries
 	 *
@@ -214,7 +210,7 @@ struct lh_ctx_t *httplib_start( const struct lh_clb_t *callbacks, void *user_dat
 	for (i=0; i<ctx->num_threads; i++) {
 
 		struct worker_thread_args *wta;
-	       
+
 		wta = httplib_calloc( 1, sizeof(struct worker_thread_args) );
 
 		if ( wta != NULL ) {
@@ -232,7 +228,7 @@ struct lh_ctx_t *httplib_start( const struct lh_clb_t *callbacks, void *user_dat
 			wta = httplib_free( wta );
 
 			if ( i > 0 ) httplib_cry( LH_DEBUG_ERROR, ctx, NULL, "%s: cannot start worker thread %i: error %ld", __func__, i+1, (long)ERRNO );
-			
+
 			else return XX_httplib_abort_start( ctx, "Cannot create worker threads: error %ld", (long)ERRNO );
 
 			break;

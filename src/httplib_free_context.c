@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -70,10 +70,6 @@ void XX_httplib_free_context( struct lh_ctx_t *ctx ) {
 
 	httplib_pthread_mutex_destroy( & ctx->nonce_mutex );
 
-#if defined(USE_TIMERS)
-	timers_exit( ctx );
-#endif
-
 	XX_httplib_free_config_options( ctx );
 
 	/*
@@ -96,7 +92,7 @@ void XX_httplib_free_context( struct lh_ctx_t *ctx ) {
 	 */
 
 	if ( ctx->ssl_ctx != NULL ) {
-		
+
 		SSL_CTX_free( ctx->ssl_ctx );
 		ctx->ssl_ctx = NULL;
 	}
