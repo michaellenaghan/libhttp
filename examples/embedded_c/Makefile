@@ -26,8 +26,8 @@ HTTP_LIB = libhttp.a
 
 # If you do those things SSL works, but given those things the default is `-DNO_SSL`.
 
-# CFLAGS =          -DUSE_IPV6 -DUSE_SSL_DH -I$(TOP)/$(INCLUDE)
-  CFLAGS = -DNO_SSL -DUSE_IPV6              -I$(TOP)/$(INCLUDE)
+# CFLAGS =          -DUSE_IPV6 -I$(TOP)/$(INCLUDE)
+  CFLAGS = -DNO_SSL -DUSE_IPV6 -I$(TOP)/$(INCLUDE)
 
 # DFLAGS='         -DUSE_STACK_SIZE=102400 -I...'
   DFLAGS='-DNO_SSL -DUSE_STACK_SIZE=102400      '
