@@ -17,36 +17,25 @@
 
 #include "libhttp.h"
 
+#include "../../src/extern_md5.c"
 
-#define DOCUMENT_ROOT "."
-#ifdef NO_SSL
-#ifdef USE_IPV6
-#define PORT "[::]:8888"
-#else
-#define PORT "8888"
-#endif
-#else
-#ifdef USE_IPV6
-#define PORT "[::]:8888r,[::]:8843s,8884"
-#else
-#define PORT "8888r,8843s"
-#endif
-#endif
-#define EXAMPLE_URI "/example"
-#define EXIT_URI "/exit"
-#define MAX_BODY 4096
-#define MAX_BUFFER 4096
-int exitNow = 0;
+
+#define MAX_BUFFER 4096  // Unsafe use of fixed-sized buffers!
+
+
+static int exitNow = 0;
+
 
 #ifdef _WIN32
 #define sleep(x)  Sleep((x) * 1000)
 #define snprintf(...)  _snprintf(__VA_ARGS__)
 #endif
 
-int
+
+static int
 ExampleHandler(struct httplib_context *ctx, struct httplib_connection *conn, void *cbdata)
 {
-	char body[MAX_BODY];
+	char body[MAX_BUFFER];
 	snprintf(
 		body, sizeof(body),
 		"<!DOCTYPE html>"
@@ -64,7 +53,7 @@ ExampleHandler(struct httplib_context *ctx, struct httplib_connection *conn, voi
 		"<p>To see a page from the Cookie handler click <a href=\"cookie\">here</a> (url: \"cookie\")</p>"
 		"<p>To see a page from the Checksum handler (an example for parsing files on the fly) click <a href=\"on_the_fly_form\">here</a> (url: \"on_the_fly_form\")</p>"
 		"<p>To test websocket handler click <a href=\"/websocket\">here</a> (url: \"websocket\")</p>"
-		"<p>To exit click <a href=\"" EXIT_URI "\">here</a> (url: \"exit\")</p>"
+		"<p>To exit click <a href=\"/exit\">here</a> (url: \"exit\")</p>"
 		"</body></html>");
 
 	httplib_printf(ctx, conn,
@@ -80,10 +69,10 @@ ExampleHandler(struct httplib_context *ctx, struct httplib_connection *conn, voi
 }
 
 
-int
+static int
 ExitHandler(struct httplib_context *ctx, struct httplib_connection *conn, void *cbdata)
 {
-	char body[MAX_BODY];
+	char body[MAX_BUFFER];
 	snprintf(
 		body, sizeof(body),
 		"<!DOCTYPE html>"
@@ -107,10 +96,10 @@ ExitHandler(struct httplib_context *ctx, struct httplib_connection *conn, void *
 }
 
 
-int
+static int
 AHandler(struct httplib_context *ctx, struct httplib_connection *conn, void *cbdata)
 {
-	char body[MAX_BODY];
+	char body[MAX_BUFFER];
 	snprintf(
 		body, sizeof(body),
 		"<!DOCTYPE html>"
@@ -131,10 +120,10 @@ AHandler(struct httplib_context *ctx, struct httplib_connection *conn, void *cbd
 }
 
 
-int
+static int
 ABHandler(struct httplib_context *ctx, struct httplib_connection *conn, void *cbdata)
 {
-	char body[MAX_BODY];
+	char body[MAX_BUFFER];
 	snprintf(
 		body, sizeof(body),
 		"<!DOCTYPE html>"
@@ -155,13 +144,13 @@ ABHandler(struct httplib_context *ctx, struct httplib_connection *conn, void *cb
 }
 
 
-int
+static int
 BXHandler(struct httplib_context *ctx, struct httplib_connection *conn, void *cbdata)
 {
 	/* Handler may access the request info using httplib_get_request_info */
 	const struct httplib_request_info *req_info = httplib_get_request_info(conn);
 
-	char body[MAX_BODY];
+	char body[MAX_BUFFER];
 	snprintf(
 		body, sizeof(body),
 		"<!DOCTYPE html>"
@@ -185,13 +174,13 @@ BXHandler(struct httplib_context *ctx, struct httplib_connection *conn, void *cb
 }
 
 
-int
+static int
 FooHandler(struct httplib_context *ctx, struct httplib_connection *conn, void *cbdata)
 {
 	/* Handler may access the request info using httplib_get_request_info */
 	const struct httplib_request_info *req_info = httplib_get_request_info(conn);
 
-	char body[MAX_BODY];
+	char body[MAX_BUFFER];
 	snprintf(
 		body, sizeof(body),
 		"<!DOCTYPE html>"
@@ -216,13 +205,10 @@ FooHandler(struct httplib_context *ctx, struct httplib_connection *conn, void *c
 }
 
 
-int
+static int
 CloseHandler(struct httplib_context *ctx, struct httplib_connection *conn, void *cbdata)
 {
-	/* Handler may access the request info using httplib_get_request_info */
-	const struct httplib_request_info *req_info = httplib_get_request_info(conn);
-
-	char body[MAX_BODY];
+	char body[MAX_BUFFER];
 	snprintf(
 		body, sizeof(body),
 		"<!DOCTYPE html>"
@@ -250,11 +236,12 @@ CloseHandler(struct httplib_context *ctx, struct httplib_connection *conn, void 
 	sleep(10);
 
 	printf("CloseHandler: return\n");
+
 	return 200;
 }
 
 
-int
+static int
 FileHandler(struct httplib_context *ctx, struct httplib_connection *conn, void *cbdata)
 {
 	/* In this handler, we ignore the req_info and send the file "fileName". */
@@ -273,7 +260,7 @@ struct ctx_conn_t {
 };
 
 
-int
+static int
 field_found(const char *key,
             const char *filename,
             char *path,
@@ -295,7 +282,7 @@ field_found(const char *key,
 }
 
 
-int
+static int
 field_get(const char *key, const char *value, size_t valuelen, void *user_data)
 {
 	struct ctx_conn_t *ctx_conn = user_data;
@@ -308,7 +295,7 @@ field_get(const char *key, const char *value, size_t valuelen, void *user_data)
 }
 
 
-int
+static int
 field_stored(const char *path, int64_t file_size, void *user_data)
 {
 	struct ctx_conn_t *ctx_conn = user_data;
@@ -321,7 +308,7 @@ field_stored(const char *path, int64_t file_size, void *user_data)
 }
 
 
-int
+static int
 FormHandler(struct httplib_context *ctx, struct httplib_connection *conn, void *cbdata)
 {
 	/* Handler may access the request info using httplib_get_request_info */
@@ -332,12 +319,11 @@ FormHandler(struct httplib_context *ctx, struct httplib_connection *conn, void *
 	(void)req_info;
 
 	/* Call the form handler */
-
-	struct ctx_conn_t ctx_conn = {ctx, conn};
+	struct ctx_conn_t ctx_conn = {.ctx = ctx, .conn = conn};
 	struct httplib_form_data_handler fdh = {field_found, field_get, field_stored, &ctx_conn};
 	int ret = httplib_handle_form_request(ctx, conn, &fdh);
 
-	char body[MAX_BODY];
+	char body[MAX_BUFFER];
 	snprintf(
 		body, sizeof(body),
 		"<!DOCTYPE html>"
@@ -362,10 +348,10 @@ FormHandler(struct httplib_context *ctx, struct httplib_connection *conn, void *
 }
 
 
-int
+static int
 FileUploadForm(struct httplib_context *ctx, struct httplib_connection *conn, void *cbdata)
 {
-	char body[MAX_BODY];
+	char body[MAX_BUFFER];
 	snprintf(
 		body, sizeof(body),
 		"<!DOCTYPE html>"
@@ -390,8 +376,6 @@ FileUploadForm(struct httplib_context *ctx, struct httplib_connection *conn, voi
 	return 200;
 }
 
-#include "../../src/extern_md5.c"
-
 struct tfile_checksum {
 	char name[128];
 	uint64_t length;
@@ -406,7 +390,7 @@ struct tfiles_checksums {
 };
 
 
-int
+static int
 field_disp_read_on_the_fly(const char *key,
                            const char *filename,
                            char *path,
@@ -431,7 +415,7 @@ field_disp_read_on_the_fly(const char *key,
 }
 
 
-int
+static int
 field_get_checksum(const char *key,
                    const char *value,
                    size_t valuelen,
@@ -449,7 +433,7 @@ field_get_checksum(const char *key,
 }
 
 
-int
+static int
 ChecksumHandler(struct httplib_context *ctx, struct httplib_connection *conn, void *cbdata)
 {
 	/* Handler may access the request info using httplib_get_request_info */
@@ -463,7 +447,7 @@ ChecksumHandler(struct httplib_context *ctx, struct httplib_connection *conn, vo
 	struct tfiles_checksums chksums = {0};
 	struct httplib_form_data_handler fdh = {field_disp_read_on_the_fly, field_get_checksum, 0, &chksums};
 
-	char files[MAX_BODY] = {0};
+	char files[MAX_BUFFER] = {0};
 
 	int ret = httplib_handle_form_request(ctx, conn, &fdh);
 	for (int i = 0; i < chksums.index; i++) {
@@ -471,7 +455,7 @@ ChecksumHandler(struct httplib_context *ctx, struct httplib_connection *conn, vo
 
 		md5_finish(&(chksums.file[i].chksum), digest);
 
-		char file[MAX_BODY] = {0};
+		char file[MAX_BUFFER] = {0};
 		snprintf(
 			file, sizeof(file),
 			"<p>File \"%s\" (%llu bytes): %02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x</p>",
@@ -497,7 +481,7 @@ ChecksumHandler(struct httplib_context *ctx, struct httplib_connection *conn, vo
 		strcat(files, file);
 	}
 
-	char body[MAX_BODY];
+	char body[MAX_BUFFER];
 	snprintf(
 		body, sizeof(body),
 		"<!DOCTYPE html>"
@@ -522,7 +506,7 @@ ChecksumHandler(struct httplib_context *ctx, struct httplib_connection *conn, vo
 }
 
 
-int
+static int
 CookieHandler(struct httplib_context *ctx, struct httplib_connection *conn, void *cbdata)
 {
 	/* Handler may access the request info using httplib_get_request_info */
@@ -541,7 +525,7 @@ CookieHandler(struct httplib_context *ctx, struct httplib_connection *conn, void
 	int count = (count_str[0] == 0) ? 1 : atoi(count_str);
 
 	if (first) {
-		char body[MAX_BODY];
+		char body[MAX_BUFFER];
 		snprintf(
 			body, sizeof(body),
 			"<!DOCTYPE html>"
@@ -573,7 +557,7 @@ CookieHandler(struct httplib_context *ctx, struct httplib_connection *conn, void
 			ptm->tm_sec,
 			body);
 	} else {
-		char body[MAX_BODY];
+		char body[MAX_BUFFER];
 		snprintf(
 			body, sizeof(body),
 			"<!DOCTYPE html>"
@@ -603,10 +587,10 @@ CookieHandler(struct httplib_context *ctx, struct httplib_connection *conn, void
 }
 
 
-int
+static int
 WebSocketStartHandler(struct httplib_context *ctx, struct httplib_connection *conn, void *cbdata)
 {
-	char body[MAX_BODY];
+	char body[MAX_BUFFER];
 	snprintf(
 		body, sizeof(body),
 		"<!DOCTYPE html>"
@@ -666,7 +650,7 @@ struct t_ws_client {
 	}
 
 
-int
+static int
 WebSocketConnectHandler(struct httplib_context *ctx, const struct httplib_connection *conn, void *cbdata)
 {
 	int reject = 1;
@@ -685,11 +669,12 @@ WebSocketConnectHandler(struct httplib_context *ctx, const struct httplib_connec
 	httplib_unlock_context(ctx);
 
 	printf("Websocket client %s\r\n\r\n", (reject ? "rejected" : "accepted"));
+
 	return reject;
 }
 
 
-void
+static void
 WebSocketReadyHandler(struct httplib_context *ctx, struct httplib_connection *conn, void *cbdata)
 {
 	const char *text = "Hello from the websocket ready handler";
@@ -704,7 +689,7 @@ WebSocketReadyHandler(struct httplib_context *ctx, struct httplib_connection *co
 }
 
 
-int
+static int
 WebsocketDataHandler(struct httplib_context *ctx, struct httplib_connection *conn, int bits, char *data, size_t len, void *cbdata)
 {
 	struct t_ws_client *client = httplib_get_user_connection_data(conn);
@@ -712,7 +697,7 @@ WebsocketDataHandler(struct httplib_context *ctx, struct httplib_connection *con
 	ASSERT(client->state >= 1);
 
 	printf("Websocket got data:\r\n");
-	for (int i = 0; i < len; i++) {
+	for (size_t i = 0; i < len; i++) {
 		printf("%c", data[i]);
 	}
 	printf("\r\n\r\n");
@@ -721,7 +706,7 @@ WebsocketDataHandler(struct httplib_context *ctx, struct httplib_connection *con
 }
 
 
-void
+static void
 WebSocketCloseHandler(struct httplib_context *ctx, const struct httplib_connection *conn, void *cbdata)
 {
 	struct t_ws_client *client = httplib_get_user_connection_data(conn);
@@ -737,7 +722,7 @@ WebSocketCloseHandler(struct httplib_context *ctx, const struct httplib_connecti
 }
 
 
-void
+static void
 InformWebsockets(struct httplib_context *ctx)
 {
 	static unsigned long cnt = 0;
@@ -756,65 +741,60 @@ InformWebsockets(struct httplib_context *ctx)
 }
 
 
-#ifndef NO_SSL
-int
+static int
 init_ssl(struct httplib_context *ctx, void *ssl_context, void *user_data)
 {
 	/* Add application specific SSL initialization */
-	struct ssl_ctx_st *ssl_ctx = (struct ssl_ctx_st *)ssl_context;
 
 	return 0;
 }
-#endif
 
 
 int
 main(int argc, char *argv[])
 {
-	const struct httplib_option options[] = {
-	    {"document_root", DOCUMENT_ROOT},
-	    {"enable_directory_listing", "yes"},
-	    {"error_log_file", "error.log"},
-	    {"listening_ports", PORT},
-#ifndef NO_SSL
-	    {"ssl_certificate", "../../resources/cert/server.pem"},
-	    {"ssl_protocol_version", "3"},
-	    {"ssl_cipher_list", "DES-CBC3-SHA:AES128-SHA:AES128-GCM-SHA256",},
-#endif
-	    0};
-	struct httplib_callbacks callbacks;
-	struct httplib_context *ctx;
-	struct httplib_server_ports ports[32];
-	int port_cnt, n;
-	int err = 0;
-
-/* Check if libhttp has been built with all required features. */
-#ifndef NO_SSL
-	if (!httplib_check_feature(2)) {
-		fprintf(stderr,
-		        "Error: Embedded example built with SSL support, "
-		        "but libhttp library build without.\n");
-		err = 1;
-	}
-#endif
-	if (err) {
-		fprintf(stderr, "Cannot start libhttp - inconsistent build.\n");
-		return EXIT_FAILURE;
-	}
+	int has_ssl = httplib_check_feature(2);
 
 	/* Start libhttp web server */
-	memset(&callbacks, 0, sizeof(callbacks));
-#ifndef NO_SSL
-	callbacks.init_ssl = init_ssl;
-#endif
-	ctx = httplib_start(&callbacks, 0, options);
+	struct httplib_callbacks callbacks = {0};
+	if (has_ssl) {
+		callbacks.init_ssl = init_ssl;
+	}
+
+	struct httplib_option options[8] = {
+		{"document_root", "."},
+		{"enable_directory_listing", "yes"},
+		{"error_log_file", "error.log"},
+		{"listening_ports", "8888"},
+		{0},  // "ssl_certificate"
+		{0},  // "ssl_cipher_list"
+		{0},  // "ssl_protocol_version"
+		{0}
+	};
+	if (has_ssl) {
+		// A very klunky approach!
+		options[3].value = "8888r,8843s";
+
+		options[4].name = "ssl_certificate";
+		options[4].value = "../../resources/cert/server.pem";
+
+		options[5].name = "ssl_cipher_list";
+		options[5].value = "DES-CBC3-SHA:AES128-SHA:AES128-GCM-SHA256";
+
+		options[6].name = "ssl_protocol_version";
+		options[6].value = "3";
+	}
+
+	struct httplib_context *ctx = httplib_start(&callbacks, 0, options);
 	if (!ctx) {
 		exit(EXIT_FAILURE);
 	}
 
-	/* Add handler EXAMPLE_URI, to explain the example */
-	httplib_set_request_handler(ctx, EXAMPLE_URI, ExampleHandler, 0);
-	httplib_set_request_handler(ctx, EXIT_URI, ExitHandler, 0);
+	printf("Server started.\n");
+
+	/* Add handler /example, to explain the example */
+	httplib_set_request_handler(ctx, "/example", ExampleHandler, 0);
+	httplib_set_request_handler(ctx, "/exit", ExitHandler, 0);
 
 	/* Add handler for /A* and special handler for /A/B */
 	httplib_set_request_handler(ctx, "/A", AHandler, 0);
@@ -860,11 +840,11 @@ main(int argc, char *argv[])
 				0);
 
 	/* List all listening ports */
-	memset(ports, 0, sizeof(ports));
-	port_cnt = httplib_get_server_ports(ctx, 32, ports);
+	struct httplib_server_ports ports[32] = {0};
+	int port_cnt = httplib_get_server_ports(ctx, 32, ports);
 	printf("\n%d listening ports:\n\n", port_cnt);
 
-	for (n = 0; n < port_cnt && n < 32; n++) {
+	for (int n = 0; n < port_cnt && n < 32; n++) {
 		const char *proto = ports[n].has_ssl ? "https" : "http";
 		const char *host;
 
@@ -876,9 +856,9 @@ main(int argc, char *argv[])
 			       proto,
 			       host,
 			       ports[n].port,
-			       EXAMPLE_URI);
+			       "/example");
 			printf(
-			    "Exit at %s://%s:%d%s\n", proto, host, ports[n].port, EXIT_URI);
+			    "Exit at %s://%s:%d%s\n", proto, host, ports[n].port, "/exit");
 			printf("\n");
 		}
 
@@ -890,14 +870,14 @@ main(int argc, char *argv[])
 			       proto,
 			       host,
 			       ports[n].port,
-			       EXAMPLE_URI);
+			       "/example");
 			printf(
-			    "Exit at %s://%s:%d%s\n", proto, host, ports[n].port, EXIT_URI);
+			    "Exit at %s://%s:%d%s\n", proto, host, ports[n].port, "/exit");
 			printf("\n");
 		}
 	}
 
-	/* Wait until the server should be closed */
+	/* Wait until the server exits */
 	while (!exitNow) {
 		InformWebsockets(ctx);
 		sleep(1);
@@ -905,8 +885,8 @@ main(int argc, char *argv[])
 
 	/* Stop the server */
 	httplib_stop(ctx);
+
 	printf("Server stopped.\n");
-	printf("Bye!\n");
 
 	return EXIT_SUCCESS;
 }
