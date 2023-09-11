@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -26,7 +26,7 @@
  * int httplib_system_init( void );
  *
  * The function httplib_system_init() is called before any other LibHTTP
- * functions to do some basic initialisation. The function returns 0 when
+ * functions to do system initialization. The function returns 0 when
  * successful and -1 if an error occured.
  */
 

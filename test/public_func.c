@@ -67,23 +67,6 @@ START_TEST(test_httplib_version)
 END_TEST
 
 
-START_TEST(test_httplib_get_valid_options)
-{
-	int i;
-	const struct httplib_option *default_options = httplib_get_valid_options();
-
-	ck_assert(default_options != NULL);
-
-	for (i = 0; default_options[i].name != NULL; i++) {
-		ck_assert(default_options[i].name != NULL);
-		ck_assert(strlen(default_options[i].name) > 0);
-		ck_assert(((int)default_options[i].type) > 0);
-	}
-
-	ck_assert(i > 0);
-}
-END_TEST
-
 
 START_TEST(test_httplib_get_builtin_mime_type)
 {
@@ -432,7 +415,6 @@ make_public_func_suite(void)
 	Suite *const suite = suite_create("PublicFunc");
 
 	TCase *const tcase_version = tcase_create("Version");
-	TCase *const tcase_get_valid_options = tcase_create("Options");
 	TCase *const tcase_get_builtin_mime_type = tcase_create("MIME types");
 	TCase *const tcase_strncasecmp = tcase_create("strcasecmp");
 	TCase *const tcase_urlencodingdecoding =
@@ -444,10 +426,6 @@ make_public_func_suite(void)
 	tcase_add_test(tcase_version, test_httplib_version);
 	tcase_set_timeout(tcase_version, civetweb_min_test_timeout);
 	suite_add_tcase(suite, tcase_version);
-
-	tcase_add_test(tcase_get_valid_options, test_httplib_get_valid_options);
-	tcase_set_timeout(tcase_get_valid_options, civetweb_min_test_timeout);
-	suite_add_tcase(suite, tcase_get_valid_options);
 
 	tcase_add_test(tcase_get_builtin_mime_type, test_httplib_get_builtin_mime_type);
 	tcase_set_timeout(tcase_get_builtin_mime_type, civetweb_min_test_timeout);

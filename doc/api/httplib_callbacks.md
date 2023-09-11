@@ -25,6 +25,7 @@
 | |**0** - The master thread is created |
 | |**1** - A worker thread which handles client connections has been created|
 | |**2** - An internal helper thread has been created|
+| |**3** - A websocket client thread has been created|
 |**`log_access`**|**`int (*log_access)( const struct httplib_connection *conn, const char *message );`**|
 | |The callback function `log_access()` is called when LibHTTP is about to log a message. If the callback function returns 0, LibHTTP will use the default internal access log routines to log the access. If a non-zero value is returned, LibHTTP assumes that access logging has already been done and no further action is performed.|
 |**`log_message`**|**`int (*log_message)( const struct httplib_context *ctx, const struct httplib_connection *conn, const char *message );`**|

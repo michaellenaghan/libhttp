@@ -225,9 +225,6 @@ int httplib_handle_form_request( struct httplib_context *ctx, struct httplib_con
 			 * FORM_FIELD_STORAGE_GET (1) ... read the data and call the get
 			 *                              callback function
 			 * FORM_FIELD_STORAGE_STORE (2) ... store the data in a file
-			 * FORM_FIELD_STORAGE_READ (3) ... let the user read the data
-			 *                               (for parsing long data on the fly)
-			 *                               (currently not implemented)
 			 * FORM_FIELD_STORAGE_ABORT (flag) ... stop parsing
 			 */
 
@@ -299,20 +296,6 @@ int httplib_handle_form_request( struct httplib_context *ctx, struct httplib_con
 
 				} else httplib_cry( LH_DEBUG_ERROR, ctx, conn, "%s: Cannot create file %s", __func__, path );
 			}
-
-			/*
-			 * if (field_storage == FORM_FIELD_STORAGE_READ) {
-			 * The idea of "field_storage=read" is to let the API user read
-			 * data chunk by chunk and to some data processing on the fly.
-			 * This should avoid the need to store data in the server:
-			 * It should neither be stored in memory, like
-			 * "field_storage=get" does, nor in a file like
-			 * "field_storage=store".
-			 * However, for a "GET" request this does not make any much
-			 * sense, since the data is already stored in memory, as it is
-			 * part of the query string.
-			 *
-			 * } */
 
 			if ((field_storage & FORM_FIELD_STORAGE_ABORT) == FORM_FIELD_STORAGE_ABORT) break; /* Stop parsing the request */
 

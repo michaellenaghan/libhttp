@@ -32,9 +32,10 @@ LibHTTP is often used as HTTP and HTTPS library inside a larger application.  A 
 * [`httplib_get_response_code_text( conn, response_code );`](api/httplib_get_response_code_text.md)
 * [`httplib_get_server_ports( ctx, size, ports );`](api/httplib_get_server_ports.md)
 * [`httplib_get_user_data( ctx );`](api/httplib_get_user_data.md)
-* [`httplib_get_valid_options();`](api/httplib_get_valid_options.md)
 * [`httplib_start( callbacks, user_data, options );`](api/httplib_start.md)
 * [`httplib_stop( ctx );`](api/httplib_stop.md)
+* [`httplib_system_exit();`](api/httplib_system_exit.md)
+* [`httplib_system_init();`](api/httplib_system_init.md)
 * [`httplib_version();`](api/httplib_version.md)
 
 ### Communication Functions

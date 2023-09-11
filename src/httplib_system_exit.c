@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -26,8 +26,8 @@
  * int httplib_system_exit( void );
  *
  * The function httplib_system_exit() is called after all processing with other
- * LibHTTP function is completed to deinitialize socket communications. The
- * function returns 0 when successful, and -1 if an error occured.
+ * LibHTTP function is completed to deinitialize the system. The function
+ * returns 0 when successful, and -1 if an error occured.
  *
  * Please note that this function terminates socket communications for all
  * threads and it should therefore be called only when all running threads have
