@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -108,8 +108,8 @@ struct posix_event {
 void *event_create(void) {
 
 	struct posix_event *ret;
-       
-	ret = XX_httplib_malloc( sizeof(struct posix_event) );
+
+	ret = httplib_malloc( sizeof(struct posix_event) );
 	if ( ret == NULL ) return NULL;
 
 	if ( httplib_pthread_mutex_init( & ret->mutex, NULL ) != 0 ) {
@@ -140,7 +140,7 @@ void *event_create(void) {
 int event_wait( void *eventhdl ) {
 
 	struct posix_event *ev;
-       
+
 	ev = eventhdl;
 
 	httplib_pthread_mutex_lock(            & ev->mutex );
@@ -155,7 +155,7 @@ int event_wait( void *eventhdl ) {
 int event_signal( void *eventhdl ) {
 
 	struct posix_event *ev;
-       
+
 	ev = eventhdl;
 
 	httplib_pthread_mutex_lock(   & ev->mutex );
@@ -170,7 +170,7 @@ int event_signal( void *eventhdl ) {
 void event_destroy( void *eventhdl ) {
 
 	struct posix_event *ev;
-       
+
 	ev = eventhdl;
 
 	httplib_pthread_cond_destroy(  & ev->cond  );
@@ -196,7 +196,7 @@ void *event_create( void ) {
 int event_wait( void *eventhdl ) {
 
 	int res;
-       
+
 	res = WaitForSingleObject( (HANDLE) eventhdl, INFINITE );
 	return ( res == WAIT_OBJECT_0 );
 

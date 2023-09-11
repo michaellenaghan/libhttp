@@ -160,9 +160,9 @@ static void master_thread_run(void *thread_func_param) {
 
 #if defined(ALTERNATIVE_QUEUE)
 
-	for (i=0; i<ctx->cfg_worker_threads; i++) {
+	for (i=0; i<ctx->num_threads; i++) {
 
-		event_signal( ctx->client_wait_events[i]i );
+		event_signal( ctx->client_wait_events[i] );
 
 		/*
 		 * Since we know all sockets, we can shutdown the connections.

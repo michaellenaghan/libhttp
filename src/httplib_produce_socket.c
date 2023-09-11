@@ -38,11 +38,9 @@
 
 void XX_httplib_produce_socket( struct httplib_context *ctx, const struct socket *sp ) {
 
-	unsigned int i;
-
 	for (;;) {
 
-		for (i=0; i<ctx->cfg_worker_threads; i++) {
+		for (int i=0; i<ctx->num_threads; i++) {
 
 			/*
 			 * find a free worker slot and signal it

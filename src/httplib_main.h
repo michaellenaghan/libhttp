@@ -912,3 +912,13 @@ extern pthread_mutexattr_t			XX_httplib_pthread_mutex_attr;
 extern const struct uriprot_tp		XX_httplib_abs_uri_protocols[];
 extern int				XX_httplib_sTlsInit;
 extern pthread_key_t			XX_httplib_sTlsKey;
+
+
+#ifdef ALTERNATIVE_QUEUE
+
+void *event_create( void );
+int event_wait( void *eventhdl );
+int event_signal( void *eventhdl );
+void event_destroy( void *eventhdl );
+
+#endif
