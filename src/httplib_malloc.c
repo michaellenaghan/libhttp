@@ -27,8 +27,8 @@
 
 #include "httplib_main.h"
 
-static int64_t				httplib_memory_blocks_used	= 0;
-static int64_t				httplib_memory_bytes_used	= 0;
+static _Atomic(int64_t)			httplib_memory_blocks_used	= 0;
+static _Atomic(int64_t)			httplib_memory_bytes_used	= 0;
 
 static httplib_alloc_callback_func	alloc_log_func			= NULL;
 
