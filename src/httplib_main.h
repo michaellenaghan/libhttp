@@ -373,12 +373,12 @@ typedef int SOCKET;
 #endif
 
 #if !defined(SOMAXCONN)
-#define SOMAXCONN (100)
+#define SOMAXCONN (128)
 #endif
 
 /* Size of the accepted socket queue */
 #if !defined(MGSQLEN)
-#define MGSQLEN (20)
+#define MGSQLEN (50)
 #endif
 
 #ifndef MAX_REQUEST_SIZE

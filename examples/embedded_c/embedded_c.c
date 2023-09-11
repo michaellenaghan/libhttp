@@ -659,7 +659,7 @@ WebSocketConnectHandler(struct httplib_context *ctx, const struct httplib_connec
 	httplib_lock_context(ctx);
 	for (i = 0; i < MAX_WS_CLIENTS; i++) {
 		if (ws_clients[i].conn == NULL) {
-			ws_clients[i].conn = (struct httplib_connection *)conn;
+			ws_clients[i].conn = (struct httplib_connection *)(intptr_t)conn;  // Cast away `const`.
 			ws_clients[i].state = 1;
 			httplib_set_user_connection_data(ws_clients[i].conn, (void *)(ws_clients + i));
 			reject = 0;
@@ -753,7 +753,7 @@ init_ssl(struct httplib_context *ctx, void *ssl_context, void *user_data)
 int
 main(int argc, char *argv[])
 {
-	int has_ssl = httplib_check_feature(2);
+	unsigned int has_ssl = httplib_check_feature(2);
 
 	/* Start libhttp web server */
 	struct httplib_callbacks callbacks = {0};
@@ -812,7 +812,7 @@ main(int argc, char *argv[])
 	httplib_set_request_handler(ctx, "/close", CloseHandler, 0);
 
 	/* Add handler for /form  (serve a file outside the document root) */
-	httplib_set_request_handler(ctx, "/form", FileHandler, (void *)"./form.html");
+	httplib_set_request_handler(ctx, "/form", FileHandler, (void *)(intptr_t)"./form.html");  // Cast away `const`.
 
 	/* Add handler for form data */
 	httplib_set_request_handler(ctx,
@@ -821,7 +821,7 @@ main(int argc, char *argv[])
 				(void *)0);
 
 	/* Add a file upload handler for parsing files on the fly */
-	httplib_set_request_handler(ctx, "/on_the_fly_form", FileUploadForm, (void *)"/on_the_fly_form.md5.callback");
+	httplib_set_request_handler(ctx, "/on_the_fly_form", FileUploadForm, (void *)(intptr_t)"/on_the_fly_form.md5.callback");  // Cast away `const`.
 	httplib_set_request_handler(ctx, "/on_the_fly_form.md5.callback", ChecksumHandler, (void *)0);
 
 	/* Add handler for /cookie example */

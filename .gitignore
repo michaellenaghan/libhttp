@@ -12,6 +12,7 @@ testmime
 [tT]esting
 
 TODO.md
+bld/
 obj/*.o
 obj/*.obj
 lib/*.lib
