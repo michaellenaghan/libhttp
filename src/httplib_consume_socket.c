@@ -28,8 +28,6 @@
 #include "httplib_main.h"
 #include "httplib_pthread.h"
 
-#define QUEUE_SIZE(ctx) ((int)(ARRAY_SIZE(ctx->queue)))
-
 /*
  * int XX_httplib_consume_socket( struct httplib_context *ctx, struct socket *sp, int thread_index );
  *
@@ -69,22 +67,23 @@ int XX_httplib_consume_socket( struct httplib_context *ctx, struct socket *sp, i
 	 */
 
 	if ( ctx->sq_head > ctx->sq_tail ) {
+		int const queue_size = (int)(ARRAY_SIZE(ctx->queue));
 
 		/*
 		 * Copy socket from the queue and increment tail
 		 */
 
-		*sp = ctx->queue[ctx->sq_tail % QUEUE_SIZE(ctx)];
+		*sp = ctx->queue[ctx->sq_tail % queue_size];
 		ctx->sq_tail++;
 
 		/*
 		 * Wrap pointers if needed
 		 */
 
-		while ( ctx->sq_tail > QUEUE_SIZE(ctx) ) {
+		while ( ctx->sq_tail > queue_size ) {
 
-			ctx->sq_tail -= QUEUE_SIZE(ctx);
-			ctx->sq_head -= QUEUE_SIZE(ctx);
+			ctx->sq_tail -= queue_size;
+			ctx->sq_head -= queue_size;
 		}
 	}
 

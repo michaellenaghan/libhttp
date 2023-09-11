@@ -13,10 +13,11 @@ target_compile_definitions(
     # HAVE_POLL
     # MAX_REQUEST_SIZE=16384
     # MD5_STATIC
-    # MGSQLEN=20
+    # MSG_NOSIGNAL
     NO_SSL
     # NO_SSL_DL
     # NO_THREAD_NAME
+    # QUEUE_SIZE=50
     # SOMAXCONN=128
     # SSL_ALREADY_INITIALIZED
     # SSL_LIB=

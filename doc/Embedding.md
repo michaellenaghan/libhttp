@@ -67,7 +67,7 @@ only within LibHTTP.
 
 When master thread accepts new a connection, a new accepted socket (described
 by `struct socket`) it placed into the accepted sockets queue,
-which has size of `MGSQLEN` (default 20).
+which has size of `QUEUE_SIZE` (default 50).
 Any idle worker thread can grab accepted sockets from that queue.
 If all worker threads are busy, master thread can accept and queue up to
 20 more TCP connections, filling up the queue.

@@ -377,8 +377,8 @@ typedef int SOCKET;
 #endif
 
 /* Size of the accepted socket queue */
-#if !defined(MGSQLEN)
-#define MGSQLEN (50)
+#if !defined(QUEUE_SIZE)
+#define QUEUE_SIZE (50)
 #endif
 
 #ifndef MAX_REQUEST_SIZE
@@ -541,7 +541,7 @@ struct httplib_context {
 	struct socket *client_socks;
 	void **client_wait_events;
 #else
-	struct socket queue[MGSQLEN];		/* Accepted sockets									*/
+	struct socket queue[QUEUE_SIZE];		/* Accepted sockets									*/
 	volatile int sq_head;			/* Head of the socket queue								*/
 	volatile int sq_tail;			/* Tail of the socket queue								*/
 	pthread_cond_t sq_full;			/* Signaled when socket is produced							*/
