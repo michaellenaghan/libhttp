@@ -1,4 +1,4 @@
-# 
+#
 # Copyright (c) 2013 No Face Press, LLC
 # License http://opensource.org/licenses/mit-license.php MIT License
 #
@@ -26,8 +26,8 @@ HTTP_LIB = libhttp.a
 
 # If you do those things SSL works, but given those things the default is `-DNO_SSL`.
 
-# CFLAGS =          -DUSE_IPV6 -DUSE_WEBSOCKET -DUSE_SSL_DH -I$(TOP)/$(INCLUDE)
-  CFLAGS = -DNO_SSL -DUSE_IPV6 -DUSE_WEBSOCKET              -I$(TOP)/$(INCLUDE)
+# CFLAGS =          -DUSE_IPV6 -DUSE_SSL_DH -I$(TOP)/$(INCLUDE)
+  CFLAGS = -DNO_SSL -DUSE_IPV6              -I$(TOP)/$(INCLUDE)
 
 # DFLAGS='         -DUSE_STACK_SIZE=102400 -I...'
   DFLAGS='-DNO_SSL -DUSE_STACK_SIZE=102400      '
@@ -40,7 +40,7 @@ HTTP_LIB = libhttp.a
 
 include $(TOP)/resources/Makefile.in-os
 
-ifeq ($(TARGET_OS),LINUX) 
+ifeq ($(TARGET_OS),LINUX)
 	LIBS += -ldl
 endif
 

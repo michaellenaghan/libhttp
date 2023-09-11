@@ -63,9 +63,7 @@ ExampleHandler(struct httplib_context *ctx, struct httplib_connection *conn, voi
 		"<p>To see a page from the File handler (which leads to the Form handler) click <a href=\"form\">here</a> (url: \"form\")</p>"
 		"<p>To see a page from the Cookie handler click <a href=\"cookie\">here</a> (url: \"cookie\")</p>"
 		"<p>To see a page from the Checksum handler (an example for parsing files on the fly) click <a href=\"on_the_fly_form\">here</a> (url: \"on_the_fly_form\")</p>"
-#ifdef USE_WEBSOCKET
 		"<p>To test websocket handler click <a href=\"/websocket\">here</a> (url: \"websocket\")</p>"
-#endif
 		"<p>To exit click <a href=\"" EXIT_URI "\">here</a> (url: \"exit\")</p>"
 		"</body></html>");
 
@@ -611,7 +609,6 @@ WebSocketStartHandler(struct httplib_context *ctx, struct httplib_connection *co
 	char body[MAX_BODY];
 	snprintf(
 		body, sizeof(body),
-#ifdef USE_WEBSOCKET
 		"<!DOCTYPE html>"
 		"<html>"
 		"<head>"
@@ -633,15 +630,7 @@ WebSocketStartHandler(struct httplib_context *ctx, struct httplib_connection *co
 		"<h2>This is the WebSocket handler</h2>"
 		"<p id='websock_text_field'>No websocket connection yet...</p>"
 		"</body>"
-		"</html>"
-#else
-		"<!DOCTYPE html>"
-		"<html><body>"
-		"<h2>This is the WebSocket handler</h2>"
-		"<p>Please re-compile with USE_WEBSOCKET.</p>"
-		"</body></html>"
-#endif
-		);
+		"</html>");
 
 	httplib_printf(ctx, conn,
 		"HTTP/1.1 200 OK\r\n"
@@ -655,8 +644,6 @@ WebSocketStartHandler(struct httplib_context *ctx, struct httplib_connection *co
 	return 200;
 }
 
-
-#ifdef USE_WEBSOCKET
 
 /* MAX_WS_CLIENTS defines how many clients can connect to a websocket at the
  * same time. The value 5 is very small and used here only for demonstration;
@@ -767,7 +754,6 @@ InformWebsockets(struct httplib_context *ctx)
 	}
 	httplib_unlock_context(ctx);
 }
-#endif
 
 
 #ifdef USE_SSL_DH
@@ -942,7 +928,6 @@ main(int argc, char *argv[])
 	/* Add HTTP site to open a websocket connection */
 	httplib_set_request_handler(ctx, "/websocket", WebSocketStartHandler, 0);
 
-#ifdef USE_WEBSOCKET
 	/* WS site for the websocket connection */
 	httplib_set_websocket_handler(ctx,
 				"/websocket",
@@ -951,7 +936,6 @@ main(int argc, char *argv[])
 				WebsocketDataHandler,
 				(httplib_websocket_close_handler)WebSocketCloseHandler,
 				0);
-#endif
 
 	/* List all listening ports */
 	memset(ports, 0, sizeof(ports));
@@ -993,9 +977,7 @@ main(int argc, char *argv[])
 
 	/* Wait until the server should be closed */
 	while (!exitNow) {
-#ifdef USE_WEBSOCKET
 		InformWebsockets(ctx);
-#endif
 		sleep(1);
 	}
 
