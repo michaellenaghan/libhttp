@@ -67,6 +67,82 @@ test_httplib_base64_encode(void) {
 
 
 TEST
+test_httplib_get_cookie(void) {
+	char buf[20];
+
+	ASSERT_EQ( -2, httplib_get_cookie("", "foo", NULL, sizeof(buf)) );
+	ASSERT_EQ( -2, httplib_get_cookie("", "foo", buf, 0) );
+	ASSERT_EQ( -1, httplib_get_cookie("", "foo", buf, sizeof(buf)) );
+	ASSERT_EQ( -1, httplib_get_cookie("", NULL, buf, sizeof(buf)) );
+
+	ASSERT_EQ( 1, httplib_get_cookie("a=1; b=2; c; d", "a", buf, sizeof(buf)) );
+	ASSERT_STR_EQ( "1", buf );
+
+	ASSERT_EQ( 1, httplib_get_cookie("a=1; b=2; c; d", "b", buf, sizeof(buf)) );
+	ASSERT_STR_EQ( "2", buf );
+
+	ASSERT_EQ( 3, httplib_get_cookie("a=1; b=123", "b", buf, sizeof(buf)) );
+	ASSERT_STR_EQ( "123", buf );
+
+	ASSERT_EQ( -1, httplib_get_cookie("a=1; b=2; c; d", "c", buf, sizeof(buf)) );
+	ASSERT_STR_EQ( "", buf );
+
+	PASS();
+}
+
+
+TEST
+test_httplib_get_var(void) {
+	static const char *post[] = {
+		"a=1&&b=2&d&=&c=3%20&e=",
+	        "q=&st=2012%2F11%2F13+17%3A05&et=&team_id=",
+		NULL
+	};
+	char buf[20];
+
+	ASSERT_EQ( 1, httplib_get_var(post[0], strlen(post[0]), "a", buf, sizeof(buf)) );
+	ASSERT_STR_EQ( "1", buf );
+
+	ASSERT_EQ( 1, httplib_get_var(post[0], strlen(post[0]), "b", buf, sizeof(buf)) );
+	ASSERT_STR_EQ( "2", buf );
+
+	ASSERT_EQ( 2, httplib_get_var(post[0], strlen(post[0]), "c", buf, sizeof(buf)) );
+	ASSERT_STR_EQ( "3 ", buf );
+
+	ASSERT_EQ( 0, httplib_get_var(post[0], strlen(post[0]), "e", buf, sizeof(buf)) );
+	ASSERT_STR_EQ( "", buf );
+
+	ASSERT_EQ( -1, httplib_get_var(post[0], strlen(post[0]), "d", buf, sizeof(buf)) );
+	ASSERT_EQ( -2, httplib_get_var(post[0], strlen(post[0]), "c", buf, 2) );
+
+	ASSERT_EQ( -2, httplib_get_var(post[0], strlen(post[0]), "x", NULL, 10) );
+	ASSERT_EQ( -2, httplib_get_var(post[0], strlen(post[0]), "x", buf, 0) );
+	ASSERT_EQ( -2, httplib_get_var(post[1], strlen(post[1]), "st", buf, 16) );
+	ASSERT_EQ( 16, httplib_get_var(post[1], strlen(post[1]), "st", buf, 17) );
+
+	PASS();
+}
+
+
+TEST
+test_httplib_strcasestr(void) {
+	/* Adapted from unit_test.c */
+	/* Copyright (c) 2013-2015 the Civetweb developers */
+	/* Copyright (c) 2004-2013 Sergey Lyubka */
+	static char const *big1 = "abcdef";
+
+	ASSERT_EQ( NULL, httplib_strcasestr("Y", "X") );
+	ASSERT_NEQ( NULL, httplib_strcasestr("Y", "y") );
+	ASSERT_EQ( NULL, httplib_strcasestr(big1, "X") );
+	ASSERT_EQ( big1 + 2, httplib_strcasestr(big1, "CD") );
+	ASSERT_EQ( NULL, httplib_strcasestr("aa", "AAB") );
+
+	PASS();
+}
+
+
+
+TEST
 test_httplib_url_decode(void) {
 	char buf[128];
 	const char *alpha = "abcdefghijklmnopqrstuvwxyz";
@@ -144,30 +220,120 @@ test_httplib_url_encode(void) {
 
 
 TEST
+test_md5(void) {
+	md5_state_t md5_state;
+	unsigned char md5_val[16 + 1];
+	char md5_str[32 + 1];
+	const char *test_str = "The quick brown fox jumps over the lazy dog";
+
+	md5_val[16] = 0;
+	md5_init(&md5_state);
+	md5_finish(&md5_state, md5_val);
+	ASSERT_STR_EQ( "\xd4\x1d\x8c\xd9\x8f\x00\xb2\x04\xe9\x80\x09\x98\xec\xf8\x42\x7e", (const char *)md5_val );
+	sprintf(md5_str,
+	        "%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x",
+	        md5_val[0],
+	        md5_val[1],
+	        md5_val[2],
+	        md5_val[3],
+	        md5_val[4],
+	        md5_val[5],
+	        md5_val[6],
+	        md5_val[7],
+	        md5_val[8],
+	        md5_val[9],
+	        md5_val[10],
+	        md5_val[11],
+	        md5_val[12],
+	        md5_val[13],
+	        md5_val[14],
+	        md5_val[15]);
+	ASSERT_STR_EQ( "d41d8cd98f00b204e9800998ecf8427e", md5_str );
+
+	md5_init(&md5_state);
+	md5_append(&md5_state, (const md5_byte_t *)test_str, strlen(test_str));
+	md5_finish(&md5_state, md5_val);
+	sprintf(md5_str,
+	        "%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x",
+	        md5_val[0],
+	        md5_val[1],
+	        md5_val[2],
+	        md5_val[3],
+	        md5_val[4],
+	        md5_val[5],
+	        md5_val[6],
+	        md5_val[7],
+	        md5_val[8],
+	        md5_val[9],
+	        md5_val[10],
+	        md5_val[11],
+	        md5_val[12],
+	        md5_val[13],
+	        md5_val[14],
+	        md5_val[15]);
+	ASSERT_STR_EQ( "9e107d9d372bb6826bd81d3542a419d6", md5_str );
+
+	httplib_md5(md5_str, "", NULL);
+	ASSERT_STR_EQ( "d41d8cd98f00b204e9800998ecf8427e", md5_str );
+
+	httplib_md5(md5_str, test_str, NULL);
+	ASSERT_STR_EQ( "9e107d9d372bb6826bd81d3542a419d6", md5_str );
+
+	httplib_md5(md5_str, "civetweb", NULL);
+	ASSERT_STR_EQ( "95c098bd85b619b24a83d9cea5e8ba54", md5_str );
+
+	httplib_md5(md5_str,
+	       "The",
+	       " ",
+	       "quick brown fox",
+	       "",
+	       " jumps ",
+	       "over the lazy dog",
+	       "",
+	       "",
+	       NULL);
+	ASSERT_STR_EQ( "9e107d9d372bb6826bd81d3542a419d6", md5_str );
+
+	PASS();
+}
+
+
+TEST
+test_strtoll(void) {
+	ASSERT_EQ( 0, strtoll("0", NULL, 10) );
+	ASSERT_EQ( 123, strtoll("123", NULL, 10) );
+	ASSERT_EQ( -34, strtoll("-34", NULL, 10) );
+	ASSERT_EQ( 3566626116, strtoll("3566626116", NULL, 10) );
+
+	PASS();
+}
+
+
+TEST
 test_XX_httplib_alloc_vprintf(void) {
 	/* Adapted from unit_test.c */
 	/* Copyright (c) 2013-2015 the Civetweb developers */
 	/* Copyright (c) 2004-2013 Sergey Lyubka */
 	char buf[MG_BUF_LEN], *p = buf;
 
-	ASSERT( XX_httplib_alloc_printf(&p, buf, sizeof(buf), "%s", "hi") == 2 );
-	ASSERT( p == buf );
+	ASSERT_EQ( 2, XX_httplib_alloc_printf(&p, buf, sizeof(buf), "%s", "hi") );
+	ASSERT_EQ( buf, p );
 
-	ASSERT( XX_httplib_alloc_printf(&p, buf, sizeof(buf), "%s", "") == 0 );
-	ASSERT( p == buf );
+	ASSERT_EQ( 0, XX_httplib_alloc_printf(&p, buf, sizeof(buf), "%s", "") );
+	ASSERT_EQ( buf, p );
 
-	ASSERT( XX_httplib_alloc_printf(&p, buf, sizeof(buf), "") == 0 );
-	ASSERT( p == buf );
+	ASSERT_EQ( 0, XX_httplib_alloc_printf(&p, buf, sizeof(buf), "") );
+	ASSERT_EQ( buf, p );
 
 	/* Pass small buffer, make sure XX_httplib_alloc_printf allocates */
-	ASSERT( XX_httplib_alloc_printf(&p, buf, 1, "%s", "hello") == 5 );
-	ASSERT( p != buf );
+	ASSERT_EQ( 5, XX_httplib_alloc_printf(&p, buf, 1, "%s", "hello") );
+	ASSERT_NEQ( buf, p );
 	httplib_free(p);
 	p = buf;
 
 	/* Test alternative implementation */
-	ASSERT( XX_httplib_alloc_printf2(&p, "%s", "hello") == 5 );
-	ASSERT( p != buf );
+	ASSERT_EQ( 5, XX_httplib_alloc_printf2(&p, "%s", "hello") );
+	ASSERT_NEQ( buf, p );
 	httplib_free(p);
 	p = buf;
 
@@ -207,13 +373,13 @@ test_XX_httplib_mask_data(void) {
 	memset(out, 99, sizeof(out));
 
 	XX_httplib_mask_data(in, sizeof(out), 0, out);
-	ASSERT( !memcmp(out, in, sizeof(out)) );
+	ASSERT_EQ( 0, memcmp(out, in, sizeof(out)) );
 
 	for (i = 0; i < 1024; i++) {
 		in[i] = (char)((unsigned char)i);
 	}
 	XX_httplib_mask_data(in, 107, 0, out);
-	ASSERT( !memcmp(out, in, 107) );
+	ASSERT_EQ( 0, memcmp(out, in, 107) );
 
 	XX_httplib_mask_data(in, 256, 0x01010101, out);
 	for (i = 0; i < 256; i++) {
@@ -374,11 +540,11 @@ test_XX_httplib_next_option(void) {
 	struct vec a, b;
 	int i;
 
-	ASSERT(XX_httplib_next_option(NULL, &a, &b) == NULL);
+	ASSERT_EQ( NULL, XX_httplib_next_option(NULL, &a, &b) );
 	for (i = 0, p = list; (p = XX_httplib_next_option(p, &a, &b)) != NULL; i++) {
-		ASSERT(i != 0 || (a.ptr == list && a.len == 3 && b.len == 0));
-		ASSERT(i != 1 || (a.ptr == list + 4 && a.len == 4 && b.ptr == list + 9 && b.len == 4));
-		ASSERT(i != 2 || (a.ptr == list + 14 && a.len == 1 && b.len == 0));
+		ASSERT( i != 0 || (a.ptr == list && a.len == 3 && b.len == 0) );
+		ASSERT( i != 1 || (a.ptr == list + 4 && a.len == 4 && b.ptr == list + 9 && b.len == 4) );
+		ASSERT( i != 2 || (a.ptr == list + 14 && a.len == 1 && b.len == 0) );
 	}
 
 	PASS();
@@ -633,41 +799,41 @@ test_XX_httplib_skip_quoted(void) {
 	char x[] = "a=1, b=2, c='hi \' there', d='here\\, there'", *s = x, *p;
 
 	p = XX_httplib_skip_quoted(&s, ", ", ", ", 0);
-	ASSERT(p != NULL && !strcmp(p, "a=1"));
+	ASSERT_NEQ( NULL, p );
+	ASSERT_STR_EQ( "a=1", p );
 
 	p = XX_httplib_skip_quoted(&s, ", ", ", ", 0);
-	ASSERT(p != NULL && !strcmp(p, "b=2"));
+	ASSERT_NEQ( NULL, p );
+	ASSERT_STR_EQ( "b=2", p );
 
 	p = XX_httplib_skip_quoted(&s, ",", " ", 0);
-	ASSERT(p != NULL && !strcmp(p, "c='hi \' there'"));
+	ASSERT_NEQ( NULL, p );
+	ASSERT_STR_EQ( "c='hi \' there'", p );
 
 	p = XX_httplib_skip_quoted(&s, ",", " ", '\\');
-	ASSERT(p != NULL && !strcmp(p, "d='here, there'"));
-	ASSERT(*s == 0);
+	ASSERT_NEQ( NULL, p );
+	ASSERT_STR_EQ( "d='here, there'", p );
+	ASSERT_EQ( '\0', *s );
 
 	PASS();
 }
 
 
 TEST
-test_httplib_strcasestr(void) {
-	/* Adapted from unit_test.c */
-	/* Copyright (c) 2013-2015 the Civetweb developers */
-	/* Copyright (c) 2004-2013 Sergey Lyubka */
-	static char const *big1 = "abcdef";
+test_XX_httplib_stat(void) {
+	static struct httplib_context ctx = {0};
+	static struct httplib_connection conn = {0};
+	struct file file = STRUCT_FILE_INITIALIZER;
 
-	ASSERT( httplib_strcasestr("Y", "X") == NULL );
-	ASSERT( httplib_strcasestr("Y", "y") != NULL );
-	ASSERT( httplib_strcasestr(big1, "X") == NULL );
-	ASSERT( httplib_strcasestr(big1, "CD") == big1 + 2 );
-	ASSERT( httplib_strcasestr("aa", "AAB") == NULL );
+	ASSERT_FALSE( XX_httplib_stat(NULL, NULL, " does not exist ", &file) );
+	ASSERT_FALSE( XX_httplib_stat(&ctx, &conn, " does not exist ", &file) );
 
 	PASS();
 }
 
 
-
 GREATEST_MAIN_DEFS();
+
 
 int
 main(int argc, char **argv) {
@@ -680,8 +846,13 @@ main(int argc, char **argv) {
 #endif
 
 	RUN_TEST(test_httplib_base64_encode);
+	RUN_TEST(test_httplib_get_cookie);
+	RUN_TEST(test_httplib_get_var);
+	RUN_TEST(test_httplib_strcasestr);
 	RUN_TEST(test_httplib_url_decode);
 	RUN_TEST(test_httplib_url_encode);
+	RUN_TEST(test_md5);
+	RUN_TEST(test_strtoll);
 	RUN_TEST(test_XX_httplib_alloc_vprintf);
 	RUN_TEST(test_XX_httplib_get_uri_type);
 	RUN_TEST(test_XX_httplib_mask_data);
@@ -693,7 +864,7 @@ main(int argc, char **argv) {
 	RUN_TEST(test_XX_httplib_remove_double_dots_and_double_slashes);
 	RUN_TEST(test_XX_httplib_should_keep_alive);
 	RUN_TEST(test_XX_httplib_skip_quoted);
-	RUN_TEST(test_httplib_strcasestr);
+	RUN_TEST(test_XX_httplib_stat);
 
 	GREATEST_MAIN_END();
 }
