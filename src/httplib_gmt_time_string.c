@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -32,15 +32,23 @@
  * included in all responses other than 100, 101, 5xx. */
 void XX_httplib_gmt_time_string( char *buf, size_t buf_len, time_t *t ) {
 
-	struct tm tmm;
+#if !defined(REENTRANT_TIME)
+	struct tm *tm = (t != NULL) ? gmtime(t) : NULL;
+#else
+	struct tm _tm;
+	struct tm *tm = (t != NULL) ? gmtime_r(t, &_tm) : NULL ;
+#endif
 
-	if ( buf == NULL  ||  buf_len < 1 ) return;
+	if (buf != NULL && buf_len > 0 && tm != NULL) {
+		strftime(buf, buf_len, "%a, %d %b %Y %H:%M:%S GMT", tm);
+	} else {
+		httplib_strlcpy(buf, "Thu, 01 Jan 1970 00:00:00 GMT", buf_len);
+	}
 
-	if ( httplib_gmtime_r( t, &tmm ) != NULL ) strftime( buf, buf_len, "%a, %d %b %Y %H:%M:%S GMT", &tmm );
-	 
-	else {
-		httplib_strlcpy( buf, "Thu, 01 Jan 1970 00:00:00 GMT", buf_len );
-		buf[buf_len - 1] = '\0';
+	if (buf != NULL && buf_len > 0 && tm != NULL ) {
+		strftime(buf, buf_len, "%a, %d %b %Y %H:%M:%S GMT", tm);
+	} else {
+		httplib_strlcpy(buf, "Thu, 01 Jan 1970 00:00:00 GMT", buf_len);
 	}
 
 }  /* XX_httplib_gmt_time_string */

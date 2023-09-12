@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2016 Lammert Bies
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -26,5 +26,6 @@ double			XX_httplib_difftimespec( const struct timespec *ts_now, const struct ti
 void			XX_httplib_gmt_time_string( char *buf, size_t buf_len, time_t *t );
 int			XX_httplib_inet_pton( int af, const char *src, void *dst, size_t dstlen );
 int			XX_httplib_lowercase( const char *s );
+bool			XX_httplib_parse_port_string( const struct vec *vec, struct socket *so, int *ip_version );
 
 extern const int	XX_httplib_days_per_month[];

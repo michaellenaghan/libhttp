@@ -16,5 +16,8 @@ project(httplib LANGUAGES C)
 #
 # If you do those things SSL works, but given those things the default is `-DNO_SSL`.
 
+enable_testing()
+
 add_subdirectory(examples/embedded_c)
 add_subdirectory(src)
+add_subdirectory(tests)

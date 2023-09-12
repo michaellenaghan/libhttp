@@ -147,6 +147,7 @@ target_sources(
 	httplib_parse_http_headers.c
 	httplib_parse_http_message.c
 	httplib_parse_net.c
+    httplib_parse_port_string.c
 	httplib_parse_range_header.c
 	httplib_path_to_unicode.c
 	httplib_poll.c
