@@ -56,7 +56,7 @@ void XX_httplib_free_context( struct httplib_context *ctx ) {
 
 	if ( ctx->client_wait_events != NULL ) {
 
-		for (int i=0; i < ctx->num_threads; i++) event_destroy( ctx->client_wait_events[i] );
+		for (int i=0; i < ctx->num_threads; i++) XX_httplib_event_destroy( ctx->client_wait_events[i] );
 		ctx->client_wait_events = httplib_free( ctx->client_wait_events );
 	}
 #else

@@ -37,7 +37,7 @@
 
 #if defined(ALTERNATIVE_QUEUE)
 
-void *event_create( void ) {
+void *XX_httplib_event_create( void ) {
 
 	int ret;
 
@@ -54,10 +54,10 @@ void *event_create( void ) {
 	}
 	return (void *)ret;
 
-}  /* event_create */
+}  /* XX_httplib_event_create */
 
 
-int event_wait( void *eventhdl ) {
+int XX_httplib_event_wait( void *eventhdl ) {
 
 	uint64_t u;
 	int s;
@@ -67,10 +67,10 @@ int event_wait( void *eventhdl ) {
 
 	return 1;
 
-}  /* event_wait */
+}  /* XX_httplib_event_wait */
 
 
-int event_signal( void *eventhdl ) {
+int XX_httplib_event_signal( void *eventhdl ) {
 
 	uint64_t u;
 	int s;
@@ -82,14 +82,14 @@ int event_signal( void *eventhdl ) {
 
 	return 1;
 
-}  /* event_signal */
+}  /* XX_httplib_event_signal */
 
 
-void event_destroy( void *eventhdl ) {
+void XX_httplib_event_destroy( void *eventhdl ) {
 
 	close( (int)eventhdl );
 
-}  /* event_destroy */
+}  /* XX_httplib_event_destroy */
 
 #endif  /* ALTERNATIVE_QUEUE */
 
@@ -105,7 +105,7 @@ struct posix_event {
 };
 
 
-void *event_create(void) {
+void *XX_httplib_event_create(void) {
 
 	struct posix_event *ret;
 
@@ -134,10 +134,10 @@ void *event_create(void) {
 
 	return ret;
 
-}  /* event_create */
+}  /* XX_httplib_event_create */
 
 
-int event_wait( void *eventhdl ) {
+int XX_httplib_event_wait( void *eventhdl ) {
 
 	struct posix_event *ev;
 
@@ -149,10 +149,10 @@ int event_wait( void *eventhdl ) {
 
 	return 1;
 
-}  /* event_wait */
+}  /* XX_httplib_event_wait */
 
 
-int event_signal( void *eventhdl ) {
+int XX_httplib_event_signal( void *eventhdl ) {
 
 	struct posix_event *ev;
 
@@ -164,10 +164,10 @@ int event_signal( void *eventhdl ) {
 
 	return 1;
 
-}  /* event_signal */
+}  /* XX_httplib_event_signal */
 
 
-void event_destroy( void *eventhdl ) {
+void XX_httplib_event_destroy( void *eventhdl ) {
 
 	struct posix_event *ev;
 
@@ -178,7 +178,7 @@ void event_destroy( void *eventhdl ) {
 
 	ev = httplib_free( ev );
 
-}  /* event_destroy */
+}  /* XX_httplib_event_destroy */
 
 #endif  /* ! __linux__  &&  ! _WIN32  && ALTERNATIVE_QUEUE */
 
@@ -186,34 +186,34 @@ void event_destroy( void *eventhdl ) {
 
 
 #if defined(_WIN32)  &&  defined(ALTERNATIVE_QUEUE)
-void *event_create( void ) {
+void *XX_httplib_event_create( void ) {
 
 	return (void *) CreateEvent( NULL, FALSE, FALSE, NULL );
 
-}  /* event_create */
+}  /* XX_httplib_event_create */
 
 
-int event_wait( void *eventhdl ) {
+int XX_httplib_event_wait( void *eventhdl ) {
 
 	int res;
 
 	res = WaitForSingleObject( (HANDLE) eventhdl, INFINITE );
 	return ( res == WAIT_OBJECT_0 );
 
-}  /* event_wait */
+}  /* XX_httplib_event_wait */
 
 
-int event_signal( void *eventhdl ) {
+int XX_httplib_event_signal( void *eventhdl ) {
 
 	return (int) SetEvent( (HANDLE) eventhdl );
 
-}  /* event_signal */
+}  /* XX_httplib_event_signal */
 
 
-void event_destroy( void *eventhdl ) {
+void XX_httplib_event_destroy( void *eventhdl ) {
 
 	CloseHandle( (HANDLE) eventhdl );
 
-}  /* event_destroy */
+}  /* XX_httplib_event_destroy */
 
 #endif  /* _WIN32  &&  ALTERNATIVE_QUEUE */

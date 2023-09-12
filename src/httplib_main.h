@@ -778,6 +778,12 @@ int			XX_httplib_consume_socket( struct httplib_context *ctx, struct socket *sp,
 void			XX_httplib_delete_file( struct httplib_context *ctx, struct httplib_connection *conn, const char *path );
 void			XX_httplib_dir_scan_callback( struct httplib_context *ctx, struct de *de, void *data );
 void			XX_httplib_discard_unread_request_data( const struct httplib_context *ctx, struct httplib_connection *conn );
+#ifdef ALTERNATIVE_QUEUE
+void *			XX_httplib_event_create( void );
+int 			XX_httplib_event_wait( void *eventhdl );
+int 			XX_httplib_event_signal( void *eventhdl );
+void 			XX_httplib_event_destroy( void *eventhdl );
+#endif
 int			XX_httplib_fclose( struct file *filep );
 void			XX_httplib_fclose_on_exec( struct httplib_context *ctx, struct file *filep, struct httplib_connection *conn );
 const char *		XX_httplib_fgets( char *buf, size_t size, struct file *filep, char **p );
@@ -912,13 +918,3 @@ extern pthread_mutexattr_t			XX_httplib_pthread_mutex_attr;
 extern const struct uriprot_tp		XX_httplib_abs_uri_protocols[];
 extern int				XX_httplib_sTlsInit;
 extern pthread_key_t			XX_httplib_sTlsKey;
-
-
-#ifdef ALTERNATIVE_QUEUE
-
-void *event_create( void );
-int event_wait( void *eventhdl );
-int event_signal( void *eventhdl );
-void event_destroy( void *eventhdl );
-
-#endif

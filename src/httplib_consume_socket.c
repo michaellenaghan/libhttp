@@ -40,7 +40,7 @@
 int XX_httplib_consume_socket( struct httplib_context *ctx, struct socket *sp, int thread_index ) {
 
 	ctx->client_socks[thread_index].in_use = 0;
-	event_wait( ctx->client_wait_events[thread_index] );
+	XX_httplib_event_wait( ctx->client_wait_events[thread_index] );
 	*sp = ctx->client_socks[thread_index];
 
 	return ( ctx->status == CTX_STATUS_RUNNING );

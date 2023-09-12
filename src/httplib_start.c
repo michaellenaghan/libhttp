@@ -180,7 +180,7 @@ struct httplib_context *httplib_start( const struct httplib_callbacks *callbacks
 
 		for (i=0; i<ctx->num_threads; i++) {
 
-			ctx->client_wait_events[i] = event_create();
+			ctx->client_wait_events[i] = XX_httplib_event_create();
 			if ( ctx->client_wait_events[i] == 0 ) return XX_httplib_abort_start( ctx, "Error creating worker event %u", i );
 		}
 #endif

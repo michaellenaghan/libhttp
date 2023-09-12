@@ -162,7 +162,7 @@ static void master_thread_run(void *thread_func_param) {
 
 	for (i=0; i<ctx->num_threads; i++) {
 
-		event_signal( ctx->client_wait_events[i] );
+		XX_httplib_event_signal( ctx->client_wait_events[i] );
 
 		/*
 		 * Since we know all sockets, we can shutdown the connections.

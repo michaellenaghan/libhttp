@@ -51,7 +51,7 @@ void XX_httplib_produce_socket( struct httplib_context *ctx, const struct socket
 				ctx->client_socks[i]        = *sp;
 				ctx->client_socks[i].in_use = 1;
 
-				event_signal( ctx->client_wait_events[i] );
+				XX_httplib_event_signal( ctx->client_wait_events[i] );
 
 				return;
 			}
