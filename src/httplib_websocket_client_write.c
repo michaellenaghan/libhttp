@@ -28,8 +28,6 @@
 #include "httplib_main.h"
 #include "httplib_utils.h"
 
-static void mask_data( const char *in, size_t in_len, uint32_t masking_key, char *out );
-
 /*
  * int httplib_websocket_client_write( struct lh_ctx *ctx, struct httplib_connection *conn, int opcode, const char *data, size_t dataLen );
  *
@@ -56,7 +54,7 @@ int httplib_websocket_client_write( struct httplib_context *ctx, struct httplib_
 		return -1;
 	}
 
-	mask_data( data, dataLen, masking_key, masked_data );
+	XX_httplib_mask_data( data, dataLen, masking_key, masked_data );
 
 	retval      = XX_httplib_websocket_write_exec( ctx, conn, opcode, masked_data, dataLen, masking_key );
 	masked_data = httplib_free( masked_data );
@@ -64,43 +62,3 @@ int httplib_websocket_client_write( struct httplib_context *ctx, struct httplib_
 	return retval;
 
 }  /* httplib_websocket_client_write */
-
-/*
- * static void mask_data( const char *in, size_t in_len, uint32_t masking_key, char *out );
- *
- * The function mask_data() is used to mask data when writing data over a
- * websocket client connection.
- */
-
-static void mask_data( const char *in, size_t in_len, uint32_t masking_key, char *out ) {
-
-	size_t i;
-
-	i = 0;
-
-	if ( in_len > 3  &&  ((ptrdiff_t)in % 4) == 0 ) {
-
-		/*
-		 * Convert in 32 bit words, if data is 4 byte aligned
-		 */
-
-		while ( i+3 < in_len ) {
-
-			*(uint32_t *)(void *)(out + i) = *(const uint32_t *)(const void *)(in + i) ^ masking_key;
-			i += 4;
-		}
-	}
-	if ( i != in_len ) {
-
-		/*
-		 * convert 1-3 remaining bytes if ((dataLen % 4) != 0)
-		 */
-
-		while ( i < in_len ) {
-
-			*(uint8_t *)(void *)(out + i) = *(const uint8_t *)(const void *)(in + i) ^ *(((uint8_t *)&masking_key) + (i % 4));
-			i++;
-		}
-	}
-
-}  /* mask_data */

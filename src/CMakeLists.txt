@@ -38,6 +38,7 @@ target_sources(
 	extern_ssl_lut.c
 	httplib_abort_start.c
 	httplib_accept_new_connection.c
+    httplib_alloc_printf.c
 	httplib_atomic_dec.c
 	httplib_atomic_inc.c
 	httplib_authorize.c
@@ -130,6 +131,7 @@ target_sources(
 	httplib_log_access.c
 	httplib_lowercase.c
 	httplib_malloc.c
+	httplib_mask_data.c
 	httplib_master_thread.c
 	httplib_match_prefix.c
 	httplib_md5.c

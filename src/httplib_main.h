@@ -762,6 +762,10 @@ void			SHA1Update( SHA1_CTX *context, const unsigned char *data, uint32_t len );
 
 struct httplib_context *	XX_httplib_abort_start( struct httplib_context *ctx, PRINTF_FORMAT_STRING(const char *fmt), ...) PRINTF_ARGS(2, 3);
 void			XX_httplib_accept_new_connection( const struct socket *listener, struct httplib_context *ctx );
+int 			XX_httplib_alloc_printf( char **out_buf, char *prealloc_buf, size_t prealloc_size, const char *fmt, ... );
+int 			XX_httplib_alloc_printf2( char **buf, const char *fmt, ... );
+int 			XX_httplib_alloc_vprintf( char **out_buf, char *prealloc_buf, size_t prealloc_size, const char *fmt, va_list ap );
+int 			XX_httplib_alloc_vprintf2( char **buf, const char *fmt, va_list ap );
 bool			XX_httplib_authorize( struct httplib_context *ctx, struct httplib_connection *conn, struct file *filep );
 const char *		XX_httplib_builtin_mime_ext( int index );
 const char *		XX_httplib_builtin_mime_type( int index );
@@ -825,6 +829,7 @@ void *			XX_httplib_load_dll( struct httplib_context *ctx, const char *dll_name 
 void *			XX_httplib_load_dll( struct httplib_context *ctx, const char *dll_name, struct ssl_func *sw );
 #endif
 void			XX_httplib_log_access( struct httplib_context *ctx, const struct httplib_connection *conn );
+void 			XX_httplib_mask_data( const char *in, size_t in_len, uint32_t masking_key, char *out );
 LIBHTTP_THREAD		XX_httplib_master_thread( void *thread_func_param );
 int			XX_httplib_match_prefix(const char *pattern, size_t pattern_len, const char *str);
 void			XX_httplib_mkcol( struct httplib_context *ctx, struct httplib_connection *conn, const char *path );
@@ -838,6 +843,7 @@ time_t			XX_httplib_parse_date_string( const char *datetime );
 int			XX_httplib_parse_http_headers( char **buf, struct httplib_request_info *ri );
 int			XX_httplib_parse_http_message( char *buf, int len, struct httplib_request_info *ri );
 int			XX_httplib_parse_net( const char *spec, uint32_t *net, uint32_t *mask );
+bool			XX_httplib_parse_port_string( const struct vec *vec, struct socket *so, int *ip_version );
 int			XX_httplib_parse_range_header( const char *header, int64_t *a, int64_t *b );
 void			XX_httplib_path_to_unicode( const char *path, wchar_t *wbuf, size_t wbuf_len );
 void			XX_httplib_print_dir_entry( struct httplib_context *ctx, struct de *de );

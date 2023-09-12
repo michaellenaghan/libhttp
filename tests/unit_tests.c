@@ -144,6 +144,38 @@ test_httplib_url_encode(void) {
 
 
 TEST
+test_XX_httplib_alloc_vprintf(void) {
+	/* Adapted from unit_test.c */
+	/* Copyright (c) 2013-2015 the Civetweb developers */
+	/* Copyright (c) 2004-2013 Sergey Lyubka */
+	char buf[MG_BUF_LEN], *p = buf;
+
+	ASSERT( XX_httplib_alloc_printf(&p, buf, sizeof(buf), "%s", "hi") == 2 );
+	ASSERT( p == buf );
+
+	ASSERT( XX_httplib_alloc_printf(&p, buf, sizeof(buf), "%s", "") == 0 );
+	ASSERT( p == buf );
+
+	ASSERT( XX_httplib_alloc_printf(&p, buf, sizeof(buf), "") == 0 );
+	ASSERT( p == buf );
+
+	/* Pass small buffer, make sure XX_httplib_alloc_printf allocates */
+	ASSERT( XX_httplib_alloc_printf(&p, buf, 1, "%s", "hello") == 5 );
+	ASSERT( p != buf );
+	httplib_free(p);
+	p = buf;
+
+	/* Test alternative implementation */
+	ASSERT( XX_httplib_alloc_printf2(&p, "%s", "hello") == 5 );
+	ASSERT( p != buf );
+	httplib_free(p);
+	p = buf;
+
+	PASS();
+}
+
+
+TEST
 test_XX_httplib_get_uri_type(void) {
 
 	ASSERT_EQ( URI_TYPE_RELATIVE, XX_httplib_get_uri_type("/api") );
@@ -156,6 +188,48 @@ test_XX_httplib_get_uri_type(void) {
 	ASSERT_EQ( URI_TYPE_ABS_NOPORT, XX_httplib_get_uri_type("https://somewhere/some/file.html") );
 	ASSERT_EQ( URI_TYPE_ABS_PORT, XX_httplib_get_uri_type("http://somewhere:8080/") );
 	ASSERT_EQ( URI_TYPE_ABS_PORT, XX_httplib_get_uri_type("https://somewhere:8080/some/file.html") );
+
+	PASS();
+}
+
+
+TEST
+test_XX_httplib_mask_data(void) {
+	char in[1024];
+	char out[1024];
+	int i;
+
+	uint32_t mask = 0x61626364;
+	/* TODO: adapt test for big endian */
+	ASSERT_EQ( 0x64u, (*(unsigned char *)&mask) );
+
+	memset(in, 0, sizeof(in));
+	memset(out, 99, sizeof(out));
+
+	XX_httplib_mask_data(in, sizeof(out), 0, out);
+	ASSERT( !memcmp(out, in, sizeof(out)) );
+
+	for (i = 0; i < 1024; i++) {
+		in[i] = (char)((unsigned char)i);
+	}
+	XX_httplib_mask_data(in, 107, 0, out);
+	ASSERT( !memcmp(out, in, 107) );
+
+	XX_httplib_mask_data(in, 256, 0x01010101, out);
+	for (i = 0; i < 256; i++) {
+		ASSERT_EQ( (((unsigned char)in[i]) ^ (char)1u), ((unsigned char)out[i]) );
+	}
+	for (i = 256; i < (int)sizeof(out); i++) {
+		ASSERT_EQ( 0, ((unsigned char)out[i]) );
+	}
+
+	/* TODO: check this for big endian */
+	XX_httplib_mask_data(in, 5, 0x01020304, out);
+	ASSERT_EQ( 0u ^ 4u, (unsigned char)out[0] );
+	ASSERT_EQ( 1u ^ 3u, (unsigned char)out[1] );
+	ASSERT_EQ( 2u ^ 2u, (unsigned char)out[2] );
+	ASSERT_EQ( 3u ^ 1u, (unsigned char)out[3] );
+	ASSERT_EQ( 4u ^ 4u, (unsigned char)out[4] );
 
 	PASS();
 }
@@ -608,7 +682,9 @@ main(int argc, char **argv) {
 	RUN_TEST(test_httplib_base64_encode);
 	RUN_TEST(test_httplib_url_decode);
 	RUN_TEST(test_httplib_url_encode);
+	RUN_TEST(test_XX_httplib_alloc_vprintf);
 	RUN_TEST(test_XX_httplib_get_uri_type);
+	RUN_TEST(test_XX_httplib_mask_data);
 	RUN_TEST(test_XX_httplib_match_prefix);
 	RUN_TEST(test_XX_httplib_next_option);
 	RUN_TEST(test_XX_httplib_parse_date_string);

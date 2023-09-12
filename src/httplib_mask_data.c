@@ -1,5 +1,7 @@
 /*
- * Copyright (C) 2016 Lammert Bies
+ * Copyright (c) 2016 Lammert Bies
+ * Copyright (c) 2013-2016 the Civetweb developers
+ * Copyright (c) 2004-2013 Sergey Lyubka
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -18,13 +20,49 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
+ *
+ * ============
+ * Release: 2.0
  */
 
-#define LEAP_YEAR(x)	( ((x)%4) == 0  &&  ( ((x)%100) != 0  ||  ((x)%400) == 0 ) )
+#include "httplib_main.h"
 
-double			XX_httplib_difftimespec( const struct timespec *ts_now, const struct timespec *ts_before );
-void			XX_httplib_gmt_time_string( char *buf, size_t buf_len, time_t *t );
-int			XX_httplib_inet_pton( int af, const char *src, void *dst, size_t dstlen );
-int			XX_httplib_lowercase( const char *s );
+/*
+ * void XX_httplib_mask_data( const char *in, size_t in_len, uint32_t masking_key, char *out );
+ *
+ * The function XX_httplib_mask_data() is used to mask data when writing data over a
+ * websocket client connection.
+ */
 
-extern const int	XX_httplib_days_per_month[];
+void XX_httplib_mask_data( const char *in, size_t in_len, uint32_t masking_key, char *out ) {
+
+	size_t i;
+
+	i = 0;
+
+	if ( in_len > 3  &&  ((ptrdiff_t)in % 4) == 0 ) {
+
+		/*
+		 * Convert in 32 bit words, if data is 4 byte aligned
+		 */
+
+		while ( i+3 < in_len ) {
+
+			*(uint32_t *)(void *)(out + i) = *(const uint32_t *)(const void *)(in + i) ^ masking_key;
+			i += 4;
+		}
+	}
+	if ( i != in_len ) {
+
+		/*
+		 * convert 1-3 remaining bytes if ((dataLen % 4) != 0)
+		 */
+
+		while ( i < in_len ) {
+
+			*(uint8_t *)(void *)(out + i) = *(const uint8_t *)(const void *)(in + i) ^ *(((uint8_t *)&masking_key) + (i % 4));
+			i++;
+		}
+	}
+
+}  /* XX_httplib_mask_data */
