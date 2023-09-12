@@ -1,6 +1,7 @@
 #include <stdbool.h>
 
 #include "greatest.h"
+#include "greatest_ex.h"
 
 #include "libhttp.h"
 #include "httplib_main.h"
@@ -162,28 +163,97 @@ test_XX_httplib_get_uri_type(void) {
 
 TEST
 test_XX_httplib_match_prefix(void) {
-    	// ASSERT_GT( 0, XX_httplib_match_prefix("", 0, "") );
+    	// ASSERT_GT_EX( 0, XX_httplib_match_prefix("", 0, "") );  // Expected success?
 
-    	// ASSERT_GT( 0, XX_httplib_match_prefix("", 0, "x") );
-    	ASSERT_GT( 0, XX_httplib_match_prefix("x", 1, "") );
+    	ASSERT_LTE_EX( 0, XX_httplib_match_prefix("", 0, "x") );  // Empty pattern matches anything.
+    	ASSERT_LTE_EX( 0, XX_httplib_match_prefix("x", 1, "") );
 
-    	ASSERT_LTE( 0, XX_httplib_match_prefix("x", 1, "x") );
-    	ASSERT_LTE( 0, XX_httplib_match_prefix("X", 1, "X") );
+    	ASSERT_GT_EX( 0, XX_httplib_match_prefix("x", 1, "x") );
+    	ASSERT_GT_EX( 0, XX_httplib_match_prefix("X", 1, "X") );
 
-	printf(" XX_httplib_match_prefix('x', 1, 'X') = %d\n", XX_httplib_match_prefix("x", 1, "X") );
-    	ASSERT_LTE( 0, XX_httplib_match_prefix("x", 1, "X") );
-    	ASSERT_LTE( 0, XX_httplib_match_prefix("X", 1, "x") );
+    	ASSERT_GT_EX( 0, XX_httplib_match_prefix("x", 1, "X") );
+    	ASSERT_GT_EX( 0, XX_httplib_match_prefix("X", 1, "x") );
 
-    	ASSERT_GT( 0, XX_httplib_match_prefix("?", 1, "") );
-    	ASSERT_LTE( 0, XX_httplib_match_prefix("?", 1, "x") );
-    	ASSERT_GT( 0, XX_httplib_match_prefix("x?", 2, "x") );
-    	ASSERT_LTE( 0, XX_httplib_match_prefix("x?", 2, "xx") );
-    	ASSERT_LTE( 0, XX_httplib_match_prefix("x?", 2, "xxx") );
-    	ASSERT_GT( 0, XX_httplib_match_prefix("?x", 2, "x") );
-    	ASSERT_LTE( 0, XX_httplib_match_prefix("?x", 2, "xx") );
-    	ASSERT_LTE( 0, XX_httplib_match_prefix("?x", 2, "xxx") );
+    	ASSERT_LTE_EX( 0, XX_httplib_match_prefix("?", 1, "") );
+    	ASSERT_GT_EX( 0, XX_httplib_match_prefix("?", 1, "x") );
+    	ASSERT_LTE_EX( 0, XX_httplib_match_prefix("x?", 2, "x") );
+    	ASSERT_GT_EX( 0, XX_httplib_match_prefix("x?", 2, "xx") );
+    	ASSERT_GT_EX( 0, XX_httplib_match_prefix("x?", 2, "xxx") );
+    	ASSERT_LTE_EX( 0, XX_httplib_match_prefix("?x", 2, "x") );
+    	ASSERT_GT_EX( 0, XX_httplib_match_prefix("?x", 2, "xx") );
+    	ASSERT_GT_EX( 0, XX_httplib_match_prefix("?x", 2, "xxx") );
 
-    	ASSERT_LTE( 0, XX_httplib_match_prefix("$", 1, "") );
+    	// ASSERT_GT_EX( 0, XX_httplib_match_prefix("*", 1, "") );  // Expected success?
+    	ASSERT_GT_EX( 0, XX_httplib_match_prefix("*", 1, "x") );
+    	ASSERT_GT_EX( 0, XX_httplib_match_prefix("x*", 2, "x") );
+    	ASSERT_GT_EX( 0, XX_httplib_match_prefix("x*", 2, "xx") );
+    	ASSERT_GT_EX( 0, XX_httplib_match_prefix("x*", 2, "xxx") );
+    	ASSERT_GT_EX( 0, XX_httplib_match_prefix("*x", 2, "x") );
+    	ASSERT_GT_EX( 0, XX_httplib_match_prefix("*x", 2, "xx") );
+    	ASSERT_GT_EX( 0, XX_httplib_match_prefix("*x", 2, "xxx") );
+
+    	// ASSERT_GT_EX( 0, XX_httplib_match_prefix("**", 1, "") );  // Crash! (Note `len`: 1)
+
+    	// ASSERT_GT_EX( 0, XX_httplib_match_prefix("**", 2, "") );  // Expected success?
+    	ASSERT_GT_EX( 0, XX_httplib_match_prefix("**", 2, "x") );
+    	ASSERT_GT_EX( 0, XX_httplib_match_prefix("x**", 3, "x") );
+    	ASSERT_GT_EX( 0, XX_httplib_match_prefix("x**", 3, "xx") );
+    	ASSERT_GT_EX( 0, XX_httplib_match_prefix("x**", 3, "xxx") );
+    	ASSERT_GT_EX( 0, XX_httplib_match_prefix("**x", 3, "x") );
+    	ASSERT_GT_EX( 0, XX_httplib_match_prefix("**x", 3, "xx") );
+    	ASSERT_GT_EX( 0, XX_httplib_match_prefix("**x", 3, "xxx") );
+
+    	ASSERT_GT_EX( 0, XX_httplib_match_prefix("**", 2, "/") );
+    	ASSERT_GT_EX( 0, XX_httplib_match_prefix("**", 2, "/x") );
+    	ASSERT_LTE_EX( 0, XX_httplib_match_prefix("x**", 3, "/x") );
+    	ASSERT_LTE_EX( 0, XX_httplib_match_prefix("x**", 3, "/xx") );
+    	ASSERT_LTE_EX( 0, XX_httplib_match_prefix("x**", 3, "/xxx") );
+    	ASSERT_GT_EX( 0, XX_httplib_match_prefix("**x", 3, "/x") );  // Success?
+    	ASSERT_GT_EX( 0, XX_httplib_match_prefix("**x", 3, "/xx") );  // Success?
+    	ASSERT_GT_EX( 0, XX_httplib_match_prefix("**x", 3, "/xxx") );  // Success?
+
+    	ASSERT_GT_EX( 0, XX_httplib_match_prefix("**", 2, "/") );
+    	ASSERT_GT_EX( 0, XX_httplib_match_prefix("**", 2, "x/") );
+    	ASSERT_GT_EX( 0, XX_httplib_match_prefix("x**", 3, "x/") );
+    	ASSERT_GT_EX( 0, XX_httplib_match_prefix("x**", 3, "xx/") );
+    	ASSERT_GT_EX( 0, XX_httplib_match_prefix("x**", 3, "xxx/") );
+    	ASSERT_GT_EX( 0, XX_httplib_match_prefix("**x", 3, "x/") );
+    	ASSERT_GT_EX( 0, XX_httplib_match_prefix("**x", 3, "xx/") );
+    	ASSERT_GT_EX( 0, XX_httplib_match_prefix("**x", 3, "xxx/") );
+
+    	// ASSERT_GT_EX( 0, XX_httplib_match_prefix("$", 1, "") );  // Expected success?
+    	ASSERT_LTE_EX( 0, XX_httplib_match_prefix("$", 1, "x") );
+    	ASSERT_GT_EX( 0, XX_httplib_match_prefix("x$", 2, "x") );
+    	ASSERT_LTE_EX( 0, XX_httplib_match_prefix("x$", 2, "xx") );
+    	ASSERT_LTE_EX( 0, XX_httplib_match_prefix("x$", 2, "xxx") );
+
+    	ASSERT_GT_EX( 0, XX_httplib_match_prefix("/$", 2, "/") );
+    	ASSERT_LTE_EX( 0, XX_httplib_match_prefix("/$", 2, "/x") );
+
+    	ASSERT_LTE_EX( 0, XX_httplib_match_prefix("/x", 2, "/") );
+    	ASSERT_GT_EX( 0, XX_httplib_match_prefix("/x", 2, "/x") );
+    	ASSERT_GT_EX( 0, XX_httplib_match_prefix("/x", 2, "/xxx") );
+    	ASSERT_GT_EX( 0, XX_httplib_match_prefix("/x", 2, "/xxx/xxx") );
+    	ASSERT_LTE_EX( 0, XX_httplib_match_prefix("/x", 2, "/z") );
+
+    	ASSERT_LTE_EX( 0, XX_httplib_match_prefix("/x/x/", 5, "/") );
+    	ASSERT_LTE_EX( 0, XX_httplib_match_prefix("/x/x/", 5, "/x") );
+    	ASSERT_GT_EX( 0, XX_httplib_match_prefix("/x/x/", 5, "/x/x/") );
+    	ASSERT_GT_EX( 0, XX_httplib_match_prefix("/x/x/", 5, "/x/x/x") );
+    	ASSERT_GT_EX( 0, XX_httplib_match_prefix("/x/x/", 5, "/x/x/xxx") );
+    	ASSERT_GT_EX( 0, XX_httplib_match_prefix("/x/x/", 5, "/x/x/xxx/xxx") );
+    	ASSERT_LTE_EX( 0, XX_httplib_match_prefix("/x/x/", 5, "/x/z/") );
+
+    	ASSERT_LTE_EX( 0, XX_httplib_match_prefix("/x/*/x/", 7, "/") );
+    	ASSERT_LTE_EX( 0, XX_httplib_match_prefix("/x/*/x/", 7, "/x") );
+    	ASSERT_LTE_EX( 0, XX_httplib_match_prefix("/x/*/x/", 7, "/x/x/") );
+    	ASSERT_LTE_EX( 0, XX_httplib_match_prefix("/x/*/x/", 7, "/x/x/x") );
+    	ASSERT_LTE_EX( 0, XX_httplib_match_prefix("/x/*/x/", 7, "/x/x/x") );
+    	ASSERT_GT_EX( 0, XX_httplib_match_prefix("/x/*/x/", 7, "/x/x/x/xxx") );
+    	ASSERT_LTE_EX( 0, XX_httplib_match_prefix("/x/*/x/", 7, "/x/z/") );
+    	ASSERT_LTE_EX( 0, XX_httplib_match_prefix("/x/*/x/", 7, "/x/z/x") );
+    	ASSERT_GT_EX( 0, XX_httplib_match_prefix("/x/*/x/", 7, "/x/z/x/") );
+    	ASSERT_GT_EX( 0, XX_httplib_match_prefix("/x/*/x/", 7, "/x/z/x/xxx") );
 
 	// Adapted from unit_test.c
 	// Copyright (c) 2013-2015 the Civetweb developers
