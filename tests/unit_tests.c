@@ -67,6 +67,38 @@ test_httplib_base64_encode(void) {
 
 
 TEST
+test_httplib_check_feature(void) {
+
+#ifdef NO_SSL
+	ASSERT_FALSE( httplib_check_feature(2) );
+#else
+	ASSERT( httplib_check_feature(2) );
+#endif
+
+#ifdef NO_SSL_DL
+	ASSERT_FALSE( httplib_check_feature(4) );
+#else
+	ASSERT( httplib_check_feature(4) );
+#endif
+
+	PASS();
+}
+
+
+TEST
+test_httplib_get_builtin_mime_type(void) {
+	ASSERT_STR_EQ( "text/plain", httplib_get_builtin_mime_type("x.txt") );
+	ASSERT_STR_EQ( "text/html", httplib_get_builtin_mime_type("x.html") );
+	ASSERT_STR_EQ( "text/html", httplib_get_builtin_mime_type("x.HTML") );
+	ASSERT_STR_EQ( "text/html", httplib_get_builtin_mime_type("x.hTmL") );
+	ASSERT_STR_EQ( "text/html", httplib_get_builtin_mime_type("/abc/def/ghi.htm") );
+	ASSERT_STR_EQ( "text/plain", httplib_get_builtin_mime_type("x.unknown_extention_xyz") );
+
+	PASS();
+}
+
+
+TEST
 test_httplib_get_cookie(void) {
 	char buf[20];
 
@@ -87,18 +119,100 @@ test_httplib_get_cookie(void) {
 	ASSERT_EQ( -1, httplib_get_cookie("a=1; b=2; c; d", "c", buf, sizeof(buf)) );
 	ASSERT_STR_EQ( "", buf );
 
+	const char *longcookie = "key1=1; key2=2; key3; key4=4; key5=; key6; "
+	                         "key7=this+is+it; key8=8; key9";
+
+	/* invalid result buffer */
+	ASSERT_EQ( -2, httplib_get_cookie("", "notfound", NULL, 999) );
+
+	/* zero size result buffer */
+	ASSERT_EQ( -2, httplib_get_cookie("", "notfound", buf, 0) );
+
+	/* too small result buffer */
+	ASSERT_EQ( -3, httplib_get_cookie("key=toooooooooolong", "key", buf, 4) );
+
+	/* key not found in string */
+	ASSERT_EQ( -1, httplib_get_cookie("", "notfound", buf, sizeof(buf)) );
+
+	ASSERT_EQ( -1, httplib_get_cookie(longcookie, "notfound", buf, sizeof(buf)) );
+
+	/* key not found in string */
+	ASSERT_EQ( -1, httplib_get_cookie("key1=1; key2=2; key3=3", "notfound", buf, sizeof(buf)) );
+
+	/* keys are found as first, middle and last key */
+	memset(buf, 77, sizeof(buf));
+	ASSERT_EQ( 1, httplib_get_cookie("key1=1; key2=2; key3=3", "key1", buf, sizeof(buf)) );
+	ASSERT_STR_EQ("1", buf);
+
+	memset(buf, 77, sizeof(buf));
+	ASSERT_EQ( 1, httplib_get_cookie("key1=1; key2=2; key3=3", "key2", buf, sizeof(buf)) );
+	ASSERT_STR_EQ( "2", buf );
+
+	memset(buf, 77, sizeof(buf));
+	ASSERT_EQ( 1, httplib_get_cookie("key1=1; key2=2; key3=3", "key3", buf, sizeof(buf)) );
+	ASSERT_STR_EQ( "3", buf );
+
+	/* longer value in the middle of a longer string */
+	memset(buf, 77, sizeof(buf));
+	ASSERT_EQ( 10, httplib_get_cookie(longcookie, "key7", buf, sizeof(buf)) );
+	ASSERT_STR_EQ( "this+is+it", buf );
+
+	/* key with = but without value in the middle of a longer string */
+	memset(buf, 77, sizeof(buf));
+	ASSERT_EQ( 0, httplib_get_cookie(longcookie, "key5", buf, sizeof(buf)) );
+	ASSERT_STR_EQ( "", buf );
+
+	/* key without = and without value in the middle of a longer string */
+	memset(buf, 77, sizeof(buf));
+	ASSERT_EQ( -1, httplib_get_cookie(longcookie, "key6", buf, sizeof(buf)) );
+
+	PASS();
+}
+
+
+TEST
+test_httplib_get_response_code_text(void) {
+	for (int i = 100; i < 600; i++) {
+		const char *resp = httplib_get_response_code_text(NULL, NULL, i);
+		ASSERT_NEQ( NULL, resp );
+		size_t len = strlen(resp);
+		ASSERT_GT_EX( 1, len );
+		ASSERT_LT_EX( 32, len );
+		for (size_t j = 0; j < len; j++) {
+			if (resp[j] == ' ') {
+				/* space is valid */
+			} else if (resp[j] == '-') {
+				/* hyphen is valid */
+			} else if (resp[j] >= 'A' && resp[j] <= 'Z') {
+				/* A-Z is valid */
+			} else if (resp[j] >= 'a' && resp[j] <= 'z') {
+				/* a-z is valid */
+			} else {
+				char msg[256];
+				snprintf(
+					msg, sizeof(msg),
+					"Found letter %c (%02xh) in %s",
+				             resp[j],
+				             resp[j],
+				             resp);
+				FAILm(msg);
+			}
+		}
+	}
+
 	PASS();
 }
 
 
 TEST
 test_httplib_get_var(void) {
+	char buf[32];
+
 	static const char *post[] = {
 		"a=1&&b=2&d&=&c=3%20&e=",
 	        "q=&st=2012%2F11%2F13+17%3A05&et=&team_id=",
 		NULL
 	};
-	char buf[20];
 
 	ASSERT_EQ( 1, httplib_get_var(post[0], strlen(post[0]), "a", buf, sizeof(buf)) );
 	ASSERT_STR_EQ( "1", buf );
@@ -119,6 +233,102 @@ test_httplib_get_var(void) {
 	ASSERT_EQ( -2, httplib_get_var(post[0], strlen(post[0]), "x", buf, 0) );
 	ASSERT_EQ( -2, httplib_get_var(post[1], strlen(post[1]), "st", buf, 16) );
 	ASSERT_EQ( 16, httplib_get_var(post[1], strlen(post[1]), "st", buf, 17) );
+
+	const char *shortquery = "key1=1&key2=2&key3=3";
+	const char *longquery = "key1=1&key2=2&key3&key4=4&key5=&key6&"
+	                        "key7=this+is+it&key8=8&key9&&key10=&&"
+	                        "key7=that+is+it&key12=12";
+
+	/* invalid result buffer */
+	ASSERT_EQ( -2, httplib_get_var2("", 0, "notfound", NULL, 999, 0) );
+
+	/* zero size result buffer */
+	ASSERT_EQ( -2, httplib_get_var2("", 0, "notfound", buf, 0, 0) );
+
+	/* too small result buffer */
+	ASSERT_EQ( -2, httplib_get_var2("key=toooooooooolong", 19, "key", buf, 4, 0) );
+
+	/* key not found in string */
+	ASSERT_EQ( -1, httplib_get_var2("", 0, "notfound", buf, sizeof(buf), 0) );
+
+	ASSERT_EQ( -1, httplib_get_var2( longquery, strlen(longquery), "notfound", buf, sizeof(buf), 0) );
+
+	/* key not found in string */
+	ASSERT_EQ( -1, httplib_get_var2(shortquery, strlen(shortquery), "notfound", buf, sizeof(buf), 0) );
+
+	/* key not found in string */
+	ASSERT_EQ( -1, httplib_get_var2("key1=1&key2=2&key3=3&notfound=here", strlen(shortquery), "notfound", buf, sizeof(buf), 0) );
+
+	/* key not found in string */
+	ASSERT_EQ( -1, httplib_get_var2(shortquery, strlen(shortquery), "key1", buf, sizeof(buf), 1) );
+
+	/* keys are found as first, middle and last key */
+	memset(buf, 77, sizeof(buf));
+	ASSERT_EQ( 1, httplib_get_var2(shortquery, strlen(shortquery), "key1", buf, sizeof(buf), 0) );
+	ASSERT_STR_EQ( "1", buf );
+
+	memset(buf, 77, sizeof(buf));
+	ASSERT_EQ( 1, httplib_get_var2(shortquery, strlen(shortquery), "key2", buf, sizeof(buf), 0) );
+	ASSERT_STR_EQ( "2", buf );
+
+	memset(buf, 77, sizeof(buf));
+	ASSERT_EQ( 1, httplib_get_var2(shortquery, strlen(shortquery), "key3", buf, sizeof(buf), 0) );
+	ASSERT_STR_EQ( "3", buf );
+
+	/* httplib_get_var call httplib_get_var2 with last argument 0 */
+	memset(buf, 77, sizeof(buf));
+	ASSERT_EQ( 1, httplib_get_var(shortquery, strlen(shortquery), "key1", buf, sizeof(buf)) );
+	ASSERT_STR_EQ( "1", buf );
+
+	/* longer value in the middle of a longer string */
+	memset(buf, 77, sizeof(buf));
+	ASSERT_EQ( 10, httplib_get_var2(longquery, strlen(longquery), "key7", buf, sizeof(buf), 0) );
+	ASSERT_STR_EQ( "this is it", buf );
+
+	/* longer value in the middle of a longer string - seccond occurance of key
+	 */
+	memset(buf, 77, sizeof(buf));
+	ASSERT_EQ( 10, httplib_get_var2(longquery, strlen(longquery), "key7", buf, sizeof(buf), 1) );
+	ASSERT_STR_EQ( "that is it", buf );
+
+	/* key with = but without value in the middle of a longer string */
+	memset(buf, 77, sizeof(buf));
+	ASSERT_EQ( 0, httplib_get_var2(longquery, strlen(longquery), "key5", buf, sizeof(buf), 0) );
+	ASSERT_STR_EQ( buf, "" );
+
+	/* key without = and without value in the middle of a longer string */
+	memset(buf, 77, sizeof(buf));
+	ASSERT_EQ( -1, httplib_get_var2(longquery, strlen(longquery), "key6", buf, sizeof(buf), 0) );
+	ASSERT_STR_EQ( buf, "" );
+
+	PASS();
+}
+
+
+TEST
+test_httplib_strncasecmp(void) {
+	ASSERT_EQ( 0, httplib_strncasecmp("abc", "abc", 3) );
+	ASSERT_EQ( 0, httplib_strncasecmp("abc", "abcd", 3) );
+	ASSERT_NEQ( 0, httplib_strncasecmp("abc", "abcd", 4) );
+	ASSERT_EQ( 0, httplib_strncasecmp("a", "A", 1) );
+
+	ASSERT_LT_EX( 0, httplib_strncasecmp("A", "B", 1) );
+	ASSERT_LT_EX( 0, httplib_strncasecmp("A", "b", 1) );
+	ASSERT_LT_EX( 0, httplib_strncasecmp("a", "B", 1) );
+	ASSERT_LT_EX( 0, httplib_strncasecmp("a", "b", 1) );
+	ASSERT_GT_EX( 0, httplib_strncasecmp("b", "A", 1) );
+	ASSERT_GT_EX( 0, httplib_strncasecmp("B", "A", 1) );
+	ASSERT_GT_EX( 0, httplib_strncasecmp("b", "a", 1) );
+	ASSERT_GT_EX( 0, httplib_strncasecmp("B", "a", 1) );
+
+	ASSERT_LT_EX( 0, httplib_strncasecmp("xAx", "xBx", 3) );
+	ASSERT_LT_EX( 0, httplib_strncasecmp("xAx", "xbx", 3) );
+	ASSERT_LT_EX( 0, httplib_strncasecmp("xax", "xBx", 3) );
+	ASSERT_LT_EX( 0, httplib_strncasecmp("xax", "xbx", 3) );
+	ASSERT_GT_EX( 0, httplib_strncasecmp("xbx", "xAx", 3) );
+	ASSERT_GT_EX( 0, httplib_strncasecmp("xBx", "xAx", 3) );
+	ASSERT_GT_EX( 0, httplib_strncasecmp("xbx", "xax", 3) );
+	ASSERT_GT_EX( 0, httplib_strncasecmp("xBx", "xax", 3) );
 
 	PASS();
 }
@@ -190,6 +400,21 @@ test_httplib_url_decode(void) {
 	ASSERT_EQ( 1, httplib_url_decode("%61", 3, buf, sizeof(buf), 1) );
 	ASSERT_STR_EQ( "a", buf );
 
+	ASSERT_EQ( 3, httplib_url_decode("abc", 3, buf, sizeof(buf), 0) );
+	ASSERT_STR_EQ( "abc", buf );
+
+	ASSERT_EQ( 3, httplib_url_decode("abcdef", 3, buf, sizeof(buf), 0) );
+	ASSERT_STR_EQ( "abc", buf );
+
+	ASSERT_EQ( 3, httplib_url_decode("x+y", 3, buf, sizeof(buf), 0) );
+	ASSERT_STR_EQ( "x+y", buf );
+
+	ASSERT_EQ( 3, httplib_url_decode("x+y", 3, buf, sizeof(buf), 1) );
+	ASSERT_STR_EQ( "x y", buf );
+
+	ASSERT_EQ( 1, httplib_url_decode("%25", 3, buf, sizeof(buf), 1) );
+	ASSERT_STR_EQ( "%", buf );
+
 	PASS();
 }
 
@@ -214,6 +439,29 @@ test_httplib_url_encode(void) {
 	ASSERT_EQ( (int)strlen(buf), ret );
 	ASSERT_EQ( (int)strlen(nonalpha_url_enc1), ret );
 	ASSERT_STR_EQ( nonalpha_url_enc1, buf );
+
+	memset(buf, 77, sizeof(buf));
+	ret = httplib_url_encode("abc", buf, sizeof(buf));
+	ASSERT_EQ( 3, ret );
+	ASSERT_STR_EQ( "abc", buf );
+
+	memset(buf, 77, sizeof(buf));
+	ret = httplib_url_encode("a%b/c&d.e", buf, sizeof(buf));
+	ASSERT_EQ( 15, ret );
+	ASSERT_STR_EQ( "a%25b%2fc%26d.e", buf );
+
+	memset(buf, 77, sizeof(buf));
+	ret = httplib_url_encode("%%%", buf, 4);
+	ASSERT_EQ( -1, ret );
+	ASSERT_STR_EQ( "%25", buf );
+
+	PASS();
+}
+
+
+TEST
+test_httplib_version(void) {
+	ASSERT_STR_EQ( LIBHTTP_VERSION, httplib_version() );
 
 	PASS();
 }
@@ -293,6 +541,33 @@ test_md5(void) {
 	       "",
 	       NULL);
 	ASSERT_STR_EQ( "9e107d9d372bb6826bd81d3542a419d6", md5_str );
+
+	char buf[33];
+	const char *long_str =
+	    "_123456789A123456789B123456789C123456789D123456789E123456789F123456789"
+	    "G123456789H123456789I123456789J123456789K123456789L123456789M123456789"
+	    "N123456789O123456789P123456789Q123456789R123456789S123456789T123456789"
+	    "U123456789V123456789W123456789X123456789Y123456789Z";
+
+	memset(buf, 77, sizeof(buf));
+	ASSERT_EQ( buf, httplib_md5(buf, NULL) );
+	ASSERT_STR_EQ( "d41d8cd98f00b204e9800998ecf8427e", buf );
+
+	memset(buf, 77, sizeof(buf));
+	ASSERT_EQ( buf, httplib_md5(buf, "The quick brown fox jumps over the lazy dog.", NULL) );
+	ASSERT_STR_EQ( "e4d909c290d0fb1ca068ffaddf22cbd0", buf );
+
+	memset(buf, 77, sizeof(buf));
+	ASSERT_EQ( buf, httplib_md5(buf, "", "The qu", "ick bro", "", "wn fox ju", "m", "ps over the la", "", "", "zy dog.", "", NULL) );
+	ASSERT_STR_EQ( "e4d909c290d0fb1ca068ffaddf22cbd0", buf );
+
+	memset(buf, 77, sizeof(buf));
+	ASSERT_EQ( buf, httplib_md5(buf, long_str, NULL) );
+	ASSERT_STR_EQ( "1cb13cf9f16427807f081b2138241f08", buf );
+
+	memset(buf, 77, sizeof(buf));
+	ASSERT_EQ( buf, httplib_md5(buf, long_str + 1, NULL) );
+	ASSERT_STR_EQ( "cf62d3264334154f5779d3694cc5093f", buf );
 
 	PASS();
 }
@@ -846,11 +1121,16 @@ main(int argc, char **argv) {
 #endif
 
 	RUN_TEST(test_httplib_base64_encode);
+	RUN_TEST(test_httplib_check_feature);
+	RUN_TEST(test_httplib_get_builtin_mime_type);
 	RUN_TEST(test_httplib_get_cookie);
+	RUN_TEST(test_httplib_get_response_code_text);
 	RUN_TEST(test_httplib_get_var);
+	RUN_TEST(test_httplib_strncasecmp);
 	RUN_TEST(test_httplib_strcasestr);
 	RUN_TEST(test_httplib_url_decode);
 	RUN_TEST(test_httplib_url_encode);
+	RUN_TEST(test_httplib_version);
 	RUN_TEST(test_md5);
 	RUN_TEST(test_strtoll);
 	RUN_TEST(test_XX_httplib_alloc_vprintf);
