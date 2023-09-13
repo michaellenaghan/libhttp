@@ -38,7 +38,7 @@ target_link_libraries(
 target_sources(
     httplib PRIVATE
 	extern_md5.c
-	extern_sha1.c
+	# extern_sha1.c
 	httplib_abort_start.c
 	httplib_accept_new_connection.c
     httplib_alloc_printf.c

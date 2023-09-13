@@ -44,7 +44,6 @@ int XX_httplib_send_websocket_handshake( struct httplib_context *ctx, struct htt
 	char buf[100];
 	char sha[20];
 	char b64_sha[B64_SHA_LEN];
-	SHA1_CTX sha_ctx;
 	bool truncated;
 
 	if ( ctx == NULL ) return 0;
@@ -62,9 +61,7 @@ int XX_httplib_send_websocket_handshake( struct httplib_context *ctx, struct htt
 		return 0;
 	}
 
-	SHA1Init( & sha_ctx );
-	SHA1Update( & sha_ctx, (unsigned char *)buf, (uint32_t)strlen(buf) );
-	SHA1Final( (unsigned char *)sha, &sha_ctx );
+	EVP_Digest( (unsigned char *)buf, (uint32_t)strlen(buf), (unsigned char *)sha, NULL, EVP_get_digestbyname("sha1"), NULL );
 
 	httplib_base64_encode( (unsigned char *)sha, sizeof(sha), b64_sha, B64_SHA_LEN );
 	httplib_printf( ctx, conn,
