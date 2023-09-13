@@ -617,6 +617,54 @@ test_XX_httplib_alloc_vprintf(void) {
 
 
 TEST
+test_XX_httplib_builtin_mime_ext(void) {
+	int i = 0;
+	const char *p1;
+	const char *p2;
+
+	while (true) {
+		p1 = XX_httplib_builtin_mime_ext( i + 0 );
+		if (p1 == NULL) break;
+
+		p2 = XX_httplib_builtin_mime_ext( i + 1 );
+		if (p2 == NULL) break;
+
+		// Are they properly sorted?
+		ASSERT_LT_EX( 0, httplib_strcasecmp( p1, p2 ) );
+
+		i++;
+	}
+
+	PASS();
+}
+
+
+TEST
+test_XX_httplib_builtin_mime_type(void) {
+	int i = 0;
+	const char *p_ext;
+	const char *p_type;
+	char buffer[128];
+
+	while (true) {
+		p_ext = XX_httplib_builtin_mime_ext( i );
+		if (p_ext == NULL) break;
+		p_type = XX_httplib_builtin_mime_type( i );
+		if (p_type == NULL) break;
+
+		snprintf( buffer, sizeof(buffer), "filename%s", p_ext );
+
+		// Is binary search working correctly?
+		ASSERT_STR_EQ( p_type, httplib_get_builtin_mime_type( buffer ) );
+
+		i++;
+	}
+
+	PASS();
+}
+
+
+TEST
 test_XX_httplib_get_uri_type(void) {
 
 	ASSERT_EQ( URI_TYPE_RELATIVE, XX_httplib_get_uri_type("/api") );
@@ -1134,6 +1182,8 @@ main(int argc, char **argv) {
 	RUN_TEST(test_md5);
 	RUN_TEST(test_strtoll);
 	RUN_TEST(test_XX_httplib_alloc_vprintf);
+	RUN_TEST(test_XX_httplib_builtin_mime_ext);
+	RUN_TEST(test_XX_httplib_builtin_mime_type);
 	RUN_TEST(test_XX_httplib_get_uri_type);
 	RUN_TEST(test_XX_httplib_mask_data);
 	RUN_TEST(test_XX_httplib_match_prefix);
