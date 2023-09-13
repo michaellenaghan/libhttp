@@ -38,12 +38,6 @@ int XX_httplib_cryptolib_users = 1; /* Reference counter for crypto library. */
 int XX_httplib_cryptolib_users = 0; /* Reference counter for crypto library. */
 #endif
 
-#if !defined(NO_SSL_DL)
-static void *cryptolib_dll_handle; /* Store the crypto library handle. */
-#endif  /* NO_SSL_DL */
-
-
-
 /*
  * int XX_httplib_initialize_ssl( struct httplib_context *ctx );
  *
@@ -55,14 +49,6 @@ int XX_httplib_initialize_ssl( struct httplib_context *ctx ) {
 
 	int i;
 	size_t size;
-
-#if !defined(NO_SSL_DL)
-	if ( ! cryptolib_dll_handle ) {
-
-		cryptolib_dll_handle = XX_httplib_load_dll( ctx, CRYPTO_LIB, XX_httplib_crypto_sw );
-		if ( ! cryptolib_dll_handle ) return 0;
-	}
-#endif /* NO_SSL_DL */
 
 	if ( httplib_atomic_inc( & XX_httplib_cryptolib_users ) > 1 ) return 1;
 

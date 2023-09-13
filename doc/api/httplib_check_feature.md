@@ -6,27 +6,25 @@
 
 | Parameter | Type | Description |
 | :--- | :--- | :--- |
-|**`feature`**|`unsigned`| A value indicating the feature to be checked |
+|**`feature`**|`enum httplib_feature const`| A value indicating the feature to be checked |
 
 ### Return Value
 
 | Type | Description |
 | :--- | :--- |
-|`unsigned`| A value indicating if a feature is available. A positive value indicates available, while **0** is returned for an unavailable feature |
+|`bool`| A value indicating whether or not a feature is available. A `true` value indicates available, and `false` indicates unavailable. |
 
 ### Description
 
-The function `httplib_check_feature()` can be called from an application program to check of specific features have been compiled in the LibHTTP version which the application has been linked to. The feature to check is provided as an unsigned integer parameter. If the function is available in the currently linked library version, a value **> 0** is returned. Otherwise the function `httplib_check_feature()` returns the value **0**.
+The function `httplib_check_feature()` can be called from an application program to check of specific features have been compiled in the LibHTTP version which the application has been linked to. The feature to check is provided as `enum httplib_feature` parameter. If the feature is available in the currently linked library version, a value `true` is returned. Otherwise the function `httplib_check_feature()` returns `false`.
 
 The following parameter values can be used:
 
 | Value | Compilation option | Description |
 | :---: | :---: | :--- |
-| **2** | NO_SSL | *Support for HTTPS*. If this feature is available, the webserver van use encryption in the client-server connection. SSLv2, SSLv3, TLSv1.0, TLSv1.1 and TLSv1.2 are supported depending on the SSL library LibHTTP has been compiled with, but which protocols are used effectively when the server is running is dependent on the options used when the server is started. |
-| **4** | NO_SSL_DL | *Support for HTTPS (dynamically linked)*. If this feature is available, the webserver will load the OpenSSL library at runtime. If this feature is not available, the webserver will link to the
-OpenSSL library at compile time. |
+| `FEATURE_SSL` | NO_SSL | *Support for HTTPS*. If this feature is available, the webserver van use encryption in the client-server connection. SSLv2, SSLv3, TLSv1.0, TLSv1.1 and TLSv1.2 are supported depending on the SSL library LibHTTP has been compiled with, but which protocols are used effectively when the server is running is dependent on the options used when the server is started. |
 
-Parameter values other than the values mentioned above will give undefined results. Therefore&mdash;although the parameter values for the `httplib_check_feature()` function are effectively bitmasks, you should't assume that combining two of those values with an OR to a new value will give any meaningful results when the function returns.
+Parameter values other than the values mentioned above will give undefined results.
 
 ### See Also
 

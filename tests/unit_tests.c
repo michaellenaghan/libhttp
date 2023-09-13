@@ -68,19 +68,11 @@ test_httplib_base64_encode(void) {
 
 TEST
 test_httplib_check_feature(void) {
-
 #ifdef NO_SSL
-	ASSERT_FALSE( httplib_check_feature(2) );
+	ASSERT_FALSE( httplib_check_feature(FEATURE_SSL) );
 #else
-	ASSERT( httplib_check_feature(2) );
+	ASSERT( httplib_check_feature(FEATURE_SSL) );
 #endif
-
-#ifdef NO_SSL_DL
-	ASSERT_FALSE( httplib_check_feature(4) );
-#else
-	ASSERT( httplib_check_feature(4) );
-#endif
-
 	PASS();
 }
 

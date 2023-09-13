@@ -14,8 +14,7 @@ target_compile_definitions(
     # MAX_REQUEST_SIZE=16384
     # MD5_STATIC
     # MSG_NOSIGNAL
-    NO_SSL
-    # NO_SSL_DL
+    $<$<NOT:$<BOOL:${HTTPLIB_ENABLE_SSL}>>:NO_SSL>
     # NO_THREAD_NAME
     # QUEUE_SIZE=50
     # SOMAXCONN=128
@@ -30,12 +29,16 @@ target_compile_options(
     $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wcast-align -Wcast-qual -Wconversion -Werror -Wextra -Wformat-security -Winit-self -Wnested-externs -Wpointer-arith -Wredundant-decls -Wshadow -Wstrict-prototypes -Wwrite-strings -funsigned-char>)
 target_include_directories(
     httplib PUBLIC
-    ${httplib_SOURCE_DIR}/include)
+    ${httplib_SOURCE_DIR}/include
+    $<$<BOOL:${HTTPLIB_ENABLE_SSL}>:${OPENSSL_INCLUDE_DIR}>)
+target_link_libraries(
+    httplib PUBLIC
+    $<$<BOOL:${HTTPLIB_ENABLE_SSL}>:${OPENSSL_LIBRARIES}>
+    $<$<BOOL:${HTTPLIB_ENABLE_SSL}>:${ZLIB_LIBRARIES}>)
 target_sources(
     httplib PRIVATE
 	extern_md5.c
 	extern_sha1.c
-	extern_ssl_lut.c
 	httplib_abort_start.c
 	httplib_accept_new_connection.c
     httplib_alloc_printf.c
@@ -124,7 +127,6 @@ target_sources(
 	httplib_is_valid_port.c
 	httplib_is_websocket_protocol.c
 	httplib_kill.c
-	httplib_load_dll.c
 	httplib_localtime_r.c
 	httplib_lock_unlock_connection.c
 	httplib_lock_unlock_context.c

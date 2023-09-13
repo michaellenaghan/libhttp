@@ -30,8 +30,6 @@
 #include "httplib_main.h"
 #include "httplib_ssl.h"
 
-static void *ssllib_dll_handle;    /* Store the ssl library handle. */
-
 /*
  * bool XX_httplib_set_ssl_option( struct httplib_context *ctx );
  *
@@ -61,16 +59,6 @@ bool XX_httplib_set_ssl_option( struct httplib_context *ctx ) {
 	if ( pem == NULL  &&  ctx->callbacks.init_ssl == NULL ) return true;
 
 	if ( ! XX_httplib_initialize_ssl( ctx ) ) return false;
-
-#if !defined(NO_SSL_DL)
-
-	if ( ssllib_dll_handle == NULL ) {
-
-		ssllib_dll_handle = XX_httplib_load_dll( ctx, SSL_LIB, XX_httplib_ssl_sw );
-		if ( ssllib_dll_handle == NULL ) return false;
-	}
-
-#endif /* NO_SSL_DL */
 
 	SSL_library_init();
 	SSL_load_error_strings();

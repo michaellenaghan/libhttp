@@ -34,19 +34,17 @@
  * functionality has been compiled in at compile time.
  */
 
-unsigned httplib_check_feature( unsigned feature ) {
+bool httplib_check_feature( enum httplib_feature const feature ) {
 
-	static const unsigned feature_set = 0
+	static enum httplib_feature feature_set = 0
 /* Set bits for available features according to API documentation.
  * This bit mask is created at compile time, according to the active
  * preprocessor defines. It is a single const value at runtime. */
 #if !defined(NO_SSL)
-	                                    | 0x0002u
-#endif
-#if !defined(NO_SSL_DL)
-	                                    | 0x0004u
+	                                    | FEATURE_SSL
 #endif
 	    ;
+
 	return (feature & feature_set);
 
 }  /* httplib_check_feature */

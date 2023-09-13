@@ -753,7 +753,7 @@ init_ssl(struct httplib_context *ctx, void *ssl_context, void *user_data)
 int
 main(int argc, char *argv[])
 {
-	unsigned int has_ssl = httplib_check_feature(2);
+	bool has_ssl = httplib_check_feature(FEATURE_SSL);
 
 	/* Start libhttp web server */
 	struct httplib_callbacks callbacks = {0};
@@ -776,7 +776,7 @@ main(int argc, char *argv[])
 		options[3].value = "8888r,8843s";
 
 		options[4].name = "ssl_certificate";
-		options[4].value = "../../resources/cert/server.pem";
+		options[4].value = "resources/cert/server.pem";
 
 		options[5].name = "ssl_cipher_list";
 		options[5].value = "DES-CBC3-SHA:AES128-SHA:AES128-GCM-SHA256";

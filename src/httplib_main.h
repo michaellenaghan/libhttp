@@ -312,9 +312,6 @@ typedef unsigned short int in_port_t;
 #include <dirent.h>
 #define vsnprintf_impl vsnprintf
 
-#if !defined(NO_SSL_DL) && !defined(NO_SSL)
-#include <dlfcn.h>
-#endif
 #include <pthread.h>
 #if defined(__MACH__)
 #if !defined(CRYPTO_LIB)
@@ -426,8 +423,6 @@ typedef struct SSL_CTX SSL_CTX;
 
 #else  /* NO_SSL */
 
-#if defined(NO_SSL_DL)
-
 #include <openssl/ssl.h>
 #include <openssl/err.h>
 #include <openssl/crypto.h>
@@ -437,20 +432,6 @@ typedef struct SSL_CTX SSL_CTX;
 #include <openssl/conf.h>
 #include <openssl/dh.h>
 
-#else  /* NO_SSL_DL */
-
-struct ssl_func;
-typedef struct ssl_st SSL;
-typedef struct ssl_method_st SSL_METHOD;
-typedef struct ssl_ctx_st SSL_CTX;
-typedef struct x509_store_ctx_st X509_STORE_CTX;
-// typedef struct x509_name X509_NAME;
-typedef struct asn1_integer ASN1_INTEGER;
-typedef struct evp_md EVP_MD;
-typedef struct x509 X509;
-typedef struct x509_name X509_NAMEX;
-
-#endif  /* NO_SSL_DL */
 #endif  /* NO_SSL */
 
 struct httplib_workerTLS {
@@ -823,11 +804,6 @@ bool			XX_httplib_is_put_or_delete_method( const struct httplib_connection *conn
 bool			XX_httplib_is_valid_http_method( const char *method );
 int			XX_httplib_is_valid_port( unsigned long port );
 bool			XX_httplib_is_websocket_protocol( const struct httplib_connection *conn );
-#if defined(NO_SSL)
-void *			XX_httplib_load_dll( struct httplib_context *ctx, const char *dll_name );
-#else  /* NO_SSL */
-void *			XX_httplib_load_dll( struct httplib_context *ctx, const char *dll_name, struct ssl_func *sw );
-#endif
 void			XX_httplib_log_access( struct httplib_context *ctx, const struct httplib_connection *conn );
 void 			XX_httplib_mask_data( const char *in, size_t in_len, uint32_t masking_key, char *out );
 LIBHTTP_THREAD		XX_httplib_master_thread( void *thread_func_param );

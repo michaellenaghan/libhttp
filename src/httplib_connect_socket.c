@@ -42,6 +42,8 @@
 
 bool XX_httplib_connect_socket( struct httplib_context *ctx, const char *host, int port, int use_ssl, SOCKET *sock, union usa *sa ) {
 
+	UNUSED_PARAMETER(use_ssl);
+
 	int ip_ver;
 	char error_string[ERROR_STRING_LEN];
 
@@ -62,17 +64,6 @@ bool XX_httplib_connect_socket( struct httplib_context *ctx, const char *host, i
 		httplib_cry( LH_DEBUG_ERROR, ctx, NULL, "%s: invalid port", __func__ );
 		return false;
 	}
-
-#if !defined(NO_SSL)
-
-	if ( use_ssl  &&  SSLv23_client_method == NULL ) {
-
-		httplib_cry( LH_DEBUG_ERROR, ctx, NULL, "%s: SSL is not initialized", __func__ );
-		return false;
-	}
-#else  /* NO_SSL */
-	UNUSED_PARAMETER(use_ssl);
-#endif  /*NO_SSL */
 
 	if (XX_httplib_inet_pton(AF_INET, host, &sa->sin, sizeof(sa->sin))) {
 

@@ -67,7 +67,7 @@ ifneq ($(OS),Windows_NT)
 OS:=$(shell uname -s)
 endif
 
-# -DNO_SSL=1 -DNO_SSL_DL=1
+# -DNO_SSL=1
 DFLAGS = -DUSE_STACK_SIZE=102400
 
 INCDIR = include/

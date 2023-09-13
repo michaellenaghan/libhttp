@@ -200,6 +200,17 @@ enum httplib_debug {					/*												*/
 
 							/************************************************************************************************/
 							/*												*/
+							/* enum httplib_feature;									*/
+							/*												*/
+							/* Features compiled into the library.								*/
+							/*												*/
+enum httplib_feature {					/*												*/
+	FEATURE_SSL                       = 0x02	/* The library supports SSL									*/
+};							/*												*/
+							/************************************************************************************************/
+
+							/************************************************************************************************/
+							/*												*/
 							/* Return values definition for the "field_found" callback in httplib_form_data_handler.	*/
 enum {							/*												*/
 	FORM_FIELD_STORAGE_SKIP           = 0x00,	/* Skip this field (neither get nor store it). Continue with the next field.			*/
@@ -370,7 +381,7 @@ LIBHTTP_API void *				XX_httplib_realloc_ex( void *memory, size_t newsize, const
 LIBHTTP_API int					httplib_atomic_dec( volatile int *addr );
 LIBHTTP_API int					httplib_atomic_inc( volatile int *addr );
 LIBHTTP_API int					httplib_base64_encode( const unsigned char *src, int src_len, char *dst, int dst_len );
-LIBHTTP_API unsigned				httplib_check_feature( unsigned feature );
+LIBHTTP_API bool				httplib_check_feature( enum httplib_feature const feature );
 LIBHTTP_API void				httplib_close_connection( struct httplib_context *ctx, struct httplib_connection *conn );
 LIBHTTP_API int					httplib_closedir( DIR *dir );
 LIBHTTP_API struct httplib_connection *		httplib_connect_client( struct httplib_context *ctx, const char *host, int port, int use_ssl );

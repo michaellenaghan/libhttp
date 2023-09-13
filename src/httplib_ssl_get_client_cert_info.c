@@ -51,8 +51,8 @@ void XX_httplib_ssl_get_client_cert_info( struct httplib_connection *conn ) {
 	int len2;
 	unsigned int ulen;
 	X509 *cert;
-	X509_NAMEX *subj;
-	X509_NAMEX *iss;
+	X509_NAME *subj;
+	X509_NAME *iss;
 	ASN1_INTEGER *serial;
 	const EVP_MD *digest;
 

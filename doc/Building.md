@@ -78,7 +78,6 @@ make build COPT="-DNDEBUG"
 | NDEBUG                    | strip off all debug code             |
 | DEBUG                     | build debug version (very noisy)     |
 | NO_SSL                    | disable SSL functionality            |
-| NO_SSL_DL                 | link against system libssl library   |
 | SSL_ALREADY_INITIALIZED   | do not initialize libcrypto          |
 | CRYPTO_LIB                | system versioned CRYPTO library      |
 | SSL_LIB                   | use versioned SSL library            |
