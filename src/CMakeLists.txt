@@ -30,7 +30,7 @@ target_compile_options(
     $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wcast-align -Wcast-qual -Wconversion -Werror -Wextra -Wformat-security -Winit-self -Wnested-externs -Wpointer-arith -Wredundant-decls -Wshadow -Wstrict-prototypes -Wwrite-strings -funsigned-char>)
 target_include_directories(
     httplib PUBLIC
-    ${PROJECT_SOURCE_DIR}/include)
+    ${httplib_SOURCE_DIR}/include)
 target_sources(
     httplib PRIVATE
 	extern_md5.c
