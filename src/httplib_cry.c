@@ -39,7 +39,7 @@ void httplib_cry( enum httplib_debug debug_level, struct httplib_context *ctx, c
 	char src_addr[IP_ADDR_STR_LEN];
 	va_list ap;
 	struct file fi;
-	time_t timestamp;
+	time_t timestamp = time( NULL );
 
 	/*
 	 * Check if we have a context. Without a context there is no callback
@@ -77,41 +77,51 @@ void httplib_cry( enum httplib_debug debug_level, struct httplib_context *ctx, c
 
 	/*
 	 * We now try to open the error log file. If this succeeds the error is
-	 * appended to the file. On failure there is no way to log the message
-	 * without disrupting the user's flow of control so we just return and
-	 * logging anything. This is IMHO better than printing to stderr which
-	 * may not even be available on all platforms (Windows etc).
+	 * appended to the file.
 	 */
 
-	if ( ctx->error_log_file == NULL                                     ) return;
-	if ( ! XX_httplib_fopen( ctx, conn, ctx->error_log_file, "a+", &fi ) ) return;
+	if ( ctx->error_log_file != NULL && XX_httplib_fopen( ctx, conn, ctx->error_log_file, "a+", &fi ) ) {
+		/*
+		* We now have an open FILE stream pointer in fi.fp and can dump the
+		* message in that file. Note though, that some information might not
+		* be available for logging if the message has no connection, so some
+		* information is skipped if the 'conn' parameter is NULL.
+		*
+		* Just to be sure that no other process is writing to the same file,
+		* we use locking around this operation.
+		*/
+		flockfile( fi.fp );
 
-	/*
-	 * We now have an open FILE stream pointer in fi.fp and can dump the
-	 * message in that file. Note though, that some information might not
-	 * be available for logging if the message has no connection, so some
-	 * information is skipped if the 'conn' parameter is NULL.
-	 *
-	 * Just to be sure that no other process is writing to the same file,
-	 * we use locking around this operation.
-	 */
+		fprintf( fi.fp, "[%010lu]", (unsigned long)timestamp );
 
-	flockfile( fi.fp );
-	timestamp = time( NULL );
+		if ( conn != NULL ) {
+			XX_httplib_sockaddr_to_string( src_addr, sizeof(src_addr), &conn->client.rsa );
+			fprintf( fi.fp, " [client %s]", src_addr );
 
-	if ( conn != NULL ) XX_httplib_sockaddr_to_string( src_addr, sizeof(src_addr), &conn->client.rsa );
-	fprintf( fi.fp, "[%010lu] [error] [client %s] ", (unsigned long)timestamp, src_addr );
+			if ( conn->request_info.request_method != NULL && conn->request_info.request_uri != NULL ) {
+				fprintf( fi.fp, " [request %s %s]", conn->request_info.request_method, conn->request_info.request_uri );
+			}
+		};
 
-	if ( conn != NULL  &&  conn->request_info.request_method != NULL ) {
+		fprintf( fi.fp, ": %s\n", buf );
+		fflush( fi.fp );
 
-		fprintf( fi.fp, "%s %s: ", conn->request_info.request_method, conn->request_info.request_uri );
-	}
+		funlockfile( fi.fp );
 
-	fprintf( fi.fp, "%s", buf );
-	fputc( '\n', fi.fp );
-	fflush( fi.fp );
+		XX_httplib_fclose( &fi );
+	} else {
+		fprintf( stderr, "[%010lu]", (unsigned long)timestamp );
 
-	funlockfile( fi.fp );
-	XX_httplib_fclose( &fi );
+		if ( conn != NULL ) {
+			XX_httplib_sockaddr_to_string( src_addr, sizeof(src_addr), &conn->client.rsa );
+			fprintf( stderr, " [client %s]", src_addr );
+
+			if ( conn->request_info.request_method != NULL && conn->request_info.request_uri != NULL ) {
+				fprintf( stderr, " [request %s %s]", conn->request_info.request_method, conn->request_info.request_uri );
+			}
+		};
+
+		fprintf( stderr, ": %s\n", buf );
+	};
 
 }  /* httplib_cry */

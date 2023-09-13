@@ -761,29 +761,15 @@ main(int argc, char *argv[])
 		callbacks.init_ssl = init_ssl;
 	}
 
-	struct httplib_option options[8] = {
+	struct httplib_option options[] = {
 		{"document_root", "."},
 		{"enable_directory_listing", "yes"},
-		{"error_log_file", "error.log"},
-		{"listening_ports", "8888"},
-		{0},  // "ssl_certificate"
-		{0},  // "ssl_cipher_list"
-		{0},  // "ssl_protocol_version"
+		{"listening_ports", has_ssl ? "8888r,8843s" : "8888"},
+		{"ssl_certificate", "resources/cert/server.pem"},
+		{"ssl_cipher_list", "DES-CBC3-SHA:AES128-SHA:AES128-GCM-SHA256"},
+		{"ssl_protocol_version", "3"},
 		{0}
 	};
-	if (has_ssl) {
-		// A very klunky approach!
-		options[3].value = "8888r,8843s";
-
-		options[4].name = "ssl_certificate";
-		options[4].value = "resources/cert/server.pem";
-
-		options[5].name = "ssl_cipher_list";
-		options[5].value = "DES-CBC3-SHA:AES128-SHA:AES128-GCM-SHA256";
-
-		options[6].name = "ssl_protocol_version";
-		options[6].value = "3";
-	}
 
 	struct httplib_context *ctx = httplib_start(&callbacks, 0, options);
 	if (!ctx) {
