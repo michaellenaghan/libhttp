@@ -141,6 +141,8 @@ static void worker_thread_run( struct worker_thread_args *thread_args ) {
 
 					if ( conn->request_info.client_cert != NULL ) {
 
+						X509_free( (X509 *)conn->request_info.client_cert->cert );
+
 						ptr.con = conn->request_info.client_cert->subject; ptr.var = httplib_free( ptr.var );
 						ptr.con = conn->request_info.client_cert->issuer;  ptr.var = httplib_free( ptr.var );
 						ptr.con = conn->request_info.client_cert->serial;  ptr.var = httplib_free( ptr.var );
