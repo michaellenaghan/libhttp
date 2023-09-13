@@ -60,17 +60,14 @@ bool XX_httplib_set_ssl_option( struct httplib_context *ctx ) {
 
 	if ( ! XX_httplib_initialize_ssl( ctx ) ) return false;
 
-	SSL_library_init();
-	SSL_load_error_strings();
-
-	ctx->ssl_ctx = SSL_CTX_new( SSLv23_server_method() );
+	ctx->ssl_ctx = SSL_CTX_new( TLS_server_method() );
 	if ( ctx->ssl_ctx == NULL ) {
 
 		httplib_cry( LH_DEBUG_CRASH, ctx, NULL, "%s: SSL_CTX_new (server) error: %s", __func__, XX_httplib_ssl_error() );
 		return false;
 	}
 
-	SSL_CTX_clear_options( ctx->ssl_ctx, SSL_OP_NO_SSLv2 | SSL_OP_NO_SSLv3 | SSL_OP_NO_TLSv1 | SSL_OP_NO_TLSv1_1 );
+	SSL_CTX_clear_options( ctx->ssl_ctx, SSL_OP_NO_SSLv2 | SSL_OP_NO_SSLv3 | SSL_OP_NO_TLSv1 | SSL_OP_NO_TLSv1_1 | SSL_OP_NO_TLSv1_2 );
 
 	SSL_CTX_set_options(   ctx->ssl_ctx, XX_httplib_ssl_get_protocol( ctx->ssl_protocol_version ) );
 	SSL_CTX_set_options(   ctx->ssl_ctx, SSL_OP_SINGLE_DH_USE                                     );

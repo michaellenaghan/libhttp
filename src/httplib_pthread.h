@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2016 Lammert Bies
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,5 +22,4 @@
 
 
 
-extern pthread_mutex_t *	XX_httplib_ssl_mutexes;
 extern int			XX_httplib_thread_idx_max;

@@ -7,10 +7,10 @@ enable_testing()
 option(HTTPLIB_ENABLE_SSL "Enable SSL" ON)
 
 if (HTTPLIB_ENABLE_SSL)
-    set(OPENSSL_ROOT_DIR /opt/local/libexec/openssl10/)
+    set(OPENSSL_ROOT_DIR /opt/local/libexec/openssl11/)
     set(OPENSSL_USE_STATIC_LIBS ON)
 
-    find_package(OpenSSL 1.0 REQUIRED)
+    find_package(OpenSSL 1.1 REQUIRED)
 
     message(STATUS "httplib: OPENSSL_VERSION = ${OPENSSL_VERSION}")
     message(STATUS "httplib: OPENSSL_INCLUDE_DIR = ${OPENSSL_INCLUDE_DIR}")

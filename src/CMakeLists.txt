@@ -228,8 +228,6 @@ target_sources(
 	httplib_ssl_error.c
 	httplib_ssl_get_client_cert_info.c
 	httplib_ssl_get_protocol.c
-	httplib_ssl_id_callback.c
-	httplib_ssl_locking_callback.c
 	httplib_ssl_use_pem_file.c
 	httplib_sslize.c
 	httplib_start_thread_with_id.c

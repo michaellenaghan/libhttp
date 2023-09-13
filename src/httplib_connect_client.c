@@ -93,9 +93,9 @@ static struct httplib_connection *httplib_connect_client_impl( struct httplib_co
 	}
 #ifndef NO_SSL
 
-	else if ( use_ssl  &&  (conn->client_ssl_ctx = SSL_CTX_new(SSLv23_client_method())) == NULL ) {
+	else if ( use_ssl  &&  (conn->client_ssl_ctx = SSL_CTX_new( TLS_client_method() )) == NULL ) {
 
-		httplib_cry( LH_DEBUG_ERROR, ctx, conn, "%s: SSL_CTX_new error", __func__ );
+		httplib_cry( LH_DEBUG_ERROR, ctx, conn, "%s: SSL_CTX_new (client) error: %s", __func__, XX_httplib_ssl_error() );
 		closesocket( sock );
 		conn = httplib_free( conn );
 	}

@@ -253,6 +253,7 @@ struct httplib_ipt;					/* Handle for an IPv4/IPv6 ip address								*/
 							/*												*/
 							/* Client certificate information (part of httplib_request_info)				*/
 struct client_cert {					/*												*/
+	void *cert;
 	const char *subject;				/* Subject of the certificate									*/
 	const char *issuer;				/* Issuer of the certificate									*/
 	const char *serial;				/* Serial number of the certificate								*/

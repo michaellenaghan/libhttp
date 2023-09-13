@@ -47,31 +47,12 @@ int XX_httplib_cryptolib_users = 0; /* Reference counter for crypto library. */
 
 int XX_httplib_initialize_ssl( struct httplib_context *ctx ) {
 
-	int i;
-	size_t size;
+	UNUSED_PARAMETER(ctx);
 
 	if ( httplib_atomic_inc( & XX_httplib_cryptolib_users ) > 1 ) return 1;
 
-	/*
-	 * Initialize locking callbacks, needed for thread safety.
-	 * http://www.openssl.org/support/faq.html#PROG1
-	 */
-
-	i = CRYPTO_num_locks();
-	if ( i < 0 ) i = 0;
-
-	size = sizeof(pthread_mutex_t) * ((size_t)(i));
-
-	if ( (XX_httplib_ssl_mutexes = httplib_malloc( size )) == NULL ) {
-
-		httplib_cry( LH_DEBUG_CRASH, ctx, NULL, "%s: cannot allocate mutexes: %s", __func__, XX_httplib_ssl_error() );
-		return 0;
-	}
-
-	for (i=0; i<CRYPTO_num_locks(); i++) httplib_pthread_mutex_init( & XX_httplib_ssl_mutexes[i], &XX_httplib_pthread_mutex_attr);
-
-	CRYPTO_set_locking_callback( & XX_httplib_ssl_locking_callback );
-	CRYPTO_set_id_callback(      & XX_httplib_ssl_id_callback      );
+	OPENSSL_init_ssl( 0, NULL );
+	OPENSSL_init_ssl( OPENSSL_INIT_LOAD_SSL_STRINGS | OPENSSL_INIT_LOAD_CRYPTO_STRINGS, NULL );
 
 	return 1;
 

@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016-2019 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -31,22 +31,26 @@
 #include "httplib_ssl.h"
 
 /*
- * long XX_httplib_ssl_get_protocol( int version_id );
+ * unsigned long XX_httplib_ssl_get_protocol( int version_id );
  *
  * The function XX_httplib_ssl_get_protocol() returns a bit mask with the
  * supported SSH protocols based on the version number passed as a parameter.
  */
 
-long XX_httplib_ssl_get_protocol( int version_id ) {
+unsigned long XX_httplib_ssl_get_protocol( int version_id ) {
 
-	long ret;
+	unsigned long ret = (unsigned long) SSL_OP_ALL;
 
-	ret = SSL_OP_ALL;
-
-	if ( version_id > 0 ) ret |= SSL_OP_NO_SSLv2;
-	if ( version_id > 1 ) ret |= SSL_OP_NO_SSLv3;
-	if ( version_id > 2 ) ret |= SSL_OP_NO_TLSv1;
-	if ( version_id > 3 ) ret |= SSL_OP_NO_TLSv1_1;
+	if (version_id > 0)
+		ret |= SSL_OP_NO_SSLv2;
+	if (version_id > 1)
+		ret |= SSL_OP_NO_SSLv3;
+	if (version_id > 2)
+		ret |= SSL_OP_NO_TLSv1;
+	if (version_id > 3)
+		ret |= SSL_OP_NO_TLSv1_1;
+	if (version_id > 4)
+		ret |= SSL_OP_NO_TLSv1_2;
 
 	return ret;
 

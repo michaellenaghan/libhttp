@@ -41,82 +41,64 @@ static bool	hexdump2string( void *mem, int memlen, char *buf, int buflen );
 
 void XX_httplib_ssl_get_client_cert_info( struct httplib_connection *conn ) {
 
-	char str_subject[1024];
-	char str_issuer[1024];
-	char str_serial[1024];
-	char str_finger[1024];
-	unsigned char buf[256];
-	unsigned char *pbuf;
-	int len;
-	int len2;
-	unsigned int ulen;
-	X509 *cert;
-	X509_NAME *subj;
-	X509_NAME *iss;
-	ASN1_INTEGER *serial;
-	const EVP_MD *digest;
+	X509 *cert = SSL_get_peer_certificate(conn->ssl);
+	if (cert) {
+		unsigned char buf[256];
 
-	if ( conn == NULL ) return;
+		/* Handle to algorithm used for fingerprint */
+		const EVP_MD *digest = EVP_get_digestbyname("sha1");
 
-	cert = SSL_get_peer_certificate( conn->ssl );
-	if ( cert == NULL ) return;
+		/* Get Subject and issuer */
+		X509_NAME *subj = X509_get_subject_name(cert);
+		X509_NAME *iss = X509_get_issuer_name(cert);
 
-	/*
-	 * Handle to algorithm used for fingerprint
-	 */
+		/* Get serial number */
+		ASN1_INTEGER *serial = X509_get_serialNumber(cert);
 
-	digest = EVP_get_digestbyname( "sha1" );
-	subj   = X509_get_subject_name( cert );
-	iss    = X509_get_issuer_name(  cert );
-	serial = X509_get_serialNumber( cert );
+		/* Translate serial number to a hex string */
+		BIGNUM *serial_bn = ASN1_INTEGER_to_BN(serial, NULL);
+		char *serial_str = NULL;
+		if (serial_bn) {
+			serial_str = BN_bn2hex(serial_bn);
+			conn->request_info.client_cert->serial = serial_str ? httplib_strdup(serial_str) : NULL;
+			OPENSSL_free(serial_str);
 
-	/*
-	 * Translate subject and issuer to a string
-	 */
+			BN_free(serial_bn);
+		}
 
-	X509_NAME_oneline( subj, str_subject, (int)sizeof(str_subject) );
-	X509_NAME_oneline( iss,  str_issuer,  (int)sizeof(str_issuer)  );
+		/* Translate subject and issuer to a string */
+		char str_buf[1024];
+		(void)X509_NAME_oneline(subj, str_buf, (int)sizeof(str_buf));
+		conn->request_info.client_cert->subject = httplib_strdup(str_buf);
+		(void)X509_NAME_oneline(iss, str_buf, (int)sizeof(str_buf));
+		conn->request_info.client_cert->issuer = httplib_strdup(str_buf);
 
-	/*
-	 * Translate serial number to a hex string
-	 */
+		/* Calculate SHA1 fingerprint and store as a hex string */
 
-	len = i2c_ASN1_INTEGER( serial, NULL );
+		unsigned int ulen = 0;
 
-	if ( len > 0  &&  (unsigned)len < (unsigned)sizeof(buf) ) {
+		/* (ASN1_digest is deprecated. Do the calculation manually, using EVP_Digest.) */
+		int ilen = i2d_X509(cert, NULL);
+		unsigned char *tmp_buf = (ilen > 0)
+		              ? (unsigned char *)httplib_malloc((unsigned)ilen + 1)
+		              : NULL;
+		if (tmp_buf) {
+			unsigned char *tmp_p = tmp_buf;
+			(void)i2d_X509(cert, &tmp_p);
+			if (!EVP_Digest(
+			        tmp_buf, (unsigned)ilen, buf, &ulen, digest, NULL)) {
+				ulen = 0;
+			}
+			httplib_free(tmp_buf);
+		}
 
-		pbuf = buf;
-		len2 = i2c_ASN1_INTEGER( serial, &pbuf );
+		if (!hexdump2string(buf, (int)ulen, str_buf, (int)sizeof(str_buf))) {
+			*str_buf = 0;
+		}
+		conn->request_info.client_cert->finger = httplib_strdup(str_buf);
 
-		if ( ! hexdump2string( buf, len2, str_serial, (int)sizeof(str_serial) ) ) *str_serial = 0;
+		conn->request_info.client_cert->cert = (void *)cert;
 	}
-
-	else *str_serial = 0;
-
-	/*
-	 * Calculate SHA1 fingerprint and store as a hex string
-	 */
-
-	ulen = 0;
-	ASN1_digest( (int (*)(void *, unsigned char**))i2d_X509, digest, (char *)cert, buf, &ulen );
-
-	if ( ! hexdump2string( buf, (int)ulen, str_finger, (int)sizeof(str_finger) ) ) *str_finger = 0;
-
-	conn->request_info.client_cert = httplib_malloc( sizeof(struct client_cert) );
-
-	if ( conn->request_info.client_cert ) {
-
-		conn->request_info.client_cert->subject = httplib_strdup( str_subject );
-		conn->request_info.client_cert->issuer  = httplib_strdup( str_issuer  );
-		conn->request_info.client_cert->serial  = httplib_strdup( str_serial  );
-		conn->request_info.client_cert->finger  = httplib_strdup( str_finger  );
-	}
-
-	else {
-		/* TODO: write some OOM message */
-	}
-
-	X509_free( cert );
 
 }  /* XX_httplib_ssl_get_client_cert_info */
 
