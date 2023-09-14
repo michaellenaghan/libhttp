@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -36,6 +36,8 @@
  * returns the value of the integer after it has been incremented.
  */
 
+// TODO: Fix
+// This is an incorrect use of `volatile`.
 LIBHTTP_API int httplib_atomic_inc( volatile int *addr ) {
 
 #if defined(_WIN32)

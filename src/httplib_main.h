@@ -465,7 +465,7 @@ struct socket {
 	union usa rsa;			/* Remote socket address				*/
 	bool has_ssl;			/* Is port SSL-ed					*/
 	bool has_redir;			/* Is port supposed to redirect everything to SSL port	*/
-	unsigned char in_use;		/* Is valid						*/
+	_Atomic(unsigned char) in_use;	/* Is valid						*/
 };
 
 
@@ -506,7 +506,7 @@ struct httplib_handler_info {
 
 struct httplib_context {
 
-	volatile enum ctx_status_t status;	/* Should we stop event loop								*/
+	_Atomic(enum ctx_status_t) status;	/* Should we stop event loop								*/
 	SSL_CTX *ssl_ctx;			/* SSL context										*/
 	struct httplib_callbacks callbacks;		/* User-defined callback function							*/
 	void *user_data;			/* User-defined data									*/
@@ -524,8 +524,8 @@ struct httplib_context {
 	void **client_wait_events;
 #else
 	struct socket queue[QUEUE_SIZE];		/* Accepted sockets									*/
-	volatile int sq_head;			/* Head of the socket queue								*/
-	volatile int sq_tail;			/* Tail of the socket queue								*/
+	_Atomic(int) sq_head;			/* Head of the socket queue								*/
+	_Atomic(int) sq_tail;			/* Tail of the socket queue								*/
 	pthread_cond_t sq_full;			/* Signaled when socket is produced							*/
 	pthread_cond_t sq_empty;		/* Signaled when socket is consumed							*/
 #endif

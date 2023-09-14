@@ -31,7 +31,7 @@
 #include "httplib_ssl.h"
 #include "httplib_utils.h"
 
-static volatile int reload_lock		= 0;
+static _Atomic(int) reload_lock		= 0;
 static long int data_check		= 0;
 
 /*
@@ -43,15 +43,13 @@ static long int data_check		= 0;
 
 int XX_httplib_refresh_trust( struct httplib_context *ctx, struct httplib_connection *conn ) {
 
-	volatile int *p_reload_lock;
 	struct stat cert_buf;
 	long int t;
 	char *pem;
 
 	if ( ctx == NULL  ||  conn == NULL ) return 0;
 
-	p_reload_lock = & reload_lock;
-	pem           = ctx->ssl_certificate;
+	pem = ctx->ssl_certificate;
 
 	if ( pem == NULL  &&  ctx->callbacks.init_ssl == NULL ) return 0;
 
@@ -72,10 +70,10 @@ int XX_httplib_refresh_trust( struct httplib_context *ctx, struct httplib_connec
 			}
 		}
 
-		if ( httplib_atomic_inc( p_reload_lock ) == 1 ) {
+		if ( ++reload_lock == 1 ) {
 
 			if ( XX_httplib_ssl_use_pem_file( ctx, pem ) == 0 ) return 0;
-			*p_reload_lock = 0;
+			reload_lock = 0;
 		}
 	}
 
@@ -83,7 +81,7 @@ int XX_httplib_refresh_trust( struct httplib_context *ctx, struct httplib_connec
 	 * lock while cert is reloading
 	 */
 
-	while ( *p_reload_lock ) sleep( 1 );
+	while ( reload_lock ) sleep( 1 );
 
 	return 1;
 
