@@ -26,7 +26,6 @@
  */
 
 #include "httplib_main.h"
-#include "httplib_pthread.h"
 
 /*
  * int XX_httplib_consume_socket( struct httplib_context *ctx, struct socket *sp, int thread_index );

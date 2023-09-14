@@ -26,7 +26,6 @@
  */
 
 #include "httplib_main.h"
-#include "httplib_pthread.h"
 #include "httplib_ssl.h"
 #include "httplib_utils.h"
 
@@ -116,7 +115,7 @@ struct httplib_context *httplib_start( const struct httplib_callbacks *callbacks
 		httplib_sleep( 1 );
 	}
 
-	tls.thread_idx = (unsigned)httplib_atomic_inc( & XX_httplib_thread_idx_max );
+	tls.thread_index = -1;  // Really just for worker threads.
 #if defined(_WIN32)
 	tls.pthread_cond_helper_mutex = NULL;
 #endif

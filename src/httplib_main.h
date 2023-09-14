@@ -435,7 +435,7 @@ typedef struct SSL_CTX SSL_CTX;
 #endif  /* NO_SSL */
 
 struct httplib_workerTLS {
-	unsigned long thread_idx;
+	int thread_index;
 #if defined(_WIN32)
 	HANDLE pthread_cond_helper_mutex;
 	struct httplib_workerTLS *next_waiting_thread;

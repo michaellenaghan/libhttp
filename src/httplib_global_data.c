@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -41,7 +41,6 @@ pthread_mutexattr_t			XX_httplib_pthread_mutex_attr;
 pthread_key_t XX_httplib_sTlsKey; /* Thread local storage index */
 
 int		XX_httplib_sTlsInit		= 0;
-int		XX_httplib_thread_idx_max	= 0;
 
 const struct uriprot_tp XX_httplib_abs_uri_protocols[] = {
 

@@ -26,7 +26,6 @@
  */
 
 #include "httplib_main.h"
-#include "httplib_pthread.h"
 #include "httplib_ssl.h"
 
 static void	master_thread_run( void *thread_func_param );

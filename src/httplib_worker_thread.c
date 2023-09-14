@@ -26,7 +26,6 @@
  */
 
 #include "httplib_main.h"
-#include "httplib_pthread.h"
 #include "httplib_ssl.h"
 #include "httplib_utils.h"
 
@@ -83,7 +82,7 @@ static void worker_thread_run( struct worker_thread_args *thread_args ) {
 
 	XX_httplib_set_thread_name( ctx, "worker" );
 
-	tls.thread_idx = (unsigned)httplib_atomic_inc( & XX_httplib_thread_idx_max );
+	tls.thread_index = thread_args->index;
 #if defined(_WIN32)
 	tls.pthread_cond_helper_mutex = CreateEvent( NULL, FALSE, FALSE, NULL );
 #endif

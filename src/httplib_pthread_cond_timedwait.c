@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -26,7 +26,6 @@
  */
 
 #include "httplib_main.h"
-#include "httplib_pthread.h"
 
 /*
  * int httplib_pthread_cond_timedwait( pthread_cond_t *cv, pthread_mutex *mutex, const struct timespec *abstime );
@@ -79,7 +78,7 @@ int httplib_pthread_cond_timedwait( pthread_cond_t *cv, pthread_mutex_t *mutex, 
 
 		mswaitrel = (DWORD)(nswaitrel / 1000000);
 	}
-	
+
 	else mswaitrel = INFINITE;
 
 	httplib_pthread_mutex_unlock( mutex );
@@ -94,7 +93,7 @@ int httplib_pthread_cond_timedwait( pthread_cond_t *cv, pthread_mutex_t *mutex, 
 		ptls = & cv->waiting_thread;
 
 		while ( *ptls != NULL ) {
-		       
+
 			ptls = & (*ptls)->next_waiting_thread;
 
 			if ( *ptls == tls ) {

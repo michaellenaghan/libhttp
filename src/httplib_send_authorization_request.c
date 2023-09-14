@@ -26,7 +26,6 @@
  */
 
 #include "httplib_main.h"
-#include "httplib_pthread.h"
 #include "httplib_utils.h"
 
 void XX_httplib_send_authorization_request( struct httplib_context *ctx, struct httplib_connection *conn ) {

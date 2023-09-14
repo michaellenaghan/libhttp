@@ -26,7 +26,6 @@
  */
 
 #include "httplib_main.h"
-#include "httplib_pthread.h"
 
 /*
  * void httplib_lock_connection( struct httplib_connection *conn );
