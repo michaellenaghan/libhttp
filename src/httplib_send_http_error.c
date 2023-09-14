@@ -148,11 +148,20 @@ void XX_httplib_send_http_error( struct httplib_context *ctx, struct httplib_con
 
 		conn->must_close = true;
 
-		httplib_printf( ctx, conn, "HTTP/1.1 %d %s\r\n", status, status_text );
+		// TODO: Fix
+		// Missing `Content-Length`
+		httplib_printf( ctx, conn,
+			"HTTP/1.1 %d %s\r\n"
+			"Date: %s\r\n",
+			status,
+			status_text,
+			date );
 		XX_httplib_send_no_cache_header( ctx, conn );
 
 		if ( has_body ) httplib_printf( ctx, conn, "%s", "Content-Type: text/plain; charset=utf-8\r\n" );
-		httplib_printf( ctx, conn, "Date: %s\r\n" "Connection: close\r\n\r\n", date );
+		httplib_printf( ctx, conn,
+			"Connection: close\r\n"
+			"\r\n" );
 
 		/*
 		 * Errors 1xx, 204 and 304 MUST NOT send a body

@@ -64,13 +64,17 @@ int XX_httplib_send_websocket_handshake( struct httplib_context *ctx, struct htt
 #if !defined(NO_SSL)
 	EVP_Digest( (unsigned char *)buf, (uint32_t)strlen(buf), (unsigned char *)sha, NULL, EVP_get_digestbyname("sha1"), NULL );
 #endif
+	conn->status_code = 101;
 
 	httplib_base64_encode( (unsigned char *)sha, sizeof(sha), b64_sha, B64_SHA_LEN );
+
+	// `Content-Length` not allowed for 1xx
 	httplib_printf( ctx, conn,
-	          "HTTP/1.1 101 Switching Protocols\r\n"
+	          "HTTP/1.1 %d Switching Protocols\r\n"
 	          "Upgrade: websocket\r\n"
 	          "Connection: Upgrade\r\n"
 	          "Sec-WebSocket-Accept: %s\r\n",
+		  conn->status_code,
 	          b64_sha );
 
 	protocol = httplib_get_header( conn, "Sec-WebSocket-Protocol" );

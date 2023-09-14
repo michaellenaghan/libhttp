@@ -48,6 +48,7 @@ void XX_httplib_send_authorization_request( struct httplib_context *ctx, struct 
 	httplib_pthread_mutex_unlock( & ctx->nonce_mutex );
 
 	nonce            ^= ctx->auth_nonce_mask;
+
 	conn->status_code = 401;
 	conn->must_close  = true;
 
@@ -56,14 +57,16 @@ void XX_httplib_send_authorization_request( struct httplib_context *ctx, struct 
 	if ( ctx->authentication_domain != NULL ) auth_domain = ctx->authentication_domain;
 	else                                      auth_domain = "localhost";
 
-	httplib_printf( ctx, conn, "HTTP/1.1 401 Unauthorized\r\n" );
+	httplib_printf( ctx, conn,
+		"HTTP/1.1 %d Unauthorized\r\n",
+		conn->status_code );
 	XX_httplib_send_no_cache_header( ctx, conn );
 	httplib_printf( ctx, conn,
 	          "Date: %s\r\n"
 	          "Connection: %s\r\n"
 	          "Content-Length: 0\r\n"
-	          "WWW-Authenticate: Digest qop=\"auth\", realm=\"%s\", "
-	          "nonce=\"%" UINT64_FMT "\"\r\n\r\n",
+	          "WWW-Authenticate: Digest qop=\"auth\", realm=\"%s\", nonce=\"%" UINT64_FMT "\"\r\n"
+		  "\r\n",
 	          date,
 	          XX_httplib_suggest_connection_header( ctx, conn ),
 	          auth_domain,

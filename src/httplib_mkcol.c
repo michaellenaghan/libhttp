@@ -85,9 +85,17 @@ void XX_httplib_mkcol( struct httplib_context *ctx, struct httplib_connection *c
 
 		conn->status_code = 201;
 		XX_httplib_gmt_time_string( date, sizeof(date), &curtime );
-		httplib_printf( ctx, conn, "HTTP/1.1 %d Created\r\n" "Date: %s\r\n", conn->status_code, date );
+		httplib_printf( ctx, conn,
+			"HTTP/1.1 %d Created\r\n"
+			"Date: %s\r\n",
+			conn->status_code,
+			date );
 		XX_httplib_send_static_cache_header( ctx, conn );
-		httplib_printf( ctx, conn, "Content-Length: 0\r\n" "Connection: %s\r\n\r\n", XX_httplib_suggest_connection_header( ctx, conn ) );
+		httplib_printf( ctx, conn,
+			"Connection: %s\r\n"
+			"Content-Length: 0\r\n"
+			"\r\n",
+			XX_httplib_suggest_connection_header( ctx, conn ) );
 	}
 
 	else if ( rc == -1 ) {

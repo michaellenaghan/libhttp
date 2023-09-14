@@ -169,24 +169,33 @@ void XX_httplib_handle_static_file_request( struct httplib_context *ctx, struct 
 	XX_httplib_gmt_time_string( lm,   sizeof(lm),   & filep->last_modified );
 	XX_httplib_construct_etag(  ctx, etag, sizeof(etag), filep             );
 
-	httplib_printf( ctx, conn, "HTTP/1.1 %d %s\r\n" "%s%s%s" "Date: %s\r\n", conn->status_code, msg, cors1, cors2, cors3, date );
+	httplib_printf( ctx, conn,
+		"HTTP/1.1 %d %s\r\n"
+		"Date: %s\r\n"
+		"Accept-Ranges: bytes\r\n"
+		"%s%s%s",
+		conn->status_code,
+		msg,
+		date,
+		cors1,
+		cors2,
+		cors3 );
 	XX_httplib_send_static_cache_header( ctx, conn );
 	httplib_printf( ctx, conn,
-	                "Last-Modified: %s\r\n"
-	                "Etag: %s\r\n"
-	                "Content-Type: %.*s\r\n"
-	                "Content-Length: %" INT64_FMT "\r\n"
-	                "Connection: %s\r\n"
-	                "Accept-Ranges: bytes\r\n"
-	                "%s%s",
-	                lm,
-	                etag,
-	                (int)mime_vec.len,
-	                mime_vec.ptr,
-	                cl,
-	                XX_httplib_suggest_connection_header( ctx, conn ),
-	                range,
-	                encoding );
+		"Connection: %s\r\n"
+		"Content-Length: %" INT64_FMT "\r\n"
+		"Content-Type: %.*s\r\n"
+		"Etag: %s\r\n"
+		"Last-Modified: %s\r\n"
+		"%s%s",
+		XX_httplib_suggest_connection_header( ctx, conn ),
+		cl,
+		(int)mime_vec.len,
+		mime_vec.ptr,
+		etag,
+		lm,
+		encoding,
+		range );
 
 	/*
 	 * The previous code must not add any header starting with X- to make

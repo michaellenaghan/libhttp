@@ -414,17 +414,22 @@ no_callback_resource:
 
 	if ( file.is_directory  &&  uri_len > 0  &&  ri->local_uri[uri_len - 1] != '/' ) {
 
+		conn->status_code = 301;
+
 		XX_httplib_gmt_time_string( date, sizeof(date), &curtime );
+
 		httplib_printf( ctx, conn,
-		          "HTTP/1.1 301 Moved Permanently\r\n"
-		          "Location: %s/\r\n"
+		          "HTTP/1.1 %d Moved Permanently\r\n"
 		          "Date: %s\r\n"
 		          /* "Cache-Control: private\r\n" (= default) */
+		          "Connection: %s\r\n"
 		          "Content-Length: 0\r\n"
-		          "Connection: %s\r\n\r\n",
-		          ri->request_uri,
+		          "Location: %s/\r\n"
+			  "\r\n",
+			  conn->status_code,
 		          date,
-		          XX_httplib_suggest_connection_header( ctx, conn ) );
+		          XX_httplib_suggest_connection_header( ctx, conn ),
+		          ri->request_uri );
 		return;
 	}
 

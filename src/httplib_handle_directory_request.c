@@ -51,11 +51,19 @@ void XX_httplib_handle_directory_request( struct httplib_context *ctx, struct ht
 
 	sort_direction = ( conn->request_info.query_string != NULL  &&  conn->request_info.query_string[1] == 'd' ) ? 'a' : 'd';
 
+	conn->status_code = 200;
 	conn->must_close = true;
 
-	httplib_printf( ctx, conn, "HTTP/1.1 200 OK\r\n" );
+	httplib_printf( ctx, conn,
+		"HTTP/1.1 %d OK\r\n",
+		conn->status_code );
 	XX_httplib_send_static_cache_header( ctx, conn );
-	httplib_printf( ctx, conn, "Date: %s\r\n" "Connection: close\r\n" "Content-Type: text/html; charset=utf-8\r\n\r\n", date );
+	httplib_printf( ctx, conn,
+		"Date: %s\r\n"
+		"Connection: close\r\n"
+		"Content-Type: text/html; charset=utf-8\r\n"
+		"\r\n",
+		 date );
 
 	conn->num_bytes_sent += httplib_printf( ctx, conn,
 	              "<html><head><title>Index of %s</title>"

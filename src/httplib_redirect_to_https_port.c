@@ -67,13 +67,20 @@ void XX_httplib_redirect_to_https_port( const struct httplib_context *ctx, struc
 	 * Send host, port, uri and (if it exists) ?query_string
 	 */
 
-	httplib_printf( ctx, conn, "HTTP/1.1 302 Found\r\nLocation: https://%s:%d%s%s%s\r\n\r\n",
-	          host,
-	          (ctx->listening_sockets[ssl_index].lsa.sa.sa_family == AF_INET6)
-	              ? (int)ntohs( ctx->listening_sockets[ssl_index].lsa.sin6.sin6_port )
-	              : (int)ntohs( ctx->listening_sockets[ssl_index].lsa.sin.sin_port   ),
-	          conn->request_info.local_uri,
-	          (conn->request_info.query_string == NULL) ? "" : "?",
-	          (conn->request_info.query_string == NULL) ? "" : conn->request_info.query_string);
+	conn->status_code = 302;
+
+	httplib_printf( ctx, conn,
+		"HTTP/1.1 %d Found\r\n"
+		"Content-Length: 0\r\n"
+		"Location: https://%s:%d%s%s%s\r\n"
+		"\r\n",
+		conn->status_code,
+		host,
+		(ctx->listening_sockets[ssl_index].lsa.sa.sa_family == AF_INET6)
+		? (int)ntohs( ctx->listening_sockets[ssl_index].lsa.sin6.sin6_port )
+		: (int)ntohs( ctx->listening_sockets[ssl_index].lsa.sin.sin_port   ),
+		conn->request_info.local_uri,
+		(conn->request_info.query_string == NULL) ? "" : "?",
+		(conn->request_info.query_string == NULL) ? "" : conn->request_info.query_string );
 
 }  /* XX_httplib_redirect_to_https_port */

@@ -123,9 +123,18 @@ void XX_httplib_put_file( struct httplib_context *ctx, struct httplib_connection
 		 */
 
 		XX_httplib_gmt_time_string( date, sizeof(date), &curtime );
-		httplib_printf( ctx, conn, "HTTP/1.1 %d %s\r\n", conn->status_code, httplib_get_response_code_text( ctx, NULL, conn->status_code ) );
+		httplib_printf( ctx, conn,
+			"HTTP/1.1 %d %s\r\n"
+			"Date: %s\r\n",
+			conn->status_code,
+			httplib_get_response_code_text( ctx, NULL, conn->status_code ),
+			date );
 		XX_httplib_send_no_cache_header( ctx, conn );
-		httplib_printf( ctx, conn, "Date: %s\r\n" "Content-Length: 0\r\n" "Connection: %s\r\n\r\n", date, XX_httplib_suggest_connection_header( ctx, conn ) );
+		httplib_printf( ctx, conn,
+			"Connection: %s\r\n"
+			"Content-Length: 0\r\n"
+			"\r\n",
+			XX_httplib_suggest_connection_header( ctx, conn ) );
 
 		/*
 		 * Request to create a directory has been fulfilled successfully.
@@ -191,9 +200,18 @@ void XX_httplib_put_file( struct httplib_context *ctx, struct httplib_connection
 	}
 
 	XX_httplib_gmt_time_string( date, sizeof(date), &curtime );
-	httplib_printf( ctx, conn, "HTTP/1.1 %d %s\r\n", conn->status_code, httplib_get_response_code_text( ctx, NULL, conn->status_code ) );
+	httplib_printf( ctx, conn,
+		"HTTP/1.1 %d %s\r\n"
+		"Date: %s\r\n",
+		conn->status_code,
+		httplib_get_response_code_text( ctx, NULL, conn->status_code ),
+		date );
 	XX_httplib_send_no_cache_header( ctx, conn );
-	httplib_printf( ctx, conn, "Date: %s\r\n" "Content-Length: 0\r\n" "Connection: %s\r\n\r\n", date, XX_httplib_suggest_connection_header( ctx, conn ) );
+	httplib_printf( ctx, conn,
+		"Connection: %s\r\n"
+		"Content-Length: 0\r\n"
+		"\r\n",
+		XX_httplib_suggest_connection_header( ctx, conn ) );
 
 	XX_httplib_fclose( & file );
 

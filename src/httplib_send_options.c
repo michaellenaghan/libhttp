@@ -44,19 +44,21 @@ void XX_httplib_send_options( const struct httplib_context *ctx, struct httplib_
 	if ( ctx->document_root    == NULL ) return;
 
 	curtime           = time( NULL );
+
 	conn->status_code = 200;
 	conn->must_close  = true;
 
 	XX_httplib_gmt_time_string( date, sizeof(date), &curtime );
 
 	httplib_printf( ctx, conn,
-	          "HTTP/1.1 200 OK\r\n"
+	          "HTTP/1.1 %d OK\r\n"
 	          "Date: %s\r\n"
+	          "Allow: GET, POST, HEAD, CONNECT, PUT, DELETE, OPTIONS, PROPFIND, MKCOL\r\n"
 	          /* TODO: "Cache-Control" (?) */
 	          "Connection: %s\r\n"
-	          "Allow: GET, POST, HEAD, CONNECT, PUT, DELETE, OPTIONS, "
-	          "PROPFIND, MKCOL\r\n"
+		  "Content-Length: 0"
 	          "DAV: 1\r\n\r\n",
+		  conn->status_code,
 	          date,
 	          XX_httplib_suggest_connection_header( ctx, conn ) );
 

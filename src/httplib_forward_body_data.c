@@ -80,8 +80,13 @@ bool XX_httplib_forward_body_data( struct httplib_context *ctx, struct httplib_c
 	else {
 		if ( expect != NULL ) {
 
-			httplib_printf( ctx, conn, "%s", "HTTP/1.1 100 Continue\r\n\r\n" );
 			conn->status_code = 100;
+
+			httplib_printf( ctx, conn,
+				"HTTP/1.1 %d Continue\r\n"
+				"\r\n",
+				 conn->status_code);
+
 		}
 
 		else conn->status_code = 200;

@@ -52,8 +52,21 @@ void XX_httplib_handle_not_modified_static_file_request( struct httplib_context 
 	XX_httplib_gmt_time_string( lm,   sizeof(lm),   & filep->last_modified );
 	XX_httplib_construct_etag(  ctx, etag, sizeof(etag), filep             );
 
-	httplib_printf( ctx, conn, "HTTP/1.1 %d %s\r\n" "Date: %s\r\n", conn->status_code, httplib_get_response_code_text( ctx, conn, conn->status_code ), date );
+	httplib_printf( ctx, conn,
+		"HTTP/1.1 %d %s\r\n"
+		"Date: %s\r\n",
+		conn->status_code,
+		httplib_get_response_code_text( ctx, conn, conn->status_code ),
+		date );
 	XX_httplib_send_static_cache_header( ctx, conn );
-	httplib_printf( ctx, conn, "Last-Modified: %s\r\n" "Etag: %s\r\n" "Connection: %s\r\n" "\r\n", lm, etag, XX_httplib_suggest_connection_header( ctx, conn ) );
+	httplib_printf( ctx, conn,
+		"Connection: %s\r\n"
+		"Content-Length: 0\r\n"
+		"Etag: %s\r\n"
+		"Last-Modified: %s\r\n"
+		"\r\n",
+		XX_httplib_suggest_connection_header( ctx, conn ),
+		etag,
+		lm );
 
 }  /* XX_httplib_handle_not_modified_static_file_request */
