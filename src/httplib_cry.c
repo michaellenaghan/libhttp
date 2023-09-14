@@ -110,27 +110,31 @@ void httplib_cry( enum httplib_debug debug_level, struct httplib_context *ctx, c
 
 		XX_httplib_fclose( &fi );
 	} else {
-		char buf1[256] = "";
-		char buf2[256] = "";
+		char _buf[256] = "";
+		size_t _buf_size = sizeof(_buf);
+		size_t _buf_len = strlen(_buf);
+		int _len;
 
-		snprintf( buf2, sizeof(buf2), "[%010lu]", (unsigned long)timestamp );
-		strncat( buf1, buf2, sizeof(buf1) - strlen(buf1) - 1 );
+
+		_len = snprintf( _buf + _buf_len, _buf_size - _buf_len, "[%010lu]", (unsigned long)timestamp );
+		if ( _len >= 0 ) _buf_len += (size_t)_len;
 
 		if ( conn != NULL ) {
 			XX_httplib_sockaddr_to_string( src_addr, sizeof(src_addr), &conn->client.rsa );
-			snprintf( buf2, sizeof(buf2), " [client %s]", src_addr );
-			strncat( buf1, buf2, sizeof(buf1) - strlen(buf1) - 1 );
+
+			_len = snprintf( _buf + _buf_len, _buf_size - _buf_len, " [client %s]", src_addr );
+			if ( _len >= 0 ) _buf_len += (size_t)_len;
 
 			if ( conn->request_info.request_method != NULL && conn->request_info.request_uri != NULL ) {
-				snprintf( buf2, sizeof(buf2), " [request %s %s]", conn->request_info.request_method, conn->request_info.request_uri );
-				strncat( buf1, buf2, sizeof(buf1) - strlen(buf1) - 1 );
+				_len = snprintf( _buf + _buf_len, _buf_size - _buf_len, " [request %s %s]", conn->request_info.request_method, conn->request_info.request_uri );
+				if ( _len >= 0 ) _buf_len += (size_t)_len;
 			}
 		};
 
-		snprintf( buf2, sizeof(buf2), ": %s", buf );
-		strncat( buf1, buf2, sizeof(buf1) - strlen(buf1) - 1 );
+		_len = snprintf( _buf + _buf_len, _buf_size - _buf_len, ": %s", buf );
+		if ( _len >= 0 ) _buf_len += (size_t)_len;
 
-		fprintf( stderr, "%s\n", buf1 );
+		fprintf( stderr, "%s\n", _buf );
 	};
 
 }  /* httplib_cry */
