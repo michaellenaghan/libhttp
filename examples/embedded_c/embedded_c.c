@@ -20,7 +20,7 @@
 #include "../../src/extern_md5.c"
 
 
-#define MAX_BUFFER 4096  // Unsafe use of fixed-sized buffers!
+#define MAX_BUFFER 4096
 
 
 static int exitNow = 0;
@@ -264,17 +264,17 @@ static int
 field_found(const char *key,
             const char *filename,
             char *path,
-            size_t pathlen,
+            size_t path_size,
             void *user_data)
 {
 	struct ctx_conn_t *ctx_conn = user_data;
 
-	strcat(ctx_conn->buffer, "<p>name: ");
-	strcat(ctx_conn->buffer, key);
-	strcat(ctx_conn->buffer, "</p>");
+	size_t buffer_size = sizeof(ctx_conn->buffer);
+	size_t buffer_len = strlen(ctx_conn->buffer);
+	snprintf( ctx_conn->buffer + buffer_len, buffer_size - buffer_len, "<p>name: %s</p>", key );
 
 	if (filename && *filename) {
-		snprintf(path, pathlen, "/tmp/%s", filename);
+		snprintf(path, path_size, "/tmp/%s", filename);
 		return FORM_FIELD_STORAGE_STORE;
 	}
 
@@ -283,13 +283,13 @@ field_found(const char *key,
 
 
 static int
-field_get(const char *key, const char *value, size_t valuelen, void *user_data)
+field_get(const char *key, const char *value, size_t value_size, void *user_data)
 {
 	struct ctx_conn_t *ctx_conn = user_data;
 
-	strcat(ctx_conn->buffer, "<p>value: ");
-	strncat(ctx_conn->buffer, value, valuelen);
-	strcat(ctx_conn->buffer, "</p>");
+	size_t buffer_size = sizeof(ctx_conn->buffer);
+	size_t buffer_len = strlen(ctx_conn->buffer);
+	snprintf( ctx_conn->buffer + buffer_len, buffer_size - buffer_len, "<p>value: %.*s</p>", (int)value_size, value );
 
 	return 0;
 }
@@ -300,9 +300,9 @@ field_stored(const char *path, int64_t file_size, void *user_data)
 {
 	struct ctx_conn_t *ctx_conn = user_data;
 
-	strcat(ctx_conn->buffer, "<p>path: ");
-	strcat(ctx_conn->buffer, path);
-	strcat(ctx_conn->buffer, "</p>");
+	size_t buffer_size = sizeof(ctx_conn->buffer);
+	size_t buffer_len = strlen(ctx_conn->buffer);
+	snprintf( ctx_conn->buffer + buffer_len, buffer_size - buffer_len, "<p>path: %s</p>", path );
 
 	return 0;
 }
@@ -418,16 +418,16 @@ field_disp_read_on_the_fly(const char *key,
 static int
 field_get_checksum(const char *key,
                    const char *value,
-                   size_t valuelen,
+                   size_t value_size,
                    void *user_data)
 {
 	struct tfiles_checksums *context = (struct tfiles_checksums *)user_data;
 	(void)key;
 
-	context->file[context->index - 1].length += valuelen;
+	context->file[context->index - 1].length += value_size;
 	md5_append(&(context->file[context->index - 1].chksum),
 	           (const md5_byte_t *)value,
-	           valuelen);
+	           value_size);
 
 	return 0;
 }
@@ -448,6 +448,8 @@ ChecksumHandler(struct httplib_context *ctx, struct httplib_connection *conn, vo
 	struct httplib_form_data_handler fdh = {field_disp_read_on_the_fly, field_get_checksum, 0, &chksums};
 
 	char files[MAX_BUFFER] = {0};
+	size_t files_size = sizeof(files);
+	size_t files_len = strlen(files);
 
 	int ret = httplib_handle_form_request(ctx, conn, &fdh);
 	for (int i = 0; i < chksums.index; i++) {
@@ -455,9 +457,8 @@ ChecksumHandler(struct httplib_context *ctx, struct httplib_connection *conn, vo
 
 		md5_finish(&(chksums.file[i].chksum), digest);
 
-		char file[MAX_BUFFER] = {0};
-		snprintf(
-			file, sizeof(file),
+		int len = snprintf(
+			files + files_len, files_size - files_len,
 			"<p>File \"%s\" (%llu bytes): %02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x</p>",
 			chksums.file[i].name,
 			chksums.file[i].length,
@@ -476,9 +477,12 @@ ChecksumHandler(struct httplib_context *ctx, struct httplib_connection *conn, vo
 			(unsigned int)digest[12],
 			(unsigned int)digest[13],
 			(unsigned int)digest[14],
-			(unsigned int)digest[15]
-			);
-		strcat(files, file);
+			(unsigned int)digest[15] );
+		if (len > 0) {
+			files_len += (size_t)len;
+		} else {
+			break;
+		}
 	}
 
 	char body[MAX_BUFFER];
@@ -729,7 +733,7 @@ InformWebsockets(struct httplib_context *ctx)
 	char text[32];
 	int i;
 
-	sprintf(text, "%lu", ++cnt);
+	snprintf(text, sizeof(text), "%lu", ++cnt);
 
 	httplib_lock_context(ctx);
 	for (i = 0; i < MAX_WS_CLIENTS; i++) {
@@ -798,7 +802,7 @@ main(int argc, char *argv[])
 	httplib_set_request_handler(ctx, "/close", CloseHandler, 0);
 
 	/* Add handler for /form  (serve a file outside the document root) */
-	httplib_set_request_handler(ctx, "/form", FileHandler, (void *)(intptr_t)"./form.html");  // Cast away `const`.
+	httplib_set_request_handler(ctx, "/form", FileHandler, (void *)(intptr_t)"./examples/embedded_c/form.html");  // Cast away `const`.
 
 	/* Add handler for form data */
 	httplib_set_request_handler(ctx,
