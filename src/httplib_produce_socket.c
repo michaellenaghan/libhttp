@@ -38,31 +38,36 @@
 
 void XX_httplib_produce_socket( struct httplib_context *ctx, const struct socket *sp ) {
 
-	for (;;) {
+	XX_httplib_semaphore_wait( ctx->client_wait_semaphore );
 
-		for (int i=0; i<ctx->num_threads; i++) {
-
-			/*
-			 * find a free worker slot and signal it
-			 */
-
-			if ( ctx->client_socks[i].in_use == 0 ) {
-
-				ctx->client_socks[i]        = *sp;
-				ctx->client_socks[i].in_use = 1;
-
-				XX_httplib_event_signal( ctx->client_wait_events[i] );
-
-				return;
-			}
-		}
+	for ( int i=0; i < ctx->num_threads; i++ ) {
 
 		/*
-		 * queue is full
-		 */
+		* find a free worker slot and signal it
+		*/
 
-		httplib_sleep( 1 );
+		if ( ctx->client_socks[i].in_use == 0 ) {
+
+			// There's subtley around setting `in_use`.
+			//
+			// It's tempting to let the worker thread set it to `1`, but
+			// that introduces a race: what if the master thread accepts
+			// another socket and goes looking for free worker threads
+			// *before* the selected worker thread wakes up? The master
+			// could end up overwriting the socket it just assigned.
+
+			assert(!*sp.in_use);
+			ctx->client_socks[i]        = *sp;
+			ctx->client_socks[i].in_use = 1;
+
+			XX_httplib_event_signal( ctx->client_wait_events[i] );
+
+			return;
+		}
+
 	}
+
+	httplib_cry( LH_DEBUG_ERROR, ctx, NULL, "%s: cannot find a free worker slot", __func__ );
 
 }  /* XX_httplib_produce_socket */
 

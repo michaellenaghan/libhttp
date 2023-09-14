@@ -172,6 +172,9 @@ struct httplib_context *httplib_start( const struct httplib_callbacks *callbacks
 
 #if defined(ALTERNATIVE_QUEUE)
 
+		ctx->client_wait_semaphore = XX_httplib_semaphore_create( ctx->num_threads );
+		if ( ctx->client_wait_semaphore == NULL ) return XX_httplib_abort_start( ctx, "Not enough memory for worker semaphore" );
+
 		ctx->client_wait_events = httplib_calloc( sizeof(ctx->client_wait_events[0]), (size_t)ctx->num_threads );
 		if ( ctx->client_wait_events == NULL ) return XX_httplib_abort_start( ctx, "Not enough memory for worker event array" );
 

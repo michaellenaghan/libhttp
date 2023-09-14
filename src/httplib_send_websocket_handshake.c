@@ -61,7 +61,9 @@ int XX_httplib_send_websocket_handshake( struct httplib_context *ctx, struct htt
 		return 0;
 	}
 
+#if !defined(NO_SSL)
 	EVP_Digest( (unsigned char *)buf, (uint32_t)strlen(buf), (unsigned char *)sha, NULL, EVP_get_digestbyname("sha1"), NULL );
+#endif
 
 	httplib_base64_encode( (unsigned char *)sha, sizeof(sha), b64_sha, B64_SHA_LEN );
 	httplib_printf( ctx, conn,

@@ -54,6 +54,11 @@ void XX_httplib_free_context( struct httplib_context *ctx ) {
 #if defined(ALTERNATIVE_QUEUE)
 	ctx->client_socks = httplib_free( ctx->client_socks );
 
+	if ( ctx->client_wait_semaphore != NULL ) {
+		XX_httplib_semaphore_destroy( ctx->client_wait_semaphore );
+		ctx->client_wait_semaphore = NULL;
+	}
+
 	if ( ctx->client_wait_events != NULL ) {
 
 		for (int i=0; i < ctx->num_threads; i++) XX_httplib_event_destroy( ctx->client_wait_events[i] );

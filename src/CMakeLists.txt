@@ -69,7 +69,7 @@ target_sources(
 	httplib_discard_unread_request_data.c
 	httplib_download.c
 	httplib_error_string.c
-	httplib_event_queue.c
+	httplib_event.c
 	httplib_fclose_on_exec.c
 	httplib_fclose.c
 	httplib_fgets.c
@@ -195,6 +195,7 @@ target_sources(
 	httplib_remove.c
 	httplib_reset_per_request_attributes.c
 	httplib_scan_directory.c
+    httplib_semaphore.c
 	httplib_send_authorization_request.c
 	httplib_send_file_data.c
 	httplib_send_file.c

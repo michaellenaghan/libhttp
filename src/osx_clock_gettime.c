@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  * Copyright (c) 2013-2016 the Civetweb developers
  * Copyright (c) 2004-2013 Sergey Lyubka
@@ -27,7 +27,7 @@
 
 #include "httplib_main.h"
 
-#ifdef __MACH__
+#ifdef __APPLE__
 
 /*
  * clock_gettime is not implemented on OSX prior to 10.12
@@ -49,7 +49,7 @@ int _civet_clock_gettime( int clk_id, struct timespec *t ) {
 		return 0;
 
 	}
-	
+
 	else if (clk_id == CLOCK_MONOTONIC) {
 
 		static uint64_t clock_start_time = 0;
@@ -103,4 +103,4 @@ int _civet_safe_clock_gettime( int clk_id, struct timespec *t ) {
 #define clock_gettime _civet_clock_gettime
 #endif  /* __CLOCK_AVAILABILITY */
 
-#endif  /* __MACH__ */
+#endif  /* __APPLE__ */

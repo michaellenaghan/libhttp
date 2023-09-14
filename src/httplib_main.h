@@ -122,7 +122,7 @@ char static_assert_replacement[1];
 
 #include "libhttp.h"
 
-#ifdef __MACH__
+#ifdef __APPLE__
 
 #ifndef CLOCK_MONOTONIC
 #define CLOCK_MONOTONIC (1)
@@ -137,7 +137,7 @@ char static_assert_replacement[1];
 #include <mach/mach_time.h>
 #include <assert.h>
 
-#endif  /* __MACH__ */
+#endif  /* __APPLE__ */
 
 #include <time.h>
 #include <stdlib.h>
@@ -313,7 +313,7 @@ typedef unsigned short int in_port_t;
 #define vsnprintf_impl vsnprintf
 
 #include <pthread.h>
-#if defined(__MACH__)
+#if defined(__APPLE__)
 #if !defined(CRYPTO_LIB)
 #define CRYPTO_LIB "libcrypto.1.0.0.dylib"
 #endif
@@ -520,6 +520,7 @@ struct httplib_context {
 
 #ifdef ALTERNATIVE_QUEUE
 	struct socket *client_socks;
+	void *client_wait_semaphore;
 	void **client_wait_events;
 #else
 	struct socket queue[QUEUE_SIZE];		/* Accepted sockets									*/
@@ -765,9 +766,9 @@ void			XX_httplib_dir_scan_callback( struct httplib_context *ctx, struct de *de,
 void			XX_httplib_discard_unread_request_data( const struct httplib_context *ctx, struct httplib_connection *conn );
 #ifdef ALTERNATIVE_QUEUE
 void *			XX_httplib_event_create( void );
-int 			XX_httplib_event_wait( void *eventhdl );
-int 			XX_httplib_event_signal( void *eventhdl );
 void 			XX_httplib_event_destroy( void *eventhdl );
+int 			XX_httplib_event_signal( void *eventhdl );
+int 			XX_httplib_event_wait( void *eventhdl );
 #endif
 int			XX_httplib_fclose( struct file *filep );
 void			XX_httplib_fclose_on_exec( struct httplib_context *ctx, struct file *filep, struct httplib_connection *conn );
@@ -841,6 +842,12 @@ int			XX_httplib_remove_directory( struct httplib_context *ctx, struct httplib_c
 void			XX_httplib_remove_double_dots_and_double_slashes( char *s );
 void			XX_httplib_reset_per_request_attributes( struct httplib_connection *conn );
 int			XX_httplib_scan_directory( struct httplib_context *ctx, struct httplib_connection *conn, const char *dir, void *data, void (*cb)(struct httplib_context *ctx, struct de *, void *) );
+#if defined(ALTERNATIVE_QUEUE)
+void *			XX_httplib_semaphore_create( int const count );
+void 			XX_httplib_semaphore_destroy( void *semaphorehdl );
+int 			XX_httplib_semaphore_signal( void *semaphorehdl );
+int 			XX_httplib_semaphore_wait( void *semaphorehdl );
+#endif
 void			XX_httplib_send_authorization_request( struct httplib_context *ctx, struct httplib_connection *conn );
 void			XX_httplib_send_file_data( struct httplib_context *ctx, struct httplib_connection *conn, struct file *filep, int64_t offset, int64_t len );
 void			XX_httplib_send_http_error( struct httplib_context *ctx, struct httplib_connection *, int, PRINTF_FORMAT_STRING(const char *fmt), ... ) PRINTF_ARGS(4, 5);

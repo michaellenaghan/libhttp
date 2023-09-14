@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016 Lammert Bies
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -170,7 +170,7 @@ LIBHTTP_API char *httplib_error_string( int error_code, char *buf, size_t buf_le
 
 #else  /* not _MSC_VER */
 
-#if defined(__FreeBSD__)  ||  defined(__MACH__) || ((_POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600) && ! defined(_GNU_SOURCE))  /* XSI version of strerror_r */
+#if defined(__APPLE__) || defined(__FreeBSD__)  ||  ((_POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600) && ! defined(_GNU_SOURCE))  /* XSI version of strerror_r */
 
 	int return_val;
 

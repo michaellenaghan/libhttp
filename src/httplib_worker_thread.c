@@ -132,11 +132,11 @@ static void worker_thread_run( struct worker_thread_args *thread_args ) {
 			conn->request_info.has_ssl = conn->client.has_ssl;
 
 			if ( conn->client.has_ssl ) {
-
 #ifndef NO_SSL
 				if ( XX_httplib_sslize( ctx, conn, ctx->ssl_ctx, SSL_accept ) ) {
 
 					XX_httplib_ssl_get_client_cert_info(    conn );
+
 					XX_httplib_process_new_connection( ctx, conn );
 
 					if ( conn->request_info.client_cert != NULL ) {
@@ -152,11 +152,17 @@ static void worker_thread_run( struct worker_thread_args *thread_args ) {
 					}
 				}
 #endif
+			} else {
+				XX_httplib_process_new_connection( ctx, conn );
 			}
 
-			else XX_httplib_process_new_connection( ctx, conn );
-
 			XX_httplib_close_connection( ctx, conn );
+
+#if defined(ALTERNATIVE_QUEUE)
+			ctx->client_socks[tls.thread_idx].in_use = 0;
+
+			XX_httplib_semaphore_signal( ctx->client_wait_semaphore );
+#endif
 		}
 	}
 
