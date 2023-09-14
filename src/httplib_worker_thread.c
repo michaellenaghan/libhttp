@@ -163,6 +163,15 @@ static void worker_thread_run( struct worker_thread_args *thread_args ) {
 			XX_httplib_semaphore_signal( ctx->client_wait_semaphore );
 #endif
 		}
+
+#if defined(ALTERNATIVE_QUEUE)
+		// `XX_httplib_consume_socket()` might have assigned a socket even though
+		// it signalled that the server is shutting down. If so, close it.
+		if (ctx->client_socks[conn->thread_index].in_use) {
+			XX_httplib_close_connection( ctx, conn );
+			ctx->client_socks[conn->thread_index].in_use = 0;
+		}
+#endif
 	}
 
 	httplib_pthread_setspecific( XX_httplib_sTlsKey, NULL );
