@@ -159,7 +159,7 @@ static void worker_thread_run( struct worker_thread_args *thread_args ) {
 			XX_httplib_close_connection( ctx, conn );
 
 #if defined(ALTERNATIVE_QUEUE)
-			ctx->client_socks[tls.thread_idx].in_use = 0;
+			ctx->client_socks[conn->thread_index].in_use = 0;
 
 			XX_httplib_semaphore_signal( ctx->client_wait_semaphore );
 #endif

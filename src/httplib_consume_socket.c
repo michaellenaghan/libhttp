@@ -39,7 +39,9 @@
 
 int XX_httplib_consume_socket( struct httplib_context *ctx, struct socket *sp, int thread_index ) {
 
+	assert(!ctx->client_socks[thread_index].in_use);
 	XX_httplib_event_wait( ctx->client_wait_events[thread_index] );
+	assert(ctx->client_socks[thread_index].in_use);
 
 	*sp = ctx->client_socks[thread_index];
 	assert(*sp->in_use);
