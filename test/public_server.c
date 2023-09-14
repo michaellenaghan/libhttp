@@ -254,7 +254,7 @@ log_msg_func(const struct httplib_connection *conn, const char *message)
 	ck_assert(conn != NULL);
 	ctx = httplib_get_context(conn);
 	ck_assert(ctx != NULL);
-	ud = (char *)httplib_get_user_data(ctx);
+	ud = (char *)httplib_get_context_user_data(ctx);
 
 	strncpy(ud, message, 255);
 	ud[255] = 0;
@@ -673,15 +673,15 @@ request_test_handler(struct httplib_connection *conn, void *cbdata)
 	void *ud, *cud;
 
 	ctx = httplib_get_context(conn);
-	ud = httplib_get_user_data(ctx);
+	ud = httplib_get_context_user_data(ctx);
 	ri = httplib_get_request_info(conn);
 
 	ck_assert(ri != NULL);
 	ck_assert(ctx == g_ctx);
 	ck_assert(ud == &g_ctx);
 
-	httplib_set_user_connection_data(conn, (void *)6543);
-	cud = httplib_get_user_connection_data(conn);
+	httplib_set_connection_user_data(conn, (void *)6543);
+	cud = httplib_get_connection_user_data(conn);
 	ck_assert_ptr_eq((void *)cud, (void *)6543);
 
 	ck_assert_ptr_eq((void *)cbdata, (void *)7);
@@ -821,7 +821,7 @@ static int
 websocket_client_data_handler(struct httplib_connection *conn, int flags, char *data, size_t data_len, void *user_data)
 {
 	struct httplib_context *ctx = httplib_get_context(conn);
-	struct tclient_data *pclient_data = (struct tclient_data *)httplib_get_user_data(ctx);
+	struct tclient_data *pclient_data = (struct tclient_data *)httplib_get_context_user_data(ctx);
 
 	(void)user_data; /* TODO: check this */
 
@@ -846,7 +846,7 @@ websocket_client_close_handler(const struct httplib_connection *conn, void *user
 {
 	struct httplib_context *ctx = httplib_get_context(conn);
 	struct tclient_data *pclient_data =
-	    (struct tclient_data *)httplib_get_user_data(ctx);
+	    (struct tclient_data *)httplib_get_context_user_data(ctx);
 
 	(void)user_data; /* TODO: check this */
 

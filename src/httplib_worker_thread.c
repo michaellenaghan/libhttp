@@ -68,7 +68,7 @@ static void worker_thread_run( struct worker_thread_args *thread_args ) {
 
 	struct httplib_context *ctx;
 	struct httplib_connection *conn;
-	struct httplib_workerTLS tls;
+	struct httplib_workerTLS tls = {0};
 #if !defined(NO_SSL)
 	union {
 		const void *	con;
@@ -87,14 +87,16 @@ static void worker_thread_run( struct worker_thread_args *thread_args ) {
 	tls.pthread_cond_helper_mutex = CreateEvent( NULL, FALSE, FALSE, NULL );
 #endif
 
-	if ( ctx->callbacks.init_thread != NULL ) ctx->callbacks.init_thread( ctx, 1 ); /* call init_thread for a worker thread (type 1) */
+	httplib_pthread_setspecific( XX_httplib_sTlsKey, &tls );
+
+	if ( ctx->callbacks.init_thread != NULL ) {
+		tls.user_data = ctx->callbacks.init_thread( ctx, 1 );
+	}
 
 	conn = httplib_calloc( 1, sizeof(*conn) + MAX_REQUEST_SIZE );
 	if ( conn == NULL ) httplib_cry( LH_DEBUG_ERROR, ctx, NULL, "%s: cannot create new connection struct, OOM", __func__ );
 
 	else {
-		httplib_pthread_setspecific( XX_httplib_sTlsKey, &tls );
-
 		conn->buf_size               = MAX_REQUEST_SIZE;
 		conn->buf                    = (char *)(conn+1);
 		conn->thread_index           = thread_args->index;
@@ -174,10 +176,15 @@ static void worker_thread_run( struct worker_thread_args *thread_args ) {
 #endif
 	}
 
-	httplib_pthread_setspecific( XX_httplib_sTlsKey, NULL );
+	if ( ctx->callbacks.exit_thread != NULL ) {
+		ctx->callbacks.exit_thread( ctx, 1, tls.user_data );
+	}
+
 #if defined(_WIN32)
 	CloseHandle( tls.pthread_cond_helper_mutex );
 #endif
+	httplib_pthread_setspecific( XX_httplib_sTlsKey, NULL );
+
 	httplib_pthread_mutex_destroy( & conn->mutex );
 	conn = httplib_free( conn );
 

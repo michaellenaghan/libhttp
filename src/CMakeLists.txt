@@ -78,6 +78,8 @@ target_sources(
 	httplib_free_config_options.c
 	httplib_free_context.c
 	httplib_get_builtin_mime_type.c
+	httplib_get_connection_user_data.c
+	httplib_get_context_user_data.c
 	httplib_get_cookie.c
 	httplib_get_debug_level.c
 	httplib_get_first_ssl_listener_index.c
@@ -94,9 +96,8 @@ target_sources(
 	httplib_get_response.c
 	httplib_get_server_ports.c
 	httplib_get_system_name.c
+	httplib_get_thread_user_data.c
 	httplib_get_uri_type.c
-	httplib_get_user_connection_data.c
-	httplib_get_user_data.c
 	httplib_get_var.c
 	httplib_getreq.c
 	httplib_global_data.c
@@ -207,6 +208,7 @@ target_sources(
 	httplib_set_acl_option.c
 	httplib_set_auth_handler.c
 	httplib_set_close_on_exec.c
+	httplib_set_connection_user_data.c
 	httplib_set_debug_level.c
 	httplib_set_gpass_option.c
 	httplib_set_handler_type.c
@@ -218,7 +220,6 @@ target_sources(
 	httplib_set_tcp_nodelay.c
 	httplib_set_thread_name.c
 	httplib_set_uid_option.c
-	httplib_set_user_connection_data.c
 	httplib_set_websocket_handler.c
 	httplib_should_decode_url.c
 	httplib_should_keep_alive.c

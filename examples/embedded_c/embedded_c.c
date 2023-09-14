@@ -665,7 +665,7 @@ WebSocketConnectHandler(struct httplib_context *ctx, const struct httplib_connec
 		if (ws_clients[i].conn == NULL) {
 			ws_clients[i].conn = (struct httplib_connection *)(intptr_t)conn;  // Cast away `const`.
 			ws_clients[i].state = 1;
-			httplib_set_user_connection_data(ws_clients[i].conn, (void *)(ws_clients + i));
+			httplib_set_connection_user_data(ws_clients[i].conn, (void *)(ws_clients + i));
 			reject = 0;
 			break;
 		}
@@ -682,7 +682,7 @@ static void
 WebSocketReadyHandler(struct httplib_context *ctx, struct httplib_connection *conn, void *cbdata)
 {
 	const char *text = "Hello from the websocket ready handler";
-	struct t_ws_client *client = httplib_get_user_connection_data(conn);
+	struct t_ws_client *client = httplib_get_connection_user_data(conn);
 
 	httplib_websocket_write(ctx, conn, WEBSOCKET_OPCODE_TEXT, text, strlen(text));
 	printf("Greeting message sent to websocket client\r\n\r\n");
@@ -696,7 +696,7 @@ WebSocketReadyHandler(struct httplib_context *ctx, struct httplib_connection *co
 static int
 WebsocketDataHandler(struct httplib_context *ctx, struct httplib_connection *conn, int bits, char *data, size_t len, void *cbdata)
 {
-	struct t_ws_client *client = httplib_get_user_connection_data(conn);
+	struct t_ws_client *client = httplib_get_connection_user_data(conn);
 	ASSERT(client->conn == conn);
 	ASSERT(client->state >= 1);
 
@@ -713,7 +713,7 @@ WebsocketDataHandler(struct httplib_context *ctx, struct httplib_connection *con
 static void
 WebSocketCloseHandler(struct httplib_context *ctx, const struct httplib_connection *conn, void *cbdata)
 {
-	struct t_ws_client *client = httplib_get_user_connection_data(conn);
+	struct t_ws_client *client = httplib_get_connection_user_data(conn);
 	ASSERT(client->conn == conn);
 	ASSERT(client->state >= 1);
 

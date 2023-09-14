@@ -12,14 +12,20 @@
 | |The callback function `end_request()` is called by LibHTTP when a request has been completely processed. It sends the reply status code which was sent to the client to the application.|
 |**`exit_context`**|**`void (*exit_context)( const struct httplib_context *ctx );`**|
 | |The callback function `exit_context()` is called by LibHTTP when the server is stopped. It allows the application to do some cleanup on the application side.|
+|**`exit_thread`**|**`void (*exit_thread)( const struct httplib_context *ctx, int thread_type, void *user_data );`**|
+| |The callback function `exit_thread()` is called when a thread is being destroyed by LibHTTP. The `thread_type` parameter indicates which type of thread is being destroyed. The following thread types are recognized:|
+| |**0** - The master thread is created |
+| |**1** - A worker thread which handles client connections has been created|
+| |**2** - An internal helper thread has been created|
+| |**3** - A websocket client thread has been created|
 |**`http_error`**|**`int (*http_error)( struct httplib_connection *conn, int status );`**|
 | |The callback function `http_error()` is called by LibHTTP just before an HTTP error is to be sent to the client. The function allows the application to send a custom error page. The status code of the error is provided as a parameter. If the application sends their own error page, it must return 1 to signal LibHTTP that no further processing is needed. If the returned value is 0, LibHTTP will send a built-in error page to the client.|
 |**`init_context`**|**`void (*init_context)( const struct httplib_context *ctx );`**|
 | |The callback function `init_context()` is called after the LibHTTP server has been started and initialized, but before any requests are served. This allowes the application to perform some initialization activities before the first requests are handled.|
 |**`init_ssl`**|**`int (*init_ssl)( void *ssl_context, void *user_data );`**|
 | |The callback function `init_ssl()` is called when LibHTTP initializes the SSL library. The parameter `user_data` contains a pointer to the data which was provided to `httplib_start()` when the server was started. The callback function can return 0 to signal that LibHTTP should setup the SSL certificate. With a return value of 1 the callback function signals LibHTTP that the certificate has already been setup and no further processing is necessary. The value -1 should be returned when the SSL initialization fails.|
-|**`init_thread`**|**`void (*init_thread)( const struct httplib_context *ctx, int thread_type );`**|
-| |The callback function `init_thread()` is called when a new thread is created by LibHTTP. The `thread_type` parameter indicates which type of thread has been created. following thread types are recognized:|
+|**`init_thread`**|**`void *(*init_thread)( const struct httplib_context *ctx, int thread_type );`**|
+| |The callback function `init_thread()` is called when a thread is created by LibHTTP. The `thread_type` parameter indicates which type of thread has been created. The following thread types are recognized:|
 | |**0** - The master thread is created |
 | |**1** - A worker thread which handles client connections has been created|
 | |**2** - An internal helper thread has been created|

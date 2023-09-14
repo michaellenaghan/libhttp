@@ -1,7 +1,5 @@
 /*
- * Copyright (c) 2016 Lammert Bies
- * Copyright (c) 2013-2016 the Civetweb developers
- * Copyright (c) 2004-2013 Sergey Lyubka
+ * Copyright (c) 2023 Michael Lenaghan
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,18 +26,17 @@
 #include "httplib_main.h"
 
 /*
- * void *httplib_get_user_data( const struct httplib_context *ctx );
+ * void *httplib_get_thread_user_data( void );
  *
- * The function httplib_get_user_data() returns a pointer to user data which is
- * associated with the context, or NULL if no user data has been registered.
- * The user_data is specified when the context is allocated with a call to the
- * httplib_start() function.
+ * The function httplib_get_thread_user_data() returns a pointer to user data which is
+ * associated with the thread, or NULL if no user data has been registered.
+ * The user_data is specified when the context's init_thread() callback is called.
  */
 
-void *httplib_get_user_data( const struct httplib_context *ctx ) {
+void *httplib_get_thread_user_data( void ) {
 
-	if ( ctx == NULL ) return NULL;
+	struct httplib_workerTLS *tls = httplib_pthread_getspecific( XX_httplib_sTlsKey );
 
-	return ctx->user_data;
+	return tls != NULL ? tls->user_data : NULL;
 
-}  /* httplib_get_user_data */
+}  /* httplib_get_thread_user_data */

@@ -20,23 +20,26 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
+ *
+ * ============
+ * Release: 2.0
  */
 
 #include "httplib_main.h"
 
 /*
- * void *httplib_get_user_connection_data( const struct httplib_connection *conn );
+ * void *httplib_get_context_user_data( const struct httplib_context *ctx );
  *
- * The function httplib_get_user_connection_data() returns a pointer to user
- * data associated with a connection which was previously registered with a
- * call to httplib_set_user_connection_data(). In case of problems the value
- * NULL is returned.
+ * The function httplib_get_context_user_data() returns a pointer to user data which is
+ * associated with the context, or NULL if no user data has been registered.
+ * The user_data is specified when the context is allocated with a call to the
+ * httplib_start() function.
  */
 
-LIBHTTP_API void * httplib_get_user_connection_data( const struct httplib_connection *conn ) {
+void *httplib_get_context_user_data( const struct httplib_context *ctx ) {
 
-	if ( conn == NULL ) return NULL;
+	if ( ctx == NULL ) return NULL;
 
-	return conn->request_info.conn_data;
+	return ctx->user_data;
 
-}  /* httplib_get_user_connection_data */
+}  /* httplib_get_context_user_data */

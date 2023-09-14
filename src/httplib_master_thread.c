@@ -58,7 +58,7 @@ LIBHTTP_THREAD XX_httplib_master_thread( void *thread_func_param ) {
 static void master_thread_run(void *thread_func_param) {
 
 	struct httplib_context *ctx = (struct httplib_context *)thread_func_param;
-	struct httplib_workerTLS tls;
+	struct httplib_workerTLS tls = {0};
 	struct pollfd *pfd;
 	int i;
 
@@ -90,18 +90,14 @@ static void master_thread_run(void *thread_func_param) {
  * Initialize thread local storage
  */
 
+	tls.thread_index = -1;
 #if defined(_WIN32)
 	tls.pthread_cond_helper_mutex = CreateEvent( NULL, FALSE, FALSE, NULL );
 #endif
 	httplib_pthread_setspecific( XX_httplib_sTlsKey, &tls );
 
 	if ( ctx->callbacks.init_thread ) {
-
-		/*
-		 * Callback for the master thread (type 0)
-		 */
-
-		ctx->callbacks.init_thread( ctx, 0 );
+		tls.user_data = ctx->callbacks.init_thread( ctx, 0 );
 	}
 
 	/*
@@ -186,6 +182,10 @@ static void master_thread_run(void *thread_func_param) {
 #if !defined(NO_SSL)
 	if ( ctx->ssl_ctx != NULL ) XX_httplib_uninitialize_ssl( ctx );
 #endif
+
+	if ( ctx->callbacks.exit_thread ) {
+		ctx->callbacks.exit_thread( ctx, 0, tls.user_data );
+	}
 
 #if defined(_WIN32)
 	CloseHandle( tls.pthread_cond_helper_mutex );

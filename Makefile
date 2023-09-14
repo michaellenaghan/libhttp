@@ -214,8 +214,8 @@ OBJLIST =									\
 	${OBJDIR}httplib_get_server_ports${OBJEXT}				\
 	${OBJDIR}httplib_get_system_name${OBJEXT}				\
 	${OBJDIR}httplib_get_uri_type${OBJEXT}					\
-	${OBJDIR}httplib_get_user_connection_data${OBJEXT}			\
-	${OBJDIR}httplib_get_user_data${OBJEXT}					\
+	${OBJDIR}httplib_get_connection_user_data${OBJEXT}			\
+	${OBJDIR}httplib_get_context_user_data${OBJEXT}					\
 	${OBJDIR}httplib_get_var${OBJEXT}					\
 	${OBJDIR}httplib_getreq${OBJEXT}					\
 	${OBJDIR}httplib_global_data${OBJEXT}					\
@@ -314,7 +314,7 @@ OBJLIST =									\
 	${OBJDIR}httplib_set_tcp_nodelay${OBJEXT}				\
 	${OBJDIR}httplib_set_thread_name${OBJEXT}				\
 	${OBJDIR}httplib_set_uid_option${OBJEXT}				\
-	${OBJDIR}httplib_set_user_connection_data${OBJEXT}			\
+	${OBJDIR}httplib_set_connection_user_data${OBJEXT}			\
 	${OBJDIR}httplib_set_websocket_handler${OBJEXT}				\
 	${OBJDIR}httplib_should_decode_url${OBJEXT}				\
 	${OBJDIR}httplib_should_keep_alive${OBJEXT}				\
@@ -653,11 +653,11 @@ ${OBJDIR}httplib_get_uri_type${OBJEXT}					: ${SRCDIR}httplib_get_uri_type.c				
 									  ${SRCDIR}httplib_main.h					\
 									  ${INCDIR}libhttp.h
 
-${OBJDIR}httplib_get_user_connection_data${OBJEXT}			: ${SRCDIR}httplib_get_user_connection_data.c			\
+${OBJDIR}httplib_get_connection_user_data${OBJEXT}			: ${SRCDIR}httplib_get_connection_user_data.c			\
 									  ${SRCDIR}httplib_main.h					\
 									  ${INCDIR}libhttp.h
 
-${OBJDIR}httplib_get_user_data${OBJEXT}					: ${SRCDIR}httplib_get_user_data.c				\
+${OBJDIR}httplib_get_context_user_data${OBJEXT}					: ${SRCDIR}httplib_get_context_user_data.c				\
 									  ${SRCDIR}httplib_main.h					\
 									  ${INCDIR}libhttp.h
 
@@ -1090,7 +1090,7 @@ ${OBJDIR}httplib_set_uid_option${OBJEXT}				: ${SRCDIR}httplib_set_uid_option.c	
 									  ${SRCDIR}httplib_main.h					\
 									  ${INCDIR}libhttp.h
 
-${OBJDIR}httplib_set_user_connection_data${OBJEXT}			: ${SRCDIR}httplib_set_user_connection_data.c			\
+${OBJDIR}httplib_set_connection_user_data${OBJEXT}			: ${SRCDIR}httplib_set_connection_user_data.c			\
 									  ${SRCDIR}httplib_main.h					\
 									  ${INCDIR}libhttp.h
 

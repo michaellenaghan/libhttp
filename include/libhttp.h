@@ -300,10 +300,11 @@ struct httplib_callbacks {				/*												*/
 	int		(*begin_request)(    struct httplib_context *ctx,       struct httplib_connection *conn );					/*		*/
 	void		(*end_request)(      struct httplib_context *ctx, const struct httplib_connection *conn, int reply_status_code );		/*		*/
 	void		(*exit_context)(     struct httplib_context *ctx );										/*		*/
+	void		(*exit_thread)(      struct httplib_context *ctx, int thread_type, void *user_data );								/*		*/
 	int		(*http_error)(       struct httplib_context *ctx, struct httplib_connection *, int status );					/*		*/
 	void		(*init_context)(     struct httplib_context *ctx );										/*		*/
 	int		(*init_ssl)(         struct httplib_context *ctx, void *ssl_context, void *user_data );						/*		*/
-	void		(*init_thread)(      struct httplib_context *ctx, int thread_type );								/*		*/
+	void *		(*init_thread)(      struct httplib_context *ctx, int thread_type );								/*		*/
 	int		(*log_access)(       struct httplib_context *ctx, const struct httplib_connection *conn, const char *message );			/*		*/
 	int		(*log_message)(      struct httplib_context *ctx, const struct httplib_connection *conn, const char *message );			/*		*/
 	const char *	(*open_file)(        struct httplib_context *ctx, const struct httplib_connection *conn, const char *path, size_t *data_len );	/*		*/
@@ -393,6 +394,8 @@ LIBHTTP_API void				httplib_destroy_client_context( struct httplib_context *ctx 
 LIBHTTP_API struct httplib_connection *		httplib_download( struct httplib_context *ctx, const char *host, int port, int use_ssl, PRINTF_FORMAT_STRING(const char *request_fmt), ...) PRINTF_ARGS(5, 6);
 LIBHTTP_API char *				httplib_error_string( int error_code, char *buf, size_t buf_len );
 LIBHTTP_API const char *			httplib_get_builtin_mime_type( const char *file_name );
+LIBHTTP_API void *				httplib_get_connection_user_data( const struct httplib_connection *conn );
+LIBHTTP_API void *				httplib_get_context_user_data( const struct httplib_context *ctx );
 LIBHTTP_API int					httplib_get_cookie( const char *cookie, const char *var_name, char *buf, size_t buf_len );
 LIBHTTP_API enum httplib_debug			httplib_get_debug_level( struct httplib_context *ctx );
 LIBHTTP_API const char *			httplib_get_header( const struct httplib_connection *conn, const char *name );
@@ -402,8 +405,7 @@ LIBHTTP_API const struct httplib_request_info *	httplib_get_request_info( const 
 LIBHTTP_API int					httplib_get_response( const struct httplib_context *ctx, struct httplib_connection *conn, int timeout );
 LIBHTTP_API const char *			httplib_get_response_code_text( struct httplib_context *ctx, struct httplib_connection *conn, int response_code );
 LIBHTTP_API int					httplib_get_server_ports( const struct httplib_context *ctx, int size, struct httplib_server_ports *ports );
-LIBHTTP_API void *				httplib_get_user_connection_data( const struct httplib_connection *conn );
-LIBHTTP_API void *				httplib_get_user_data( const struct httplib_context *ctx );
+LIBHTTP_API void *				httplib_get_thread_user_data( void );
 LIBHTTP_API int					httplib_get_var( const char *data, size_t data_len, const char *var_name, char *dst, size_t dst_len );
 LIBHTTP_API int					httplib_get_var2( const char *data, size_t data_len, const char *var_name, char *dst, size_t dst_len, size_t occurrence );
 LIBHTTP_API struct tm *				httplib_gmtime_r( const time_t *clock, struct tm *result );
@@ -441,9 +443,9 @@ LIBHTTP_API int					httplib_remove( const char *path );
 LIBHTTP_API void				httplib_send_file( struct httplib_context *ctx, struct httplib_connection *conn, const char *path, const char *mime_type, const char *additional_headers );
 LIBHTTP_API void				httplib_set_alloc_callback_func( httplib_alloc_callback_func log_func );
 LIBHTTP_API void				httplib_set_auth_handler( struct httplib_context *ctx, const char *uri, httplib_authorization_handler handler, void *cbdata );
+LIBHTTP_API void				httplib_set_connection_user_data( struct httplib_connection *conn, void *data );
 LIBHTTP_API enum httplib_debug			httplib_set_debug_level( struct httplib_context *ctx, enum httplib_debug new_level );
 LIBHTTP_API void				httplib_set_request_handler( struct httplib_context *ctx, const char *uri, httplib_request_handler handler, void *cbdata );
-LIBHTTP_API void				httplib_set_user_connection_data( struct httplib_connection *conn, void *data );
 LIBHTTP_API void				httplib_set_websocket_handler( struct httplib_context *ctx, const char *uri, httplib_websocket_connect_handler connect_handler, httplib_websocket_ready_handler ready_handler, httplib_websocket_data_handler data_handler, httplib_websocket_close_handler close_handler, void *cbdata );
 LIBHTTP_API struct httplib_context *		httplib_start( const struct httplib_option *options, const struct httplib_callbacks *callbacks, void *user_data );
 LIBHTTP_API int					httplib_start_thread( httplib_thread_func_t func, void *param );

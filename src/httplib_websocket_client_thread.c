@@ -39,9 +39,11 @@
 
 LIBHTTP_THREAD XX_httplib_websocket_client_thread( void *data ) {
 
-	struct websocket_client_thread_data *cdata;
 	struct httplib_context *ctx;
 	struct httplib_connection *conn;
+	struct httplib_workerTLS tls = {0};
+
+	struct websocket_client_thread_data *cdata;
 
 	if ( (cdata = data       ) == NULL ) return LIBHTTP_THREAD_RETNULL;
 	if ( (conn  = cdata->conn) == NULL ) return LIBHTTP_THREAD_RETNULL;
@@ -51,11 +53,27 @@ LIBHTTP_THREAD XX_httplib_websocket_client_thread( void *data ) {
 
 	XX_httplib_set_thread_name( ctx, "ws-client" );
 
-	if ( ctx->callbacks.init_thread != NULL ) ctx->callbacks.init_thread( ctx, 3 );
+	tls.thread_index = -1;
+#if defined(_WIN32)
+	tls.pthread_cond_helper_mutex = CreateEvent( NULL, FALSE, FALSE, NULL );
+#endif
+
+	if ( ctx->callbacks.init_thread != NULL ) {
+		tls.user_data = ctx->callbacks.init_thread( ctx, 3 );
+	}
 
 	XX_httplib_read_websocket( ctx, conn, cdata->data_handler, cdata->callback_data );
 
 	if ( cdata->close_handler != NULL ) cdata->close_handler( ctx, conn, cdata->callback_data );
+
+	if ( ctx->callbacks.exit_thread != NULL ) {
+		ctx->callbacks.exit_thread( ctx, 3, tls.user_data );
+	}
+
+#if defined(_WIN32)
+	CloseHandle( tls.pthread_cond_helper_mutex );
+#endif
+	httplib_pthread_setspecific( XX_httplib_sTlsKey, NULL );
 
 	ctx->workerthreadids = httplib_free( ctx->workerthreadids );
 	conn                 = httplib_free( conn                 );
