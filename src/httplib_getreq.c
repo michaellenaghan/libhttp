@@ -97,7 +97,7 @@ bool XX_httplib_getreq( struct httplib_context *ctx, struct httplib_connection *
 
 			conn->must_close = true;
 
-			httplib_cry( LH_DEBUG_WARNING, ctx, conn, "%s: %s client did not send a request", __func__, remote_ip_str );
+			httplib_cry( LH_DEBUG_WARNING, ctx, conn, "%s: %s client closed or timed out", __func__, remote_ip_str );
 			*err = 0;
 		}
 		return false;
