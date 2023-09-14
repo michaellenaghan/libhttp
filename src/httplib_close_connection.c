@@ -39,12 +39,6 @@ void XX_httplib_close_connection( struct httplib_context *ctx, struct httplib_co
 
 	if ( ctx == NULL  ||  conn == NULL ) return;
 
-	/*
-	 * call the connection_close callback if assigned
-	 */
-
-	if ( ctx->callbacks.connection_close != NULL  &&  ctx->ctx_type == CTX_TYPE_SERVER ) ctx->callbacks.connection_close( ctx, conn );
-
 	httplib_lock_connection( conn );
 
 	conn->must_close = true;

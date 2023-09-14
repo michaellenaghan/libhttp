@@ -299,15 +299,14 @@ struct httplib_request_info {				/*												*/
 struct httplib_callbacks {				/*												*/
 	int		(*begin_request)(    struct httplib_context *ctx,       struct httplib_connection *conn );					/*		*/
 	void		(*end_request)(      struct httplib_context *ctx, const struct httplib_connection *conn, int reply_status_code );		/*		*/
-	int		(*log_message)(      struct httplib_context *ctx, const struct httplib_connection *conn, const char *message );			/*		*/
-	int		(*log_access)(       struct httplib_context *ctx, const struct httplib_connection *conn, const char *message );			/*		*/
-	int		(*init_ssl)(         struct httplib_context *ctx, void *ssl_context, void *user_data );						/*		*/
-	void		(*connection_close)( struct httplib_context *ctx, const struct httplib_connection *conn );					/*		*/
-	const char *	(*open_file)(        struct httplib_context *ctx, const struct httplib_connection *conn, const char *path, size_t *data_len );	/*		*/
+	void		(*exit_context)(     struct httplib_context *ctx );										/*		*/
 	int		(*http_error)(       struct httplib_context *ctx, struct httplib_connection *, int status );					/*		*/
 	void		(*init_context)(     struct httplib_context *ctx );										/*		*/
+	int		(*init_ssl)(         struct httplib_context *ctx, void *ssl_context, void *user_data );						/*		*/
 	void		(*init_thread)(      struct httplib_context *ctx, int thread_type );								/*		*/
-	void		(*exit_context)(     struct httplib_context *ctx );										/*		*/
+	int		(*log_access)(       struct httplib_context *ctx, const struct httplib_connection *conn, const char *message );			/*		*/
+	int		(*log_message)(      struct httplib_context *ctx, const struct httplib_connection *conn, const char *message );			/*		*/
+	const char *	(*open_file)(        struct httplib_context *ctx, const struct httplib_connection *conn, const char *path, size_t *data_len );	/*		*/
 };							/*												*/
 							/************************************************************************************************/
 
