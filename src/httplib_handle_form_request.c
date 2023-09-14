@@ -77,13 +77,12 @@ static int url_encoded_field_found( struct httplib_context *ctx, const struct ht
 }
 
 
-static int url_encoded_field_get( struct httplib_context *ctx, const struct httplib_connection *conn, const char *key, size_t key_len, const char *value, size_t value_len, struct httplib_form_data_handler *fdh ) {
+static void url_encoded_field_get( struct httplib_context *ctx, const struct httplib_connection *conn, const char *key, size_t key_len, const char *value, size_t value_len, struct httplib_form_data_handler *fdh ) {
 
 	char key_dec[1024];
 
 	char *value_dec = httplib_malloc( value_len+1 );
 	int value_dec_len;
-	int ret;
 
 	if ( value_dec == NULL ) {
 
@@ -92,21 +91,18 @@ static int url_encoded_field_get( struct httplib_context *ctx, const struct http
 		 */
 
 		httplib_cry( LH_DEBUG_ERROR, ctx, conn, "%s: Not enough memory (required: %lu)", __func__, (unsigned long)(value_len + 1));
-		return FORM_FIELD_STORAGE_ABORT;
 	}
 
 	httplib_url_decode( key, (int)key_len, key_dec, (int)sizeof(key_dec), 1 );
 
 	value_dec_len = httplib_url_decode( value, (int)value_len, value_dec, (int)value_len + 1, 1 );
-	ret           = fdh->field_get( key_dec, value_dec, (size_t)value_dec_len, fdh->user_data );
+	fdh->field_get( key_dec, value_dec, (size_t)value_dec_len, fdh->user_data );
 	value_dec     = httplib_free( value_dec );
-
-	return ret;
 
 }  /* url_encoded_field_get */
 
 
-static int unencoded_field_get(const struct httplib_connection *conn,
+static void unencoded_field_get(const struct httplib_connection *conn,
                     const char *key,
                     size_t key_len,
                     const char *value,
@@ -119,12 +115,12 @@ static int unencoded_field_get(const struct httplib_connection *conn,
 
 	httplib_url_decode( key, (int)key_len, key_dec, (int)sizeof(key_dec), 1 );
 
-	return fdh->field_get( key_dec, value, value_len, fdh->user_data );
+	fdh->field_get( key_dec, value, value_len, fdh->user_data );
 
 }  /* unencoded_field_get */
 
 
-static int field_stored( const struct httplib_connection *conn, const char *path, int64_t file_size, struct httplib_form_data_handler *fdh ) {
+static void field_store( const struct httplib_connection *conn, const char *path, int64_t file_size, struct httplib_form_data_handler *fdh ) {
 
 	/*
 	 * Equivalent to "upload" callback of "httplib_upload".
@@ -132,7 +128,7 @@ static int field_stored( const struct httplib_connection *conn, const char *path
 
 	UNUSED_PARAMETER(conn); /* we do not need httplib_cry here, so conn is currently unused */
 
-	return fdh->field_store( path, file_size, fdh->user_data );
+	fdh->field_store( path, file_size, fdh->user_data );
 }
 
 
@@ -283,7 +279,7 @@ int httplib_handle_form_request( struct httplib_context *ctx, struct httplib_con
 							 * stored successfully
 							 */
 
-							field_stored( conn, path, file_size, fdh );
+							field_store( conn, path, file_size, fdh );
 						}
 
 						else {
@@ -473,7 +469,7 @@ int httplib_handle_form_request( struct httplib_context *ctx, struct httplib_con
 					/*
 					 * stored successfully
 					 */
-					field_stored( conn, path, file_size, fdh );
+					field_store( conn, path, file_size, fdh );
 				}
 
 				else {
@@ -799,7 +795,7 @@ int httplib_handle_form_request( struct httplib_context *ctx, struct httplib_con
 						 * stored successfully
 						 */
 
-						field_stored( conn, path, file_size, fdh );
+						field_store( conn, path, file_size, fdh );
 					}
 
 					else {

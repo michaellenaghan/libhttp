@@ -282,7 +282,7 @@ field_found(const char *key,
 }
 
 
-static int
+static void
 field_get(const char *key, const char *value, size_t value_size, void *user_data)
 {
 	struct ctx_conn_t *ctx_conn = user_data;
@@ -290,12 +290,10 @@ field_get(const char *key, const char *value, size_t value_size, void *user_data
 	size_t buffer_size = sizeof(ctx_conn->buffer);
 	size_t buffer_len = strlen(ctx_conn->buffer);
 	snprintf( ctx_conn->buffer + buffer_len, buffer_size - buffer_len, "<p>value: %.*s</p>", (int)value_size, value );
-
-	return 0;
 }
 
 
-static int
+static void
 field_stored(const char *path, int64_t file_size, void *user_data)
 {
 	struct ctx_conn_t *ctx_conn = user_data;
@@ -303,8 +301,6 @@ field_stored(const char *path, int64_t file_size, void *user_data)
 	size_t buffer_size = sizeof(ctx_conn->buffer);
 	size_t buffer_len = strlen(ctx_conn->buffer);
 	snprintf( ctx_conn->buffer + buffer_len, buffer_size - buffer_len, "<p>path: %s</p>", path );
-
-	return 0;
 }
 
 
@@ -415,7 +411,7 @@ field_disp_read_on_the_fly(const char *key,
 }
 
 
-static int
+static void
 field_get_checksum(const char *key,
                    const char *value,
                    size_t value_size,
@@ -428,8 +424,6 @@ field_get_checksum(const char *key,
 	md5_append(&(context->file[context->index - 1].chksum),
 	           (const md5_byte_t *)value,
 	           value_size);
-
-	return 0;
 }
 
 

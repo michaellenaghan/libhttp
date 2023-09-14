@@ -356,8 +356,8 @@ struct httplib_server_ports {				/*												*/
 
 struct httplib_form_data_handler {
 	int 	(*field_found)( const char *key, const char *filename, char *path, size_t pathlen, void *user_data );
-	int 	(*field_get)(   const char *key, const char *value, size_t valuelen,               void *user_data );
-	int 	(*field_store)( const char *path, int64_t file_size,                               void *user_data );
+	void 	(*field_get)(   const char *key, const char *value, size_t valuelen,               void *user_data );
+	void 	(*field_store)( const char *path, int64_t file_size,                               void *user_data );
 	void *	user_data;
 };
 

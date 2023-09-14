@@ -1503,7 +1503,7 @@ field_found(const char *key,
 
 static int g_field_step;
 
-static int
+static void
 field_get(const char *key,
           const char *value_untruncated,
           size_t valuelen,
@@ -1646,7 +1646,7 @@ static const char *myfile_content = "Content of myfile.txt\r\n";
 static const int myfile_content_rep = 50000;
 
 
-static int
+static void
 field_store(const char *path, int64_t file_size, void *user_data)
 {
 	FILE *f;
@@ -1692,7 +1692,7 @@ field_store(const char *path, int64_t file_size, void *user_data)
 		}
 		break;
 	default:
-		ck_abort_msg("field_get called with g_field_step == %i",
+		ck_abort_msg("field_store called with g_field_step == %i",
 		             (int)g_field_step);
 	}
 
