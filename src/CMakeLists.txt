@@ -25,7 +25,7 @@ target_compile_definitions(
     USE_STACK_SIZE=102400)
 target_compile_options(
     httplib PRIVATE
-    $<$<CXX_COMPILER_ID:MSVC>:/W4 /WX>
+    $<$<CXX_COMPILER_ID:MSVC>:/experimental:c11atomics /W4 /WX>
     $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wcast-align -Wcast-qual -Wconversion -Werror -Wextra -Wformat-security -Winit-self -Wnested-externs -Wpointer-arith -Wredundant-decls -Wshadow -Wstrict-prototypes -Wwrite-strings -funsigned-char>)
 target_include_directories(
     httplib PUBLIC
