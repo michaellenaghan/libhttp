@@ -37,7 +37,7 @@
  * context to the running server for future reference.
  */
 
-struct httplib_context *httplib_start( const struct httplib_callbacks *callbacks, void *user_data, const struct httplib_option *options ) {
+struct httplib_context *httplib_start( const struct httplib_option *options, const struct httplib_callbacks *callbacks, void *user_data ) {
 
 	struct httplib_context *ctx;
 	int i;

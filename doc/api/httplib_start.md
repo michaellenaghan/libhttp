@@ -1,14 +1,14 @@
 # LibHTTP API Reference
 
-### `httplib_start( callbacks, user_data, options );`
+### `httplib_start( options, callbacks, user_data );`
 
 ### Parameters
 
 | Parameter | Type | Description |
 | :--- | :--- | :--- |
+|**`options`**|`char **`| A list of options used to initialize the web server. The list consists of an NULL terminated list of option-value string pairs. |
 |**`callbacks`**|`const struct httplib_callbacks *`| A structure with optional callback functions to process requests from the web server |
 |**`user_data`**|`void *`| A pointer to optional user data |
-|**`options`**|`char **`| A list of options used to initialize the web server. The list consists of an NULL terminated list of option-value string pairs. |
 
 ### Return Value
 

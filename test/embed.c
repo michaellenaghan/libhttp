@@ -174,7 +174,7 @@ int main(void) {
   struct httplib_context *ctx;
   const char *options[] = {"listening_ports", LISTENING_PORT, NULL};
 
-  ctx = httplib_start(callback, NULL, options);
+  ctx = httplib_start(options, callback, NULL);
   pause();
   return 0;
 }

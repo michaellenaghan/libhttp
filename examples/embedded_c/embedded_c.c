@@ -775,7 +775,7 @@ main(int argc, char *argv[])
 		{0}
 	};
 
-	struct httplib_context *ctx = httplib_start(&callbacks, 0, options);
+	struct httplib_context *ctx = httplib_start(options, &callbacks, NULL);
 	if (!ctx) {
 		exit(EXIT_FAILURE);
 	}

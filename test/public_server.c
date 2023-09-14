@@ -293,7 +293,7 @@ START_TEST(test_httplib_start_stop_http_server)
 	callbacks.log_message = log_msg_func;
 
 	mark_point();
-	ctx = httplib_start(&callbacks, (void *)errmsg, OPTIONS);
+	ctx = httplib_start(OPTIONS, &callbacks, (void *)errmsg);
 	test_sleep(1);
 
 	ck_assert_str_eq(errmsg, "");
@@ -472,7 +472,7 @@ START_TEST(test_httplib_start_stop_https_server)
 	callbacks.log_message = log_msg_func;
 
 	mark_point();
-	ctx = httplib_start(&callbacks, (void *)errmsg, OPTIONS);
+	ctx = httplib_start(OPTIONS, &callbacks, (void *)errmsg);
 	test_sleep(1);
 	ck_assert_str_eq(errmsg, "");
 	ck_assert(ctx != NULL);
@@ -599,7 +599,7 @@ START_TEST(test_httplib_server_and_client_tls)
 	callbacks.log_message = log_msg_func;
 
 	mark_point();
-	ctx = httplib_start(&callbacks, (void *)errmsg, OPTIONS);
+	ctx = httplib_start(OPTIONS, &callbacks, (void *)errmsg);
 	test_sleep(1);
 	ck_assert_str_eq(errmsg, "");
 	ck_assert(ctx != NULL);
@@ -931,7 +931,7 @@ START_TEST(test_request_handlers)
 	ck_assert(OPTIONS[sizeof(OPTIONS) / sizeof(OPTIONS[0]) - 2] == NULL);
 
 	mark_point();
-	ctx = httplib_start(NULL, &g_ctx, OPTIONS);
+	ctx = httplib_start(OPTIONS, NULL, &g_ctx);
 	ck_assert(ctx != NULL);
 	g_ctx = ctx;
 
@@ -1800,7 +1800,7 @@ START_TEST(test_handle_form)
 	ck_assert(OPTIONS[sizeof(OPTIONS) / sizeof(OPTIONS[0]) - 2] == NULL);
 
 	mark_point();
-	ctx = httplib_start(NULL, &g_ctx, OPTIONS);
+	ctx = httplib_start(OPTIONS, NULL, &g_ctx);
 	ck_assert(ctx != NULL);
 	g_ctx = ctx;
 
@@ -2310,7 +2310,7 @@ START_TEST(test_http_auth)
 
 	/* Start with default options */
 	mark_point();
-	ctx = httplib_start(NULL, NULL, OPTIONS);
+	ctx = httplib_start(OPTIONS, NULL, NULL);
 	test_sleep(1);
 
 	ck_assert(ctx != NULL);
@@ -2552,7 +2552,7 @@ START_TEST(test_keep_alive)
 	const char *connection_header;
 
 	mark_point();
-	ctx = httplib_start(NULL, NULL, OPTIONS);
+	ctx = httplib_start(OPTIONS, NULL, NULL);
 	ck_assert(ctx != NULL);
 
 	test_sleep(1);

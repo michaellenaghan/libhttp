@@ -384,7 +384,7 @@ int main(void)
     // Setup and start Civetweb
     memset(&callbacks, 0, sizeof(callbacks));
     callbacks.begin_request = begin_request_handler;
-    if ((ctx = httplib_start(&callbacks, NULL, options)) == NULL) {
+    if ((ctx = httplib_start(options, &callbacks, NULL)) == NULL) {
         printf("%s\n", "Cannot start chat server, fatal exit");
         exit(EXIT_FAILURE);
     }

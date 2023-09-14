@@ -445,7 +445,7 @@ LIBHTTP_API enum httplib_debug			httplib_set_debug_level( struct httplib_context
 LIBHTTP_API void				httplib_set_request_handler( struct httplib_context *ctx, const char *uri, httplib_request_handler handler, void *cbdata );
 LIBHTTP_API void				httplib_set_user_connection_data( struct httplib_connection *conn, void *data );
 LIBHTTP_API void				httplib_set_websocket_handler( struct httplib_context *ctx, const char *uri, httplib_websocket_connect_handler connect_handler, httplib_websocket_ready_handler ready_handler, httplib_websocket_data_handler data_handler, httplib_websocket_close_handler close_handler, void *cbdata );
-LIBHTTP_API struct httplib_context *		httplib_start( const struct httplib_callbacks *callbacks, void *user_data, const struct httplib_option *options );
+LIBHTTP_API struct httplib_context *		httplib_start( const struct httplib_option *options, const struct httplib_callbacks *callbacks, void *user_data );
 LIBHTTP_API int					httplib_start_thread( httplib_thread_func_t func, void *param );
 LIBHTTP_API void				httplib_stop( struct httplib_context *ctx );
 LIBHTTP_API int64_t				httplib_store_body( struct httplib_context *ctx, struct httplib_connection *conn, const char *path );
