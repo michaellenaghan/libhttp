@@ -222,6 +222,20 @@ enum {							/*												*/
 
 							/************************************************************************************************/
 							/*												*/
+							/* enum httplib_thread;										*/
+							/*												*/
+							/* Threads used by the library.									*/
+							/*												*/
+enum httplib_thread {					/*												*/
+	THREAD_MASTER                     = 0x00,	/* The master thread										*/
+	THREAD_WORKER                     = 0x01,	/* A worker thread										*/
+	THREAD_HELPER                     = 0x02,	/* A helper thread										*/
+	THREAD_WEBSOCKET                  = 0x03	/* A websocket thread										*/
+};							/*												*/
+							/************************************************************************************************/
+
+							/************************************************************************************************/
+							/*												*/
 							/* Opcodes, from http://tools.ietf.org/html/rfc6455						*/
 enum {							/*												*/
 	WEBSOCKET_OPCODE_CONTINUATION     = 0x00,	/*												*/

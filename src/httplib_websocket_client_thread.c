@@ -59,7 +59,7 @@ LIBHTTP_THREAD XX_httplib_websocket_client_thread( void *data ) {
 #endif
 
 	if ( ctx->callbacks.init_thread != NULL ) {
-		tls.user_data = ctx->callbacks.init_thread( ctx, 3 );
+		tls.user_data = ctx->callbacks.init_thread( ctx, THREAD_WEBSOCKET );
 	}
 
 	XX_httplib_read_websocket( ctx, conn, cdata->data_handler, cdata->callback_data );
@@ -67,7 +67,7 @@ LIBHTTP_THREAD XX_httplib_websocket_client_thread( void *data ) {
 	if ( cdata->close_handler != NULL ) cdata->close_handler( ctx, conn, cdata->callback_data );
 
 	if ( ctx->callbacks.exit_thread != NULL ) {
-		ctx->callbacks.exit_thread( ctx, 3, tls.user_data );
+		ctx->callbacks.exit_thread( ctx, THREAD_WEBSOCKET, tls.user_data );
 	}
 
 #if defined(_WIN32)

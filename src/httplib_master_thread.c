@@ -97,7 +97,7 @@ static void master_thread_run(void *thread_func_param) {
 	httplib_pthread_setspecific( XX_httplib_sTlsKey, &tls );
 
 	if ( ctx->callbacks.init_thread ) {
-		tls.user_data = ctx->callbacks.init_thread( ctx, 0 );
+		tls.user_data = ctx->callbacks.init_thread( ctx, THREAD_MASTER );
 	}
 
 	/*
@@ -184,7 +184,7 @@ static void master_thread_run(void *thread_func_param) {
 #endif
 
 	if ( ctx->callbacks.exit_thread ) {
-		ctx->callbacks.exit_thread( ctx, 0, tls.user_data );
+		ctx->callbacks.exit_thread( ctx, THREAD_MASTER, tls.user_data );
 	}
 
 #if defined(_WIN32)

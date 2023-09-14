@@ -90,7 +90,7 @@ static void worker_thread_run( struct worker_thread_args *thread_args ) {
 	httplib_pthread_setspecific( XX_httplib_sTlsKey, &tls );
 
 	if ( ctx->callbacks.init_thread != NULL ) {
-		tls.user_data = ctx->callbacks.init_thread( ctx, 1 );
+		tls.user_data = ctx->callbacks.init_thread( ctx, THREAD_WORKER );
 	}
 
 	conn = httplib_calloc( 1, sizeof(*conn) + MAX_REQUEST_SIZE );
@@ -177,7 +177,7 @@ static void worker_thread_run( struct worker_thread_args *thread_args ) {
 	}
 
 	if ( ctx->callbacks.exit_thread != NULL ) {
-		ctx->callbacks.exit_thread( ctx, 1, tls.user_data );
+		ctx->callbacks.exit_thread( ctx, THREAD_WORKER, tls.user_data );
 	}
 
 #if defined(_WIN32)
