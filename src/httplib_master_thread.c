@@ -149,11 +149,6 @@ static void master_thread_run(void *thread_func_param) {
 
 		XX_httplib_event_signal( ctx->client_wait_events[i] );
 
-		/*
-		 * Since we know all sockets, we can shutdown the connections.
-		 */
-
-		if ( ctx->client_socks[i].in_use ) shutdown( ctx->client_socks[i].sock, SHUTDOWN_BOTH );
 	}
 
 	/*
@@ -163,6 +158,7 @@ static void master_thread_run(void *thread_func_param) {
 	for (i=0; i<ctx->num_threads; i++) {
 
 		if ( ctx->workerthreadids[i] != 0 ) httplib_pthread_join( ctx->workerthreadids[i], NULL );
+
 	}
 
 #if !defined(NO_SSL)
