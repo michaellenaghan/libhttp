@@ -206,22 +206,6 @@ httplib_static_assert(PATH_MAX >= 1, "path length must be a positive number");
 #define ERRNO ((int)(GetLastError()))
 #define NO_SOCKLEN_T
 
-#if defined(_WIN64) || defined(__MINGW64__)
-#if !defined(CRYPTO_LIB)
-#define CRYPTO_LIB "libeay64.dll"
-#endif
-#if !defined(SSL_LIB)
-#define SSL_LIB "ssleay64.dll"
-#endif
-#else  /* _WIN64  ||  __MINGW64__ */
-#if !defined(CRYPTO_LIB)
-#define CRYPTO_LIB "libeay32.dll"
-#endif
-#if !defined(SSL_LIB)
-#define SSL_LIB "ssleay32.dll"
-#endif
-#endif  /* _WIN64  ||  __MINGW64__ */
-
 #define O_NONBLOCK (0)
 #ifndef W_OK
 #define W_OK (2) /* http://msdn.microsoft.com/en-us/library/1w06ktdy.aspx */
@@ -312,25 +296,10 @@ typedef unsigned short int in_port_t;
 #include <dirent.h>
 #define vsnprintf_impl vsnprintf
 
-#include <pthread.h>
-#if defined(__APPLE__)
-#if !defined(CRYPTO_LIB)
-#define CRYPTO_LIB "libcrypto.1.0.0.dylib"
-#endif
-#if !defined(SSL_LIB)
-#define SSL_LIB "libssl.1.0.0.dylib"
-#endif
-#else
-#if !defined(CRYPTO_LIB)
-#define CRYPTO_LIB "libcrypto.so"
-#endif
-#if !defined(SSL_LIB)
-#define SSL_LIB "libssl.so"
-#endif
-#endif
 #ifndef O_BINARY
 #define O_BINARY (0)
 #endif /* O_BINARY */
+
 #define closesocket(a) (close(a))
 #define httplib_sleep(x) (usleep((x)*1000))
 #define ERRNO (errno)

@@ -8,16 +8,13 @@ set_target_properties(
 
 target_compile_definitions(
     httplib PUBLIC
-    # CRYPTOLIB=
     # HAVE_POLL
     # MAX_REQUEST_SIZE=16384
-    # MD5_STATIC
     # MSG_NOSIGNAL
     $<$<NOT:$<BOOL:${HTTPLIB_ENABLE_SSL}>>:NO_SSL>
     # NO_THREAD_NAME
     # SOMAXCONN=128
     # SSL_ALREADY_INITIALIZED
-    # SSL_LIB=
     # TCP_USER_TIMEOUT=
     # USE_MASTER_THREAD_PRIORITY=
     USE_STACK_SIZE=102400)

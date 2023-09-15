@@ -59,8 +59,6 @@ make build
 
 | Make Options              | Description                              |
 | ------------------------- | ---------------------------------------- |
-| CRYPTO_LIB=libcrypto.so.0 | system versioned CRYPTO library          |
-| SSL_LIB=libssl.so.0       | use versioned SSL library                |
 | COPT='-DNO_SSL'           | method to insert compile flags           |
 
 Note that the WITH_* options used for *make* are not identical to the
@@ -79,8 +77,6 @@ make build COPT="-DNDEBUG"
 | DEBUG                     | build debug version (very noisy)     |
 | NO_SSL                    | disable SSL functionality            |
 | SSL_ALREADY_INITIALIZED   | do not initialize libcrypto          |
-| CRYPTO_LIB                | system versioned CRYPTO library      |
-| SSL_LIB                   | use versioned SSL library            |
 
 ## Cross Compiling
 

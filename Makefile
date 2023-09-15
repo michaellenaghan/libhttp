@@ -55,14 +55,6 @@
 # end application to different environments.
 #
 
-ifdef CRYPTO_LIB
-  CFLAGS += -DCRYPTO_LIB=\"$(CRYPTO_LIB)\"
-endif
-
-ifdef SSL_LIB
-  CFLAGS += -DSSL_LIB=\"$(SSL_LIB)\"
-endif
-
 ifneq ($(OS),Windows_NT)
 OS:=$(shell uname -s)
 endif
