@@ -50,7 +50,7 @@ void XX_httplib_free_context( struct httplib_context *ctx ) {
 	 */
 
 	httplib_pthread_mutex_destroy( & ctx->thread_mutex );
-#if defined(ALTERNATIVE_QUEUE)
+
 	ctx->client_socks = httplib_free( ctx->client_socks );
 
 	if ( ctx->client_wait_semaphore != NULL ) {
@@ -63,10 +63,6 @@ void XX_httplib_free_context( struct httplib_context *ctx ) {
 		for (int i=0; i < ctx->num_threads; i++) XX_httplib_event_destroy( ctx->client_wait_events[i] );
 		ctx->client_wait_events = httplib_free( ctx->client_wait_events );
 	}
-#else
-	httplib_pthread_cond_destroy( & ctx->sq_empty );
-	httplib_pthread_cond_destroy( & ctx->sq_full  );
-#endif
 
 	/*
 	 * Destroy other context global data structures mutex

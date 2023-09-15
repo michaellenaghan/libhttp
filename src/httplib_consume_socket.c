@@ -34,8 +34,6 @@
  * queue for further processing.
  */
 
-#if defined(ALTERNATIVE_QUEUE)
-
 int XX_httplib_consume_socket( struct httplib_context *ctx, struct socket *sp, int thread_index ) {
 
 	assert(!ctx->client_socks[thread_index].in_use);
@@ -47,52 +45,3 @@ int XX_httplib_consume_socket( struct httplib_context *ctx, struct socket *sp, i
 	return ( ctx->status == CTX_STATUS_RUNNING );
 
 }  /* XX_httplib_consume_socket */
-
-#else /* ALTERNATIVE_QUEUE */
-
-/* Worker threads take accepted socket from the queue */
-int XX_httplib_consume_socket( struct httplib_context *ctx, struct socket *sp, int thread_index ) {
-
-	UNUSED_PARAMETER(thread_index);
-
-	httplib_pthread_mutex_lock( & ctx->thread_mutex );
-
-	/*
-	 * If the queue is empty, wait. We're idle at this point.
-	 */
-
-	while ( ctx->sq_head == ctx->sq_tail  &&  ctx->status == CTX_STATUS_RUNNING ) httplib_pthread_cond_wait( & ctx->sq_full, & ctx->thread_mutex );
-
-	/*
-	 * If we're stopping, sq_head may be equal to sq_tail.
-	 */
-
-	if ( ctx->sq_head > ctx->sq_tail ) {
-		int const queue_size = (int)(ARRAY_SIZE(ctx->queue));
-
-		/*
-		 * Copy socket from the queue and increment tail
-		 */
-
-		*sp = ctx->queue[ctx->sq_tail % queue_size];
-		ctx->sq_tail++;
-
-		/*
-		 * Wrap pointers if needed
-		 */
-
-		while ( ctx->sq_tail > queue_size ) {
-
-			ctx->sq_tail -= queue_size;
-			ctx->sq_head -= queue_size;
-		}
-	}
-
-	httplib_pthread_cond_signal(  & ctx->sq_empty     );
-	httplib_pthread_mutex_unlock( & ctx->thread_mutex );
-
-	return ( ctx->status == CTX_STATUS_RUNNING );
-
-}  /* XX_httplib_consume_socket */
-
-#endif /* ALTERNATIVE_QUEUE */

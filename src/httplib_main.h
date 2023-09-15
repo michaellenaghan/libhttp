@@ -373,11 +373,6 @@ typedef int SOCKET;
 #define SOMAXCONN (128)
 #endif
 
-/* Size of the accepted socket queue */
-#if !defined(QUEUE_SIZE)
-#define QUEUE_SIZE (50)
-#endif
-
 #ifndef MAX_REQUEST_SIZE
 #define MAX_REQUEST_SIZE (16384)
 #endif
@@ -519,17 +514,9 @@ struct httplib_context {
 
 	pthread_mutex_t thread_mutex;		/* Protects (max|num)_threads								*/
 
-#ifdef ALTERNATIVE_QUEUE
 	struct socket *client_socks;
 	void *client_wait_semaphore;
 	void **client_wait_events;
-#else
-	struct socket queue[QUEUE_SIZE];		/* Accepted sockets									*/
-	_Atomic(int) sq_head;			/* Head of the socket queue								*/
-	_Atomic(int) sq_tail;			/* Tail of the socket queue								*/
-	pthread_cond_t sq_full;			/* Signaled when socket is produced							*/
-	pthread_cond_t sq_empty;		/* Signaled when socket is consumed							*/
-#endif
 
 	pthread_t masterthreadid;		/* The master thread ID									*/
 	pthread_t *workerthreadids;		/* The worker thread IDs								*/
@@ -765,12 +752,10 @@ int			XX_httplib_consume_socket( struct httplib_context *ctx, struct socket *sp,
 void			XX_httplib_delete_file( struct httplib_context *ctx, struct httplib_connection *conn, const char *path );
 void			XX_httplib_dir_scan_callback( struct httplib_context *ctx, struct de *de, void *data );
 void			XX_httplib_discard_unread_request_data( const struct httplib_context *ctx, struct httplib_connection *conn );
-#ifdef ALTERNATIVE_QUEUE
 void *			XX_httplib_event_create( void );
 void 			XX_httplib_event_destroy( void *eventhdl );
 int 			XX_httplib_event_signal( void *eventhdl );
 int 			XX_httplib_event_wait( void *eventhdl );
-#endif
 int			XX_httplib_fclose( struct file *filep );
 void			XX_httplib_fclose_on_exec( struct httplib_context *ctx, struct file *filep, struct httplib_connection *conn );
 const char *		XX_httplib_fgets( char *buf, size_t size, struct file *filep, char **p );
@@ -843,12 +828,10 @@ int			XX_httplib_remove_directory( struct httplib_context *ctx, struct httplib_c
 void			XX_httplib_remove_double_dots_and_double_slashes( char *s );
 void			XX_httplib_reset_per_request_attributes( struct httplib_connection *conn );
 int			XX_httplib_scan_directory( struct httplib_context *ctx, struct httplib_connection *conn, const char *dir, void *data, void (*cb)(struct httplib_context *ctx, struct de *, void *) );
-#if defined(ALTERNATIVE_QUEUE)
 void *			XX_httplib_semaphore_create( int const count );
 void 			XX_httplib_semaphore_destroy( void *semaphorehdl );
 int 			XX_httplib_semaphore_signal( void *semaphorehdl );
 int 			XX_httplib_semaphore_wait( void *semaphorehdl );
-#endif
 void			XX_httplib_send_authorization_request( struct httplib_context *ctx, struct httplib_connection *conn );
 void			XX_httplib_send_file_data( struct httplib_context *ctx, struct httplib_connection *conn, struct file *filep, int64_t offset, int64_t len );
 void			XX_httplib_send_http_error( struct httplib_context *ctx, struct httplib_connection *, int, PRINTF_FORMAT_STRING(const char *fmt), ... ) PRINTF_ARGS(4, 5);

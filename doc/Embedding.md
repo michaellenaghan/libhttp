@@ -65,17 +65,14 @@ you may need to initialize SSL before calling `httplib_start()`, and set the pre
 processor define SSL_ALREADY_INITIALIZED. This is not required if SSL is used
 only within LibHTTP.
 
-When master thread accepts new a connection, a new accepted socket (described
-by `struct socket`) it placed into the accepted sockets queue,
-which has size of `QUEUE_SIZE` (default 50).
-Any idle worker thread can grab accepted sockets from that queue.
-If all worker threads are busy, master thread can accept and queue up to
-20 more TCP connections, filling up the queue.
-In the attempt to queue even more accepted connection, the master thread blocks
-until there is space in the queue. When the master thread is blocked on a
-full queue, the operating system can also queue incoming connection.
-The number is limited by the `listen()` call parameter,
-which is `SOMAXCONN` and depends on the platform.
+When the master thread accepts a new socket (described by `struct socket`), it
+first waits (via semaphore) to make sure that at least one worker thread is free --
+then it goes looking to see *which* worker thread is free, and assigns the socket
+to it, and wakes it.
+
+When the master thread is blocked because all worker threads are busy, the operating
+system can still queue incoming connections. The number is limited by the `listen()`
+call parameter, `backlog`, which is `SOMAXCONN` and depends on the platform.
 
 Worker threads are running in an infinite loop, which in a simplified form
 looks something like this:
@@ -86,20 +83,20 @@ looks something like this:
       }
     }
 
-Function `consume_socket()` gets a new accepted socket from the LibHTTP socket
-queue, atomically removing it from the queue. If the queue is empty,
-`consume_socket()` blocks and waits until a new socket is placed in the queue
-by the master thread.
+Function `consume_socket()` waits for a new socket to be assigned to the worker by the
+master. (Note that the master will also wake all workers if the server is shutting down.
+In that case, no new socket has been assigned and the worker exits the loop.)
 
-`process_new_connection()` actually processes the
-connection, i.e. reads the request, parses it, and performs appropriate action
-depending on the parsed request.
+`process_new_connection()` actually processes the connection, i.e. reads the request,
+parses it, and performs appropriate action depending on the parsed request.
 
 Master thread uses `poll()` and `accept()` to accept new connections on
 listening sockets. `poll()` is used to avoid `FD_SETSIZE` limitation of
 `select()`. Since there are only a few listening sockets, there is no reason
-to use hi-performance alternatives like `epoll()` or `kqueue()`. Worker
-threads use blocking IO on accepted sockets for reading and writing data.
+to use hi-performance alternatives like `epoll()` or `kqueue()`.
+
+Worker threads use blocking IO on accepted sockets for reading and writing data.
+
 All accepted sockets have `SO_RCVTIMEO` and `SO_SNDTIMEO` socket options set
 (controlled by the `request_timeout` LibHTTP option, 10 seconds default)
 which specifies a read/write timeout on client connections.

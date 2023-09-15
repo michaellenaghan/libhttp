@@ -25,8 +25,6 @@
 
 #include "httplib_main.h"
 
-#if defined(ALTERNATIVE_QUEUE)
-
 #if defined(__APPLE__)
 
 
@@ -182,7 +180,5 @@ void XX_httplib_semaphore_destroy( void *semaphorehdl ) {
 
 }  /* XX_httplib_semaphore_destroy */
 
-
-#endif
 
 #endif

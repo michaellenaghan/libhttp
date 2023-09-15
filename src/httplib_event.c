@@ -27,8 +27,6 @@
 
 #include "httplib_main.h"
 
-#if defined(ALTERNATIVE_QUEUE)
-
 #if defined(__linux__)
 
 
@@ -202,5 +200,3 @@ void XX_httplib_event_destroy( void *eventhdl ) {
 
 
 #endif
-
-#endif  /* ALTERNATIVE_QUEUE */

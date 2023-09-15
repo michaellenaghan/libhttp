@@ -33,8 +33,6 @@
  * The function XX_httplib_produce_socket() is used to produce a socket.
  */
 
-#if defined(ALTERNATIVE_QUEUE)
-
 void XX_httplib_produce_socket( struct httplib_context *ctx, const struct socket *sp ) {
 
 	XX_httplib_semaphore_wait( ctx->client_wait_semaphore );
@@ -69,43 +67,3 @@ void XX_httplib_produce_socket( struct httplib_context *ctx, const struct socket
 	httplib_cry( LH_DEBUG_ERROR, ctx, NULL, "%s: cannot find a free worker slot", __func__ );
 
 }  /* XX_httplib_produce_socket */
-
-#else /* ALTERNATIVE_QUEUE */
-
-/*
- * Master thread adds accepted socket to a queue
- */
-
-void XX_httplib_produce_socket( struct httplib_context *ctx, const struct socket *sp ) {
-
-	if ( ctx == NULL ) return;
-
-	httplib_pthread_mutex_lock( & ctx->thread_mutex );
-
-	/*
-	 * If the queue is full, wait
-	 */
-
-	int const queue_size = (int)(ARRAY_SIZE(ctx->queue));
-
-	while ( ctx->status == CTX_STATUS_RUNNING  &&  ctx->sq_head-ctx->sq_tail >= queue_size ) {
-
-		httplib_pthread_cond_wait( & ctx->sq_empty, & ctx->thread_mutex );
-	}
-
-	if ( ctx->sq_head - ctx->sq_tail < queue_size ) {
-
-		/*
-		 * Copy socket to the queue and increment head
-		 */
-
-		ctx->queue[ctx->sq_head % queue_size] = *sp;
-		ctx->sq_head++;
-	}
-
-	httplib_pthread_cond_signal(  & ctx->sq_full      );
-	httplib_pthread_mutex_unlock( & ctx->thread_mutex );
-
-}  /* XX_httplib_produce_socket */
-
-#endif /* ALTERNATIVE_QUEUE */

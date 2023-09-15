@@ -111,10 +111,7 @@ struct httplib_context *httplib_start( const struct httplib_option *options, con
 	httplib_pthread_setspecific( XX_httplib_tls_key, & tls );
 
 	if ( httplib_pthread_mutex_init( & ctx->thread_mutex, &XX_httplib_pthread_mutex_attr )  ) return XX_httplib_abort_start( ctx, "Cannot initialize thread mutex"          );
-#if !defined(ALTERNATIVE_QUEUE)
-	if ( httplib_pthread_cond_init(  & ctx->sq_empty, NULL )                                ) return XX_httplib_abort_start( ctx, "Cannot initialize empty queue condition" );
-	if ( httplib_pthread_cond_init(  & ctx->sq_full,  NULL )                                ) return XX_httplib_abort_start( ctx, "Cannot initialize full queue condition"  );
-#endif
+
 	if ( httplib_pthread_mutex_init( & ctx->nonce_mutex,  & XX_httplib_pthread_mutex_attr ) ) return XX_httplib_abort_start( ctx, "Cannot initialize nonce mutex"           );
 
 	ctx->user_data = user_data;
@@ -158,8 +155,6 @@ struct httplib_context *httplib_start( const struct httplib_option *options, con
 		ctx->workerthreadids = httplib_calloc( (size_t)ctx->num_threads, sizeof(pthread_t) );
 		if ( ctx->workerthreadids == NULL ) return XX_httplib_abort_start( ctx, "Not enough memory for worker thread ID array" );
 
-#if defined(ALTERNATIVE_QUEUE)
-
 		ctx->client_wait_semaphore = XX_httplib_semaphore_create( ctx->num_threads );
 		if ( ctx->client_wait_semaphore == NULL ) return XX_httplib_abort_start( ctx, "Not enough memory for worker semaphore" );
 
@@ -174,7 +169,6 @@ struct httplib_context *httplib_start( const struct httplib_option *options, con
 			ctx->client_wait_events[i] = XX_httplib_event_create();
 			if ( ctx->client_wait_events[i] == 0 ) return XX_httplib_abort_start( ctx, "Error creating worker event %u", i );
 		}
-#endif
 	}
 
 	/*

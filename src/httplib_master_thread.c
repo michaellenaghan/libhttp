@@ -153,8 +153,6 @@ static void master_thread_run(void *thread_func_param) {
 
 	httplib_pthread_mutex_lock( & ctx->thread_mutex );
 
-#if defined(ALTERNATIVE_QUEUE)
-
 	for (i=0; i<ctx->num_threads; i++) {
 
 		XX_httplib_event_signal( ctx->client_wait_events[i] );
@@ -165,9 +163,7 @@ static void master_thread_run(void *thread_func_param) {
 
 		if ( ctx->client_socks[i].in_use ) shutdown( ctx->client_socks[i].sock, SHUTDOWN_BOTH );
 	}
-#else
-	httplib_pthread_cond_broadcast( & ctx->sq_full );
-#endif
+
 	httplib_pthread_mutex_unlock( & ctx->thread_mutex );
 
 	/*
