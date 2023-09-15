@@ -134,7 +134,9 @@ void *XX_httplib_semaphore_create( int const count ) {
 		 * semaphore not available
 		 */
 
-		semaphorehdl = httplib_free( semaphorehdl );
+		httplib_free( semaphorehdl );
+
+		return NULL;
 	}
 
 	return semaphorehdl;

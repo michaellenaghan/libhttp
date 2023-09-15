@@ -121,34 +121,42 @@ struct posix_event {
 
 	pthread_mutex_t mutex;
 	pthread_cond_t cond;
+	int value;
+
 };
 
 
 void *XX_httplib_event_create(void) {
 
-	struct posix_event *eventhdl = httplib_malloc( sizeof(struct posix_event) );
+	void *eventhdl = httplib_malloc( sizeof(struct posix_event) );
 	if ( eventhdl == NULL ) return NULL;
 
-	if ( httplib_pthread_mutex_init( & eventhdl->mutex, NULL ) != 0 ) {
+	struct posix_event *ev = eventhdl;
+
+	if ( pthread_mutex_init( & ev->mutex, NULL ) != 0 ) {
 
 		/*
 		 * pthread mutex not available
 		 */
 
-		eventhdl = httplib_free( eventhdl );
+		httplib_free( eventhdl );
+
 		return NULL;
 	}
 
-	if ( httplib_pthread_cond_init( & eventhdl->cond, NULL ) != 0 ) {
+	if ( pthread_cond_init( & ev->cond, NULL ) != 0 ) {
 
 		/*
 		 * pthread cond not available
 		 */
 
-		httplib_pthread_mutex_destroy( & eventhdl->mutex );
-		eventhdl = httplib_free( eventhdl );
+		pthread_mutex_destroy( & ev->mutex );
+		httplib_free( eventhdl );
+
 		return NULL;
 	}
+
+	ev->value = 0;
 
 	return eventhdl;
 
@@ -161,9 +169,12 @@ int XX_httplib_event_wait( void *eventhdl ) {
 
 	struct posix_event *ev = eventhdl;
 
-	httplib_pthread_mutex_lock(            & ev->mutex );
-	httplib_pthread_cond_wait( & ev->cond, & ev->mutex );
-	httplib_pthread_mutex_unlock(          & ev->mutex );
+	pthread_mutex_lock( & ev->mutex );
+	while ( ev->value == 0 ) {
+		pthread_cond_wait( & ev->cond, & ev->mutex );
+	}
+	ev->value = 0;
+	pthread_mutex_unlock( & ev->mutex );
 
 	return 1;
 
@@ -176,9 +187,10 @@ int XX_httplib_event_signal( void *eventhdl ) {
 
 	struct posix_event *ev = eventhdl;
 
-	httplib_pthread_mutex_lock(   & ev->mutex );
-	httplib_pthread_cond_signal(  & ev->cond  );
-	httplib_pthread_mutex_unlock( & ev->mutex );
+	pthread_mutex_lock( & ev->mutex );
+	ev->value = 1;
+	pthread_mutex_unlock( & ev->mutex );
+	pthread_cond_signal( & ev->cond  );
 
 	return 1;
 
@@ -191,10 +203,10 @@ void XX_httplib_event_destroy( void *eventhdl ) {
 
 	struct posix_event *ev = eventhdl;
 
-	httplib_pthread_cond_destroy(  & ev->cond  );
-	httplib_pthread_mutex_destroy( & ev->mutex );
+	pthread_cond_destroy(  & ev->cond  );
+	pthread_mutex_destroy( & ev->mutex );
 
-	ev = httplib_free( ev );
+	httplib_free( ev );
 
 }  /* XX_httplib_event_destroy */
 
