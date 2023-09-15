@@ -66,8 +66,6 @@ void XX_httplib_free_context( struct httplib_context *ctx ) {
 	 * Destroy other context global data structures mutex
 	 */
 
-	httplib_pthread_mutex_destroy( & ctx->thread_mutex );
-
 	httplib_pthread_mutex_destroy( & ctx->ctx_mutex );
 
 	XX_httplib_free_config_options( ctx );

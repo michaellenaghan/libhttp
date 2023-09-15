@@ -476,8 +476,6 @@ struct httplib_context {
 	struct pollfd *listening_socket_fds;
 	unsigned int num_listening_sockets;
 
-	pthread_mutex_t thread_mutex;		/* Protects (max|num)_threads								*/
-
 	struct socket *client_socks;
 	void *client_wait_semaphore;
 	void **client_wait_events;

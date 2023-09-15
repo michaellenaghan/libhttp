@@ -105,8 +105,6 @@ struct httplib_context *httplib_start( const struct httplib_option *options, con
 
 	if ( httplib_pthread_mutex_init( & ctx->ctx_mutex,  & XX_httplib_pthread_mutex_attr ) ) return XX_httplib_abort_start( ctx, "Cannot initialize context mutex"           );
 
-	if ( httplib_pthread_mutex_init( & ctx->thread_mutex, &XX_httplib_pthread_mutex_attr )  ) return XX_httplib_abort_start( ctx, "Cannot initialize thread mutex"          );
-
 	ctx->user_data = user_data;
 	ctx->handlers  = NULL;
 

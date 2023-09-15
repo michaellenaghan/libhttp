@@ -145,8 +145,6 @@ static void master_thread_run(void *thread_func_param) {
 	 * Wakeup workers that are waiting for connections to handle.
 	 */
 
-	httplib_pthread_mutex_lock( & ctx->thread_mutex );
-
 	for (i=0; i<ctx->num_threads; i++) {
 
 		XX_httplib_event_signal( ctx->client_wait_events[i] );
@@ -157,8 +155,6 @@ static void master_thread_run(void *thread_func_param) {
 
 		if ( ctx->client_socks[i].in_use ) shutdown( ctx->client_socks[i].sock, SHUTDOWN_BOTH );
 	}
-
-	httplib_pthread_mutex_unlock( & ctx->thread_mutex );
 
 	/*
 	 * Join all worker threads to avoid leaking threads.
