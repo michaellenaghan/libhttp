@@ -462,11 +462,15 @@ struct httplib_handler_info {
 
 struct httplib_context {
 
-	_Atomic(enum ctx_status_t) status;	/* Should we stop event loop								*/
-	SSL_CTX *ssl_ctx;			/* SSL context										*/
-	struct httplib_callbacks callbacks;		/* User-defined callback function							*/
-	void *user_data;			/* User-defined data									*/
+	pthread_mutex_t ctx_mutex;		/* Protects context									*/
 	enum ctx_type_t ctx_type;		/* CTX_TYPE_SERVER or CTX_TYPE_CLIENT							*/
+
+	_Atomic(enum ctx_status_t) status;	/* Should we stop event loop
+								*/
+	struct httplib_callbacks callbacks;	/* User-defined callback function							*/
+	void *user_data;			/* User-defined data									*/
+
+	SSL_CTX *ssl_ctx;			/* SSL context										*/
 
 	struct socket *listening_sockets;
 	struct pollfd *listening_socket_fds;
@@ -483,7 +487,6 @@ struct httplib_context {
 
 	time_t start_time;			/* Server start time, used for authentication						*/
 	uint64_t auth_nonce_mask;		/* Mask for all nonce values								*/
-	pthread_mutex_t nonce_mutex;		/* Protects nonce_count									*/
 	_Atomic(unsigned long) nonce_count;	/* Used nonces, used for authentication							*/
 
 	char *systemName;			/* What operating system is running							*/
