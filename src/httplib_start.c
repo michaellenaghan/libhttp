@@ -80,7 +80,7 @@ struct httplib_context *httplib_start( const struct httplib_option *options, con
 
 	ctx->auth_nonce_mask = httplib_get_random() ^ (uint64_t)(ptrdiff_t)(options);
 
-	if ( httplib_atomic_inc( & XX_httplib_sTlsInit ) == 1 ) {
+	if ( httplib_atomic_inc( & XX_httplib_tls_init ) == 1 ) {
 
 #if defined(_WIN32)
 		InitializeCriticalSection( & global_log_file_lock );
@@ -90,14 +90,14 @@ struct httplib_context *httplib_start( const struct httplib_option *options, con
 #endif  /* _WIN32 */
 
 #if !defined(NO_SSL)
-		if ( httplib_pthread_key_create( & XX_httplib_sTlsKey, XX_httplib_tls_dtor ) != 0 ) {
+		if ( httplib_pthread_key_create( & XX_httplib_tls_key, XX_httplib_tls_dtor ) != 0 ) {
 
 			/*
 			 * Fatal error - abort start. However, this situation should
 			 * never occur in practice.
 			 */
 
-			httplib_atomic_dec( & XX_httplib_sTlsInit );
+			httplib_atomic_dec( & XX_httplib_tls_init );
 			httplib_cry( LH_DEBUG_CRASH, ctx, NULL, "%s: cannot initialize thread local storage", __func__ );
 			ctx = httplib_free( ctx );
 
@@ -108,7 +108,7 @@ struct httplib_context *httplib_start( const struct httplib_option *options, con
 
 	else {
 		/*
-		 * TODO (low): istead of sleeping, check if XX_httplib_sTlsKey is already
+		 * TODO (low): istead of sleeping, check if XX_httplib_tls_key is already
 		 * initialized.
 		 */
 
@@ -119,7 +119,7 @@ struct httplib_context *httplib_start( const struct httplib_option *options, con
 #if defined(_WIN32)
 	tls.pthread_cond_helper_mutex = NULL;
 #endif
-	httplib_pthread_setspecific( XX_httplib_sTlsKey, & tls );
+	httplib_pthread_setspecific( XX_httplib_tls_key, & tls );
 
 	if ( httplib_pthread_mutex_init( & ctx->thread_mutex, &XX_httplib_pthread_mutex_attr )  ) return XX_httplib_abort_start( ctx, "Cannot initialize thread mutex"          );
 #if !defined(ALTERNATIVE_QUEUE)
@@ -237,7 +237,7 @@ struct httplib_context *httplib_start( const struct httplib_option *options, con
 		}
 	}
 
-	httplib_pthread_setspecific( XX_httplib_sTlsKey, NULL );
+	httplib_pthread_setspecific( XX_httplib_tls_key, NULL );
 
 	return ctx;
 

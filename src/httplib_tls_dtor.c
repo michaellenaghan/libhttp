@@ -40,6 +40,6 @@ void XX_httplib_tls_dtor( void *key ) {
 
 	UNUSED_PARAMETER(key);
 
-	httplib_pthread_setspecific( XX_httplib_sTlsKey, NULL );
+	httplib_pthread_setspecific( XX_httplib_tls_key, NULL );
 
 }  /* XX_httplib_tls_dtor */

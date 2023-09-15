@@ -38,9 +38,9 @@ pthread_mutexattr_t			XX_httplib_pthread_mutex_attr;
 
 
 
-pthread_key_t XX_httplib_sTlsKey; /* Thread local storage index */
+pthread_key_t XX_httplib_tls_key; /* Thread local storage index */
 
-int		XX_httplib_sTlsInit		= 0;
+int		XX_httplib_tls_init		= 0;
 
 const struct uriprot_tp XX_httplib_abs_uri_protocols[] = {
 

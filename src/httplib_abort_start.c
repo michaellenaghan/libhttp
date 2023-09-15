@@ -49,7 +49,7 @@ struct httplib_context *XX_httplib_abort_start( struct httplib_context *ctx, con
 
 	XX_httplib_free_context( ctx );
 
-	httplib_pthread_setspecific( XX_httplib_sTlsKey, NULL );
+	httplib_pthread_setspecific( XX_httplib_tls_key, NULL );
 
 	return NULL;
 

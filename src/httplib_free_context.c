@@ -113,7 +113,7 @@ void XX_httplib_free_context( struct httplib_context *ctx ) {
 	 * Deallocate the tls variable
 	 */
 
-	if ( httplib_atomic_dec(&XX_httplib_sTlsInit) == 0 ) {
+	if ( httplib_atomic_dec(&XX_httplib_tls_init) == 0 ) {
 #if defined(_WIN32)
 		DeleteCriticalSection( & global_log_file_lock );
 #endif /* _WIN32 */
@@ -121,7 +121,7 @@ void XX_httplib_free_context( struct httplib_context *ctx ) {
 		pthread_mutexattr_destroy( & XX_httplib_pthread_mutex_attr );
 #endif
 
-		httplib_pthread_key_delete( XX_httplib_sTlsKey );
+		httplib_pthread_key_delete( XX_httplib_tls_key );
 	}
 
 	/*

@@ -906,5 +906,5 @@ extern pthread_mutexattr_t			XX_httplib_pthread_mutex_attr;
 #endif /* _WIN32 */
 
 extern const struct uriprot_tp		XX_httplib_abs_uri_protocols[];
-extern int				XX_httplib_sTlsInit;
-extern pthread_key_t			XX_httplib_sTlsKey;
+extern int				XX_httplib_tls_init;
+extern pthread_key_t			XX_httplib_tls_key;

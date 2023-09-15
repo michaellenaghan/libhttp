@@ -53,7 +53,11 @@ int httplib_pthread_cond_timedwait( pthread_cond_t *cv, pthread_mutex_t *mutex, 
 	int64_t nswaitrel;
 	DWORD mswaitrel;
 
-	tls = httplib_pthread_getspecific( XX_httplib_sTlsKey );
+	// TODO: Fix
+	// This is burying knowledge of a specific thread-local
+	// storage key and struct into a func that has a generic
+	// sounding name.
+	tls = httplib_pthread_getspecific( XX_httplib_tls_key );
 
 	/* Add this thread to cv's waiting list */
 	EnterCriticalSection( & cv->threadIdSec );

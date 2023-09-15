@@ -58,6 +58,8 @@ LIBHTTP_THREAD XX_httplib_websocket_client_thread( void *data ) {
 	tls.pthread_cond_helper_mutex = CreateEvent( NULL, FALSE, FALSE, NULL );
 #endif
 
+	httplib_pthread_setspecific( XX_httplib_tls_key, &tls );
+
 	if ( ctx->callbacks.init_thread != NULL ) {
 		tls.user_data = ctx->callbacks.init_thread( ctx, THREAD_WEBSOCKET );
 	}
@@ -73,7 +75,7 @@ LIBHTTP_THREAD XX_httplib_websocket_client_thread( void *data ) {
 #if defined(_WIN32)
 	CloseHandle( tls.pthread_cond_helper_mutex );
 #endif
-	httplib_pthread_setspecific( XX_httplib_sTlsKey, NULL );
+	httplib_pthread_setspecific( XX_httplib_tls_key, NULL );
 
 	ctx->workerthreadids = httplib_free( ctx->workerthreadids );
 	conn                 = httplib_free( conn                 );

@@ -35,7 +35,7 @@
 
 void *httplib_get_thread_user_data( void ) {
 
-	struct httplib_workerTLS *tls = httplib_pthread_getspecific( XX_httplib_sTlsKey );
+	struct httplib_workerTLS *tls = httplib_pthread_getspecific( XX_httplib_tls_key );
 
 	return tls != NULL ? tls->user_data : NULL;
 

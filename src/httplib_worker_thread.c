@@ -87,7 +87,7 @@ static void worker_thread_run( struct worker_thread_args *thread_args ) {
 	tls.pthread_cond_helper_mutex = CreateEvent( NULL, FALSE, FALSE, NULL );
 #endif
 
-	httplib_pthread_setspecific( XX_httplib_sTlsKey, &tls );
+	httplib_pthread_setspecific( XX_httplib_tls_key, &tls );
 
 	if ( ctx->callbacks.init_thread != NULL ) {
 		tls.user_data = ctx->callbacks.init_thread( ctx, THREAD_WORKER );
@@ -183,7 +183,7 @@ static void worker_thread_run( struct worker_thread_args *thread_args ) {
 #if defined(_WIN32)
 	CloseHandle( tls.pthread_cond_helper_mutex );
 #endif
-	httplib_pthread_setspecific( XX_httplib_sTlsKey, NULL );
+	httplib_pthread_setspecific( XX_httplib_tls_key, NULL );
 
 	httplib_pthread_mutex_destroy( & conn->mutex );
 	conn = httplib_free( conn );
