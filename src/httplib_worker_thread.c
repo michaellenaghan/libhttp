@@ -68,7 +68,7 @@ static void worker_thread_run( struct worker_thread_args *thread_args ) {
 
 	struct httplib_context *ctx;
 	struct httplib_connection *conn;
-	struct httplib_workerTLS tls = {0};
+
 #if !defined(NO_SSL)
 	union {
 		const void *	con;
@@ -82,12 +82,9 @@ static void worker_thread_run( struct worker_thread_args *thread_args ) {
 
 	XX_httplib_set_thread_name( ctx, "worker" );
 
-	tls.thread_index = thread_args->index;
-
-	httplib_pthread_setspecific( XX_httplib_tls_key, &tls );
-
 	if ( ctx->callbacks.init_thread != NULL ) {
-		tls.user_data = ctx->callbacks.init_thread( ctx, THREAD_WORKER );
+		void *user_data = ctx->callbacks.init_thread( ctx, THREAD_WORKER );
+		httplib_pthread_setspecific( XX_httplib_tls_key, user_data );
 	}
 
 	conn = httplib_calloc( 1, sizeof(*conn) + MAX_REQUEST_SIZE );
@@ -170,7 +167,8 @@ static void worker_thread_run( struct worker_thread_args *thread_args ) {
 	}
 
 	if ( ctx->callbacks.exit_thread != NULL ) {
-		ctx->callbacks.exit_thread( ctx, THREAD_WORKER, tls.user_data );
+		void *user_data = httplib_pthread_getspecific( XX_httplib_tls_key );
+		ctx->callbacks.exit_thread( ctx, THREAD_WORKER, user_data );
 	}
 
 	httplib_pthread_setspecific( XX_httplib_tls_key, NULL );

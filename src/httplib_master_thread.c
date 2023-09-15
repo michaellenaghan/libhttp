@@ -58,7 +58,6 @@ LIBHTTP_THREAD XX_httplib_master_thread( void *thread_func_param ) {
 static void master_thread_run(void *thread_func_param) {
 
 	struct httplib_context *ctx = (struct httplib_context *)thread_func_param;
-	struct httplib_workerTLS tls = {0};
 	struct pollfd *pfd;
 	int i;
 
@@ -86,16 +85,13 @@ static void master_thread_run(void *thread_func_param) {
 	}
 #endif
 
-/*
- * Initialize thread local storage
- */
-
-	tls.thread_index = -1;
-
-	httplib_pthread_setspecific( XX_httplib_tls_key, &tls );
+	/*
+	* Initialize thread local storage
+	*/
 
 	if ( ctx->callbacks.init_thread ) {
-		tls.user_data = ctx->callbacks.init_thread( ctx, THREAD_MASTER );
+		void *user_data = ctx->callbacks.init_thread( ctx, THREAD_MASTER );
+		httplib_pthread_setspecific( XX_httplib_tls_key, user_data );
 	}
 
 	/*
@@ -178,7 +174,8 @@ static void master_thread_run(void *thread_func_param) {
 #endif
 
 	if ( ctx->callbacks.exit_thread ) {
-		ctx->callbacks.exit_thread( ctx, THREAD_MASTER, tls.user_data );
+		void *user_data = httplib_pthread_getspecific( XX_httplib_tls_key );
+		ctx->callbacks.exit_thread( ctx, THREAD_MASTER, user_data );
 	}
 
 	httplib_pthread_setspecific( XX_httplib_tls_key, NULL );

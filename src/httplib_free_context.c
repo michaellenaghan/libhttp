@@ -106,7 +106,7 @@ void XX_httplib_free_context( struct httplib_context *ctx ) {
 	ctx->workerthreadids = httplib_free( ctx->workerthreadids );
 
 	/*
-	 * Deallocate the tls variable
+	 * Deallocate the tls key
 	 */
 
 	if ( --XX_httplib_tls_init == 0 ) {

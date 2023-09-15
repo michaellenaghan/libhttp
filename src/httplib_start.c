@@ -42,7 +42,6 @@ struct httplib_context *httplib_start( const struct httplib_option *options, con
 	struct httplib_context *ctx;
 	int i;
 	void (*exit_callback)(struct httplib_context *ctx);
-	struct httplib_workerTLS tls;
 
 	/*
 	 * No memory for the ctx structure is the only error which we
@@ -103,10 +102,6 @@ struct httplib_context *httplib_start( const struct httplib_option *options, con
 			return NULL;
 		}
 	}
-
-	tls.thread_index = -1;  // Really just for worker threads.
-
-	httplib_pthread_setspecific( XX_httplib_tls_key, & tls );
 
 	if ( httplib_pthread_mutex_init( & ctx->thread_mutex, &XX_httplib_pthread_mutex_attr )  ) return XX_httplib_abort_start( ctx, "Cannot initialize thread mutex"          );
 

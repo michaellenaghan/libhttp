@@ -41,7 +41,6 @@ LIBHTTP_THREAD XX_httplib_websocket_client_thread( void *data ) {
 
 	struct httplib_context *ctx;
 	struct httplib_connection *conn;
-	struct httplib_workerTLS tls = {0};
 
 	struct websocket_client_thread_data *cdata;
 
@@ -53,12 +52,9 @@ LIBHTTP_THREAD XX_httplib_websocket_client_thread( void *data ) {
 
 	XX_httplib_set_thread_name( ctx, "ws-client" );
 
-	tls.thread_index = -1;
-
-	httplib_pthread_setspecific( XX_httplib_tls_key, &tls );
-
 	if ( ctx->callbacks.init_thread != NULL ) {
-		tls.user_data = ctx->callbacks.init_thread( ctx, THREAD_WEBSOCKET );
+		void *user_data = ctx->callbacks.init_thread( ctx, THREAD_WEBSOCKET );
+		httplib_pthread_setspecific( XX_httplib_tls_key, user_data );
 	}
 
 	XX_httplib_read_websocket( ctx, conn, cdata->data_handler, cdata->callback_data );
@@ -66,7 +62,8 @@ LIBHTTP_THREAD XX_httplib_websocket_client_thread( void *data ) {
 	if ( cdata->close_handler != NULL ) cdata->close_handler( ctx, conn, cdata->callback_data );
 
 	if ( ctx->callbacks.exit_thread != NULL ) {
-		ctx->callbacks.exit_thread( ctx, THREAD_WEBSOCKET, tls.user_data );
+		void *user_data = httplib_pthread_getspecific( XX_httplib_tls_key );
+		ctx->callbacks.exit_thread( ctx, THREAD_WEBSOCKET, user_data );
 	}
 
 	httplib_pthread_setspecific( XX_httplib_tls_key, NULL );

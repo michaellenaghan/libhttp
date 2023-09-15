@@ -398,11 +398,6 @@ typedef struct SSL_CTX SSL_CTX;
 
 #endif  /* NO_SSL */
 
-struct httplib_workerTLS {
-	int thread_index;
-	void *user_data;
-};
-
 #if defined(_WIN32)
 extern CRITICAL_SECTION			global_log_file_lock;
 #endif
