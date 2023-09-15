@@ -32,7 +32,6 @@ void				XX_httplib_ssl_get_client_cert_info( struct httplib_connection *conn );
 unsigned long			XX_httplib_ssl_get_protocol( int version_id );
 int				XX_httplib_ssl_use_pem_file( struct httplib_context *ctx, const char *pem );
 int				XX_httplib_sslize( struct httplib_context *ctx, struct httplib_connection *conn, SSL_CTX *s, int (*func)(SSL *) );
-void				XX_httplib_tls_dtor( void *key );
 void				XX_httplib_uninitialize_ssl( struct httplib_context *ctx );
 
 extern _Atomic(int)		XX_httplib_cryptolib_users;

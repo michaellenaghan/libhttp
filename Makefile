@@ -343,7 +343,6 @@ OBJLIST =									\
 	${OBJDIR}httplib_suggest_connection_header${OBJEXT}			\
 	${OBJDIR}httplib_system_exit${OBJEXT}					\
 	${OBJDIR}httplib_system_init${OBJEXT}					\
-	${OBJDIR}httplib_tls_dtor${OBJEXT}					\
 	${OBJDIR}httplib_uninitialize_ssl${OBJEXT}				\
 	${OBJDIR}httplib_url_decode${OBJEXT}					\
 	${OBJDIR}httplib_url_encode${OBJEXT}					\
@@ -1214,12 +1213,6 @@ ${OBJDIR}httplib_system_init${OBJEXT}					: ${SRCDIR}httplib_system_init.c				\
 									  ${INCDIR}libhttp.h
 
 ${OBJDIR}httplib_suggest_connection_header${OBJEXT}			: ${SRCDIR}httplib_suggest_connection_header.c			\
-									  ${SRCDIR}httplib_main.h					\
-									  ${INCDIR}libhttp.h
-
-${OBJDIR}httplib_tls_dtor${OBJEXT}					: ${SRCDIR}httplib_tls_dtor.c					\
-									  ${SRCDIR}httplib_pthread.h					\
-									  ${SRCDIR}httplib_ssl.h					\
 									  ${SRCDIR}httplib_main.h					\
 									  ${INCDIR}libhttp.h
 

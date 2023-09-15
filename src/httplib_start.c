@@ -90,12 +90,12 @@ struct httplib_context *httplib_start( const struct httplib_option *options, con
 #endif  /* _WIN32 */
 
 #if !defined(NO_SSL)
-		if ( httplib_pthread_key_create( & XX_httplib_tls_key, XX_httplib_tls_dtor ) != 0 ) {
+		if ( httplib_pthread_key_create( & XX_httplib_tls_key, NULL ) != 0 ) {
 
 			/*
-			 * Fatal error - abort start. However, this situation should
-			 * never occur in practice.
-			 */
+				* Fatal error - abort start. However, this situation should
+				* never occur in practice.
+				*/
 
 			XX_httplib_tls_init--;
 			httplib_cry( LH_DEBUG_CRASH, ctx, NULL, "%s: cannot initialize thread local storage", __func__ );

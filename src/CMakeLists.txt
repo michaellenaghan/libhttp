@@ -247,7 +247,6 @@ target_sources(
 	httplib_suggest_connection_header.c
 	httplib_system_exit.c
 	httplib_system_init.c
-	httplib_tls_dtor.c
 	httplib_uninitialize_ssl.c
 	httplib_url_decode.c
 	httplib_url_encode.c
