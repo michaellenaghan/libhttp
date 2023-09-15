@@ -172,9 +172,8 @@ static void master_thread_run(void *thread_func_param) {
 	if ( ctx->callbacks.exit_thread ) {
 		void *user_data = httplib_pthread_getspecific( XX_httplib_tls_key );
 		ctx->callbacks.exit_thread( ctx, THREAD_MASTER, user_data );
+		httplib_pthread_setspecific( XX_httplib_tls_key, NULL );
 	}
-
-	httplib_pthread_setspecific( XX_httplib_tls_key, NULL );
 
 	/*
 	 * Signal httplib_stop() that we're done.

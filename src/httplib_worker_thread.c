@@ -169,9 +169,8 @@ static void worker_thread_run( struct worker_thread_args *thread_args ) {
 	if ( ctx->callbacks.exit_thread != NULL ) {
 		void *user_data = httplib_pthread_getspecific( XX_httplib_tls_key );
 		ctx->callbacks.exit_thread( ctx, THREAD_WORKER, user_data );
+		httplib_pthread_setspecific( XX_httplib_tls_key, NULL );
 	}
-
-	httplib_pthread_setspecific( XX_httplib_tls_key, NULL );
 
 	httplib_pthread_mutex_destroy( & conn->mutex );
 	conn = httplib_free( conn );

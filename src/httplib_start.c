@@ -211,8 +211,6 @@ struct httplib_context *httplib_start( const struct httplib_option *options, con
 		}
 	}
 
-	httplib_pthread_setspecific( XX_httplib_tls_key, NULL );
-
 	return ctx;
 
 }  /* httplib_start */

@@ -64,9 +64,8 @@ LIBHTTP_THREAD XX_httplib_websocket_client_thread( void *data ) {
 	if ( ctx->callbacks.exit_thread != NULL ) {
 		void *user_data = httplib_pthread_getspecific( XX_httplib_tls_key );
 		ctx->callbacks.exit_thread( ctx, THREAD_WEBSOCKET, user_data );
+		httplib_pthread_setspecific( XX_httplib_tls_key, NULL );
 	}
-
-	httplib_pthread_setspecific( XX_httplib_tls_key, NULL );
 
 	ctx->workerthreadids = httplib_free( ctx->workerthreadids );
 	conn                 = httplib_free( conn                 );
