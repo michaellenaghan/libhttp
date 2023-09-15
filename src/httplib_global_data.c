@@ -37,10 +37,9 @@ pthread_mutexattr_t			XX_httplib_pthread_mutex_attr;
 #endif /* _WIN32 */
 
 
-
 pthread_key_t XX_httplib_tls_key; /* Thread local storage index */
 
-int		XX_httplib_tls_init		= 0;
+_Atomic(int)				XX_httplib_tls_init		= 0;
 
 const struct uriprot_tp XX_httplib_abs_uri_protocols[] = {
 

@@ -35,6 +35,6 @@ int				XX_httplib_sslize( struct httplib_context *ctx, struct httplib_connection
 void				XX_httplib_tls_dtor( void *key );
 void				XX_httplib_uninitialize_ssl( struct httplib_context *ctx );
 
-extern int			XX_httplib_cryptolib_users;
+extern _Atomic(int)		XX_httplib_cryptolib_users;
 
 #endif  /* NO_SSL */

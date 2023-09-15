@@ -161,8 +161,6 @@ OBJLIST =									\
 	${OBJDIR}extern_ssl_lut${OBJEXT}					\
 	${OBJDIR}httplib_abort_start${OBJEXT}					\
 	${OBJDIR}httplib_accept_new_connection${OBJEXT}				\
-	${OBJDIR}httplib_atomic_dec${OBJEXT}					\
-	${OBJDIR}httplib_atomic_inc${OBJEXT}					\
 	${OBJDIR}httplib_authorize${OBJEXT}					\
 	${OBJDIR}httplib_base64_encode${OBJEXT}					\
 	${OBJDIR}httplib_check_acl${OBJEXT}					\
@@ -421,16 +419,6 @@ ${OBJDIR}httplib_abort_start${OBJEXT}					: ${SRCDIR}httplib_abort_start.c				\
 
 ${OBJDIR}httplib_accept_new_connection${OBJEXT}				: ${SRCDIR}httplib_accept_new_connection.c			\
 									  ${SRCDIR}httplib_ssl.h					\
-									  ${SRCDIR}httplib_main.h					\
-									  ${INCDIR}libhttp.h
-
-${OBJDIR}httplib_atomic_dec${OBJEXT}					: ${SRCDIR}httplib_atomic_dec.c					\
-									  ${SRCDIR}httplib_utils.h					\
-									  ${SRCDIR}httplib_main.h					\
-									  ${INCDIR}libhttp.h
-
-${OBJDIR}httplib_atomic_inc${OBJEXT}					: ${SRCDIR}httplib_atomic_inc.c					\
-									  ${SRCDIR}httplib_utils.h					\
 									  ${SRCDIR}httplib_main.h					\
 									  ${INCDIR}libhttp.h
 

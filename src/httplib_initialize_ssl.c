@@ -32,9 +32,9 @@
 #include "httplib_utils.h"
 
 #if defined(SSL_ALREADY_INITIALIZED)
-int XX_httplib_cryptolib_users = 1; /* Reference counter for crypto library. */
+_Atomic(int) XX_httplib_cryptolib_users = 1; /* Reference counter for crypto library. */
 #else
-int XX_httplib_cryptolib_users = 0; /* Reference counter for crypto library. */
+_Atomic(int) XX_httplib_cryptolib_users = 0; /* Reference counter for crypto library. */
 #endif
 
 /*
@@ -48,7 +48,7 @@ int XX_httplib_initialize_ssl( struct httplib_context *ctx ) {
 
 	UNUSED_PARAMETER(ctx);
 
-	if ( httplib_atomic_inc( & XX_httplib_cryptolib_users ) > 1 ) return 1;
+	if ( ++XX_httplib_cryptolib_users > 1 ) return 1;
 
 	OPENSSL_init_ssl( 0, NULL );
 	OPENSSL_init_ssl( OPENSSL_INIT_LOAD_SSL_STRINGS | OPENSSL_INIT_LOAD_CRYPTO_STRINGS, NULL );

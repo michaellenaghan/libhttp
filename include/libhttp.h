@@ -393,8 +393,6 @@ LIBHTTP_API void *				XX_httplib_free_ex( void *memory, const char *file, unsign
 LIBHTTP_API void *				XX_httplib_malloc_ex( size_t size, const char *file, unsigned line );
 LIBHTTP_API void *				XX_httplib_realloc_ex( void *memory, size_t newsize, const char *file, unsigned line );
 
-LIBHTTP_API int					httplib_atomic_dec( volatile int *addr );
-LIBHTTP_API int					httplib_atomic_inc( volatile int *addr );
 LIBHTTP_API ssize_t				httplib_base64_decode( const char *restrict src, size_t src_len, unsigned char *restrict dst, size_t *dst_len );
 LIBHTTP_API ssize_t				httplib_base64_encode( const unsigned char *restrict src, size_t src_len, char *restrict dst, size_t *dst_len );
 LIBHTTP_API bool				httplib_check_feature( enum httplib_feature const feature );

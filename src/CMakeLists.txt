@@ -42,8 +42,6 @@ target_sources(
 	httplib_abort_start.c
 	httplib_accept_new_connection.c
     httplib_alloc_printf.c
-	httplib_atomic_dec.c
-	httplib_atomic_inc.c
 	httplib_authorize.c
 	httplib_base64_decode.c
 	httplib_base64_encode.c

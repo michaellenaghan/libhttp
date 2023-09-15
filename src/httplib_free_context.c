@@ -113,7 +113,7 @@ void XX_httplib_free_context( struct httplib_context *ctx ) {
 	 * Deallocate the tls variable
 	 */
 
-	if ( httplib_atomic_dec(&XX_httplib_tls_init) == 0 ) {
+	if ( --XX_httplib_tls_init == 0 ) {
 #if defined(_WIN32)
 		DeleteCriticalSection( & global_log_file_lock );
 #endif /* _WIN32 */

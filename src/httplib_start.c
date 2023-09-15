@@ -80,7 +80,7 @@ struct httplib_context *httplib_start( const struct httplib_option *options, con
 
 	ctx->auth_nonce_mask = httplib_get_random() ^ (uint64_t)(ptrdiff_t)(options);
 
-	if ( httplib_atomic_inc( & XX_httplib_tls_init ) == 1 ) {
+	if ( ++XX_httplib_tls_init == 1 ) {
 
 #if defined(_WIN32)
 		InitializeCriticalSection( & global_log_file_lock );
@@ -97,7 +97,7 @@ struct httplib_context *httplib_start( const struct httplib_option *options, con
 			 * never occur in practice.
 			 */
 
-			httplib_atomic_dec( & XX_httplib_tls_init );
+			XX_httplib_tls_init--;
 			httplib_cry( LH_DEBUG_CRASH, ctx, NULL, "%s: cannot initialize thread local storage", __func__ );
 			ctx = httplib_free( ctx );
 
