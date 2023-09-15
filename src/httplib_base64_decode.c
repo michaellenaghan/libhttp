@@ -27,10 +27,12 @@
 #include "httplib_main.h"
 #include "httplib_utils.h"
 
-static unsigned char b64reverse(char letter);
+static unsigned char b64reverse( char letter );
+static size_t round_up_to_nearest_4( size_t len );
+
 
 /*
- * int httplib_base64_decode( const unsigned char *src, int src_len, char *dst, int dst_len );
+ * ssize_t httplib_base64_decode( const unsigned char *restrict src, size_t src_len, char *restrict dst, size_t dst_len );
  *
  * The function httplib_base64_decode() converts a BASE64 buffer of given
  * length to its binary equivalent. If an error occurs or the receive buffer is
@@ -38,92 +40,64 @@ static unsigned char b64reverse(char letter);
  * data in the receive buffer, including the terminating NUL character.
  */
 
-LIBHTTP_API ssize_t httplib_base64_decode( const unsigned char *src, size_t src_len, char *dst, size_t *dst_len ) {
+LIBHTTP_API ssize_t httplib_base64_decode( const char *restrict src, size_t src_len, unsigned char *restrict dst, size_t *dst_len ) {
 
 	size_t i;
-	unsigned char a, b, c, d;
-	size_t dst_len_limit = (size_t) - 1;
-	size_t dst_len_used = 0;
+	size_t j;
+	unsigned char a;
+	unsigned char b;
+	unsigned char c;
+	unsigned char d;
 
-	if ( src == NULL  ||  src_len <= 0  ||  dst == NULL  ||  dst_len == NULL || *dst_len < 1 ) return -1;
-
-	if ( *dst_len > 0 ) dst[0] = '\0';
+	if ( dst_len == NULL ) return -1;
 
 	// 6 bits into 8 bits, mod 4 (+ '\0')
-	size_t expected_len = (size_t)ceil(src_len * 6 / 8) + 4;
-	if ( *dst_len < expected_len ) {
+	size_t expected_len = round_up_to_nearest_4(src_len) * 6 / 8;
+
+	if ( src == NULL || dst == NULL || *dst_len < expected_len ) {
+		if ( dst ) *dst = '\0';
 		*dst_len = expected_len;
 		return -1;
 	}
 
-	dst_len_limit = *dst_len;
-	*dst_len = 0;
+	j = 0;
 
-	for (i = 0; i < src_len; i += 4) {
+	for ( i = 0; i < src_len; i += 4 ) {
 		/* Read 4 characters from BASE64 string */
-		a = b64reverse(src[i]);
-		if (a >= 254) {
-			return (int)i;
-		}
+		a = b64reverse(                      src[i + 0]     );
+		b = b64reverse(((i + 1) < src_len) ? src[i + 1] : 0 );
+		c = b64reverse(((i + 2) < src_len) ? src[i + 2] : 0 );
+		d = b64reverse(((i + 3) < src_len) ? src[i + 3] : 0 );
 
-		b = b64reverse(((i + 1) >= src_len) ? 0 : src[i + 1]);
-		if (b >= 254) {
-			return (int)i + 1;
-		}
-
-		c = b64reverse(((i + 2) >= src_len) ? 0 : src[i + 2]);
-		if (c == 254) {
-			return (int)i + 2;
-		}
-
-		d = b64reverse(((i + 3) >= src_len) ? 0 : src[i + 3]);
-		if (d == 254) {
-			return (int)i + 3;
+		if (a >= 254 || b >= 254 || c == 254 || d == 254) {
+			*dst = '\0';
+			*dst_len = expected_len;
+			return -1;
 		}
 
 		/* Add first (of 3) decoded character */
-		if (dst_len_used < dst_len_limit) {
-			dst[dst_len_used] = (unsigned char)((unsigned char)(a << 2)
-			                                    + (unsigned char)(b >> 4));
-		}
-		dst_len_used++;
+		dst[j++] = (unsigned char)((unsigned char)(a << 2) + (unsigned char)(b >> 4));
 
 		if (c != 255) {
-			if (dst_len_used < dst_len_limit) {
-
-				dst[dst_len_used] = (unsigned char)((unsigned char)(b << 4)
-				                                    + (unsigned char)(c >> 2));
-			}
-			dst_len_used++;
+			dst[j++] = (unsigned char)((unsigned char)(b << 4) + (unsigned char)(c >> 2));
 			if (d != 255) {
-				if (dst_len_used < dst_len_limit) {
-					dst[dst_len_used] =
-					    (unsigned char)((unsigned char)(c << 6) + d);
-				}
-				dst_len_used++;
+				dst[j++] = (unsigned char)((unsigned char)(c << 6) + d);
 			}
 		}
 	}
 
-	/* Add terminating zero */
-	if (dst_len_used < dst_len_limit) {
-		dst[dst_len_used] = '\0';
-		dst_len_used++;
-	}
+	dst[j] = '\0';
 
-	if (dst_len_used > dst_len_limit) {
-		/* Out of memory */
-		return -1;
-	}
+	*dst_len = j;
 
-	*dst_len = dst_len_used;
+	assert(*dst_len <= expected_len);
 
 	return (ssize_t)*dst_len;
 
 }  /* httplib_base64_decode */
 
 
-static unsigned char b64reverse(char letter)
+static unsigned char b64reverse( char letter )
 {
 	if ((letter >= 'A') && (letter <= 'Z')) {
 		return (unsigned char)(letter - 'A');
@@ -144,4 +118,9 @@ static unsigned char b64reverse(char letter)
 		return 255; /* normal end */
 	}
 	return 254; /* error */
+}
+
+
+static size_t round_up_to_nearest_4( size_t len ) {
+	return (len + 3) & ~0x03ul;
 }

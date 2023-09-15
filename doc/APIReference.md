@@ -77,6 +77,7 @@ LibHTTP is often used as HTTP and HTTPS library inside a larger application.  A 
 
 * [`httplib_atomic_dec( addr );`](api/httplib_atomic_dec.md)
 * [`httplib_atomic_inc( addr );`](api/httplib_atomic_inc.md)
+* [`httplib_base64_decode( src, src_len, dst, dst_len );`](api/httplib_base64_decode.md)
 * [`httplib_base64_encode( src, src_len, dst, dst_len );`](api/httplib_base64_encode.md)
 * [`httplib_md5( buf, ... );`](api/httplib_md5.md)
 * [`httplib_strcasecmp( s1, s2 );`](api/httplib_strcasecmp.md)

@@ -114,7 +114,6 @@ char static_assert_replacement[1];
 
 #include <errno.h>
 #include <fcntl.h>
-#include <math.h>
 #include <signal.h>
 #include <stdbool.h>
 #include <stdint.h>
