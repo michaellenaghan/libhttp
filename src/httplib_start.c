@@ -105,9 +105,7 @@ struct httplib_context *httplib_start( const struct httplib_option *options, con
 	}
 
 	tls.thread_index = -1;  // Really just for worker threads.
-#if defined(_WIN32)
-	tls.pthread_cond_helper_mutex = NULL;
-#endif
+
 	httplib_pthread_setspecific( XX_httplib_tls_key, & tls );
 
 	if ( httplib_pthread_mutex_init( & ctx->thread_mutex, &XX_httplib_pthread_mutex_attr )  ) return XX_httplib_abort_start( ctx, "Cannot initialize thread mutex"          );

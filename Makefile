@@ -349,12 +349,6 @@ OBJLIST =									\
 	${OBJDIR}httplib_write${OBJEXT}						\
 	${OBJDIR}osx_clock_gettime${OBJEXT}					\
 	${OBJDIR}win32_clock_gettime${OBJEXT}					\
-	${OBJDIR}httplib_pthread_cond_broadcast${OBJEXT}			\
-	${OBJDIR}httplib_pthread_cond_destroy${OBJEXT}				\
-	${OBJDIR}httplib_pthread_cond_init${OBJEXT}				\
-	${OBJDIR}httplib_pthread_cond_signal${OBJEXT}				\
-	${OBJDIR}httplib_pthread_cond_timedwait${OBJEXT}			\
-	${OBJDIR}httplib_pthread_cond_wait${OBJEXT}				\
 	${OBJDIR}httplib_pthread_getspecific${OBJEXT}				\
 	${OBJDIR}httplib_pthread_key_create${OBJEXT}				\
 	${OBJDIR}httplib_pthread_key_delete${OBJEXT}				\
@@ -1268,31 +1262,6 @@ ${OBJDIR}osx_clock_gettime${OBJEXT}					: ${SRCDIR}osx_clock_gettime.c					\
 									  ${INCDIR}libhttp.h
 
 ${OBJDIR}win32_clock_gettime${OBJEXT}					: ${SRCDIR}win32_clock_gettime.c				\
-									  ${SRCDIR}httplib_main.h					\
-									  ${INCDIR}libhttp.h
-
-${OBJDIR}httplib_pthread_cond_broadcast${OBJEXT}			: ${SRCDIR}httplib_pthread_cond_broadcast.c			\
-									  ${SRCDIR}httplib_main.h					\
-									  ${INCDIR}libhttp.h
-
-${OBJDIR}httplib_pthread_cond_destroy${OBJEXT}				: ${SRCDIR}httplib_pthread_cond_destroy.c			\
-									  ${SRCDIR}httplib_main.h					\
-									  ${INCDIR}libhttp.h
-
-${OBJDIR}httplib_pthread_cond_init${OBJEXT}				: ${SRCDIR}httplib_pthread_cond_init.c				\
-									  ${SRCDIR}httplib_main.h					\
-									  ${INCDIR}libhttp.h
-
-${OBJDIR}httplib_pthread_cond_signal${OBJEXT}				: ${SRCDIR}httplib_pthread_cond_signal.c			\
-									  ${SRCDIR}httplib_main.h					\
-									  ${INCDIR}libhttp.h
-
-${OBJDIR}httplib_pthread_cond_timedwait${OBJEXT}			: ${SRCDIR}httplib_pthread_cond_timedwait.c			\
-									  ${SRCDIR}httplib_main.h					\
-									  ${SRCDIR}httplib_pthread.h					\
-									  ${INCDIR}libhttp.h
-
-${OBJDIR}httplib_pthread_cond_wait${OBJEXT}				: ${SRCDIR}httplib_pthread_cond_wait.c				\
 									  ${SRCDIR}httplib_main.h					\
 									  ${INCDIR}libhttp.h
 

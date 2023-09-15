@@ -83,9 +83,6 @@ static void worker_thread_run( struct worker_thread_args *thread_args ) {
 	XX_httplib_set_thread_name( ctx, "worker" );
 
 	tls.thread_index = thread_args->index;
-#if defined(_WIN32)
-	tls.pthread_cond_helper_mutex = CreateEvent( NULL, FALSE, FALSE, NULL );
-#endif
 
 	httplib_pthread_setspecific( XX_httplib_tls_key, &tls );
 
@@ -176,9 +173,6 @@ static void worker_thread_run( struct worker_thread_args *thread_args ) {
 		ctx->callbacks.exit_thread( ctx, THREAD_WORKER, tls.user_data );
 	}
 
-#if defined(_WIN32)
-	CloseHandle( tls.pthread_cond_helper_mutex );
-#endif
 	httplib_pthread_setspecific( XX_httplib_tls_key, NULL );
 
 	httplib_pthread_mutex_destroy( & conn->mutex );

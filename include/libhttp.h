@@ -104,11 +104,6 @@ typedef DWORD		pthread_key_t;
 typedef void		pthread_condattr_t;
 typedef void		pthread_mutexattr_t;
 
-typedef struct {
-	CRITICAL_SECTION		threadIdSec;
-	struct httplib_workerTLS *	waiting_thread; /* The chain of threads */
-} pthread_cond_t;
-
 #define pid_t HANDLE /* MINGW typedefs pid_t to int. Using #define here. */
 
 #else  /* _WIN32 */
@@ -433,12 +428,6 @@ LIBHTTP_API int					httplib_modify_passwords_file( const char *passwords_file_na
 LIBHTTP_API DIR *				httplib_opendir( const char *name );
 LIBHTTP_API int					httplib_poll( struct pollfd *pfd, unsigned int nfds, int timeout );
 LIBHTTP_API int					httplib_printf( const struct httplib_context *ctx, struct httplib_connection *conn, PRINTF_FORMAT_STRING(const char *fmt), ...) PRINTF_ARGS(3, 4);
-LIBHTTP_API int					httplib_pthread_cond_broadcast( pthread_cond_t *cv );
-LIBHTTP_API int					httplib_pthread_cond_destroy( pthread_cond_t *cv );
-LIBHTTP_API int					httplib_pthread_cond_init( pthread_cond_t *cv, const pthread_condattr_t *attr );
-LIBHTTP_API int					httplib_pthread_cond_signal( pthread_cond_t *cv );
-LIBHTTP_API int					httplib_pthread_cond_timedwait( pthread_cond_t *cv, pthread_mutex_t *mutex, const struct timespec *abstime );
-LIBHTTP_API int					httplib_pthread_cond_wait( pthread_cond_t *cv, pthread_mutex_t *mutex );
 LIBHTTP_API void *				httplib_pthread_getspecific( pthread_key_t key );
 LIBHTTP_API int					httplib_pthread_join( pthread_t thread, void **value_ptr );
 LIBHTTP_API int					httplib_pthread_key_create( pthread_key_t *key, void (*destructor)(void *) );

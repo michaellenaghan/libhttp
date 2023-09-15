@@ -91,9 +91,7 @@ static void master_thread_run(void *thread_func_param) {
  */
 
 	tls.thread_index = -1;
-#if defined(_WIN32)
-	tls.pthread_cond_helper_mutex = CreateEvent( NULL, FALSE, FALSE, NULL );
-#endif
+
 	httplib_pthread_setspecific( XX_httplib_tls_key, &tls );
 
 	if ( ctx->callbacks.init_thread ) {
@@ -183,9 +181,6 @@ static void master_thread_run(void *thread_func_param) {
 		ctx->callbacks.exit_thread( ctx, THREAD_MASTER, tls.user_data );
 	}
 
-#if defined(_WIN32)
-	CloseHandle( tls.pthread_cond_helper_mutex );
-#endif
 	httplib_pthread_setspecific( XX_httplib_tls_key, NULL );
 
 	/*

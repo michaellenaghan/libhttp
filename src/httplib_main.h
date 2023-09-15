@@ -401,10 +401,6 @@ typedef struct SSL_CTX SSL_CTX;
 struct httplib_workerTLS {
 	int thread_index;
 	void *user_data;
-#if defined(_WIN32)
-	HANDLE pthread_cond_helper_mutex;
-	struct httplib_workerTLS *next_waiting_thread;
-#endif
 };
 
 #if defined(_WIN32)

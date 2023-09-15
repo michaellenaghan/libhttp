@@ -155,12 +155,6 @@ target_sources(
 	httplib_process_new_connection.c
 	httplib_process_options.c
 	httplib_produce_socket.c
-	httplib_pthread_cond_broadcast.c
-	httplib_pthread_cond_destroy.c
-	httplib_pthread_cond_init.c
-	httplib_pthread_cond_signal.c
-	httplib_pthread_cond_timedwait.c
-	httplib_pthread_cond_wait.c
 	httplib_pthread_getspecific.c
 	httplib_pthread_join.c
 	httplib_pthread_key_create.c
