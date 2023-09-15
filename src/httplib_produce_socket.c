@@ -55,7 +55,7 @@ void XX_httplib_produce_socket( struct httplib_context *ctx, const struct socket
 			// *before* the selected worker thread wakes up? The master
 			// could end up overwriting the socket it just assigned.
 
-			assert(!*sp.in_use);
+			assert(!sp->in_use);
 			ctx->client_socks[i]        = *sp;
 			ctx->client_socks[i].in_use = 1;
 
