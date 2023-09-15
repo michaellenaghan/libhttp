@@ -66,7 +66,9 @@ int XX_httplib_send_websocket_handshake( struct httplib_context *ctx, struct htt
 #endif
 	conn->status_code = 101;
 
-	httplib_base64_encode( (unsigned char *)sha, sizeof(sha), b64_sha, B64_SHA_LEN );
+	size_t sha_len = sizeof(sha);
+	size_t b64_sha_len = B64_SHA_LEN;
+	httplib_base64_encode( (unsigned char *)sha, sha_len, b64_sha, &b64_sha_len );
 
 	// `Content-Length` not allowed for 1xx
 	httplib_printf( ctx, conn,

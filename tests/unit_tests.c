@@ -9,8 +9,9 @@
 
 
 TEST
-test_httplib_base64_encode(void) {
+test_httplib_base64_decode(void) {
 	char buf[128];
+	size_t buf_len = sizeof(buf);
 
 	const char *alpha = "abcdefghijklmnopqrstuvwxyz";
 	const char *nonalpha = " !\"#$%&'()*+,-./0123456789:;<=>?@";
@@ -19,47 +20,128 @@ test_httplib_base64_encode(void) {
 	const char *nonalpha_b64_enc = "ICEiIyQlJicoKSorLC0uLzAxMjM0NTY3ODk6Ozw9Pj9A";
 
 	memset(buf, 77, sizeof(buf));
-	httplib_base64_encode((unsigned char const *)"a", 1, buf, sizeof(buf));
+	buf_len = sizeof(buf);
+	httplib_base64_decode((unsigned char const *)"YQ==", 4, buf, &buf_len);
+	ASSERT_STRN_EQ( "a", buf, 1 );
+
+	memset(buf, 77, sizeof(buf));
+	buf_len = sizeof(buf);
+	httplib_base64_decode((unsigned char const *)"YWI=", 4, buf, &buf_len);
+	ASSERT_STRN_EQ( "ab", buf, 2 );
+
+	memset(buf, 77, sizeof(buf));
+	buf_len = sizeof(buf);
+	httplib_base64_decode((unsigned char const *)"YWJj", 4, buf, &buf_len);
+	ASSERT_STRN_EQ( "abc", buf, 3 );
+
+	memset(buf, 77, sizeof(buf));
+	buf_len = sizeof(buf);
+	httplib_base64_decode((unsigned char const *)"YWJjZA==", 8, buf, &buf_len);
+	ASSERT_STRN_EQ( "abcd", buf, 4 );
+
+	memset(buf, 77, sizeof(buf));
+	buf_len = sizeof(buf);
+	httplib_base64_decode((unsigned char const *)"YQ==", 4, buf, &buf_len);
+	ASSERT_STRN_EQ( "abcd", buf, 1 );
+
+	memset(buf, 77, sizeof(buf));
+	buf_len = sizeof(buf);
+	httplib_base64_decode((unsigned char const *)"YWJj", 4, buf, &buf_len);
+	ASSERT_STRN_EQ( alpha, buf, 3 );
+
+	memset(buf, 77, sizeof(buf));
+	buf_len = sizeof(buf);
+	httplib_base64_decode((unsigned char const *)"YWJjZA==", 8, buf, &buf_len);
+	ASSERT_STRN_EQ( alpha, buf, 4 );
+
+	memset(buf, 77, sizeof(buf));
+	buf_len = sizeof(buf);
+	httplib_base64_decode((unsigned char const *)"YWJjZGU=", 8, buf, &buf_len);
+	ASSERT_STRN_EQ( alpha, buf, 5 );
+
+	memset(buf, 77, sizeof(buf));
+	buf_len = sizeof(buf);
+	httplib_base64_decode((unsigned char const *)"YWJjZGVm", 8, buf, &buf_len);
+	ASSERT_STRN_EQ( alpha, buf, 6 );
+
+	memset(buf, 77, sizeof(buf));
+	buf_len = sizeof(buf);
+	httplib_base64_decode((unsigned char const *)alpha_b64_enc, strlen(alpha_b64_enc), buf, &buf_len);
+	ASSERT_STR_EQ( alpha, buf );
+
+	memset(buf, 77, sizeof(buf));
+	buf_len = sizeof(buf);
+	httplib_base64_decode((unsigned char const *)nonalpha_b64_enc, strlen(nonalpha_b64_enc), buf, &buf_len);
+	ASSERT_STR_EQ( nonalpha, buf );
+
+	PASS();
+}
+
+
+TEST
+test_httplib_base64_encode(void) {
+	char buf[128];
+	size_t buf_len = sizeof(buf);
+
+	const char *alpha = "abcdefghijklmnopqrstuvwxyz";
+	const char *nonalpha = " !\"#$%&'()*+,-./0123456789:;<=>?@";
+
+	const char *alpha_b64_enc = "YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXo=";
+	const char *nonalpha_b64_enc = "ICEiIyQlJicoKSorLC0uLzAxMjM0NTY3ODk6Ozw9Pj9A";
+
+	memset(buf, 77, sizeof(buf));
+	buf_len = sizeof(buf);
+	httplib_base64_encode((unsigned char const *)"a", 1, buf, &buf_len);
 	ASSERT_STR_EQ( "YQ==", buf );
 
 	memset(buf, 77, sizeof(buf));
-	httplib_base64_encode((unsigned char const *)"ab", 2, buf, sizeof(buf));
+	buf_len = sizeof(buf);
+	httplib_base64_encode((unsigned char const *)"ab", 2, buf, &buf_len);
 	ASSERT_STR_EQ( "YWI=", buf );
 
 	memset(buf, 77, sizeof(buf));
-	httplib_base64_encode((unsigned char const *)"abc", 3, buf, sizeof(buf));
+	buf_len = sizeof(buf);
+	httplib_base64_encode((unsigned char const *)"abc", 3, buf, &buf_len);
 	ASSERT_STR_EQ( "YWJj", buf );
 
 	memset(buf, 77, sizeof(buf));
-	httplib_base64_encode((unsigned char const *)"abcd", 4, buf, sizeof(buf));
+	buf_len = sizeof(buf);
+	httplib_base64_encode((unsigned char const *)"abcd", 4, buf, &buf_len);
 	ASSERT_STR_EQ( "YWJjZA==", buf );
 
 	memset(buf, 77, sizeof(buf));
-	httplib_base64_encode((unsigned char const *)"abcd", 1, buf, sizeof(buf));
+	buf_len = sizeof(buf);
+	httplib_base64_encode((unsigned char const *)"abcd", 1, buf, &buf_len);
 	ASSERT_STR_EQ( "YQ==", buf );
 
 	memset(buf, 77, sizeof(buf));
-	httplib_base64_encode((unsigned char const *)alpha, 3, buf, sizeof(buf));
+	buf_len = sizeof(buf);
+	httplib_base64_encode((unsigned char const *)alpha, 3, buf, &buf_len);
 	ASSERT_STR_EQ( "YWJj", buf );
 
 	memset(buf, 77, sizeof(buf));
-	httplib_base64_encode((unsigned char const *)alpha, 4, buf, sizeof(buf));
+	buf_len = sizeof(buf);
+	httplib_base64_encode((unsigned char const *)alpha, 4, buf, &buf_len);
 	ASSERT_STR_EQ( "YWJjZA==", buf );
 
 	memset(buf, 77, sizeof(buf));
-	httplib_base64_encode((unsigned char const *)alpha, 5, buf, sizeof(buf));
+	buf_len = sizeof(buf);
+	httplib_base64_encode((unsigned char const *)alpha, 5, buf, &buf_len);
 	ASSERT_STR_EQ( "YWJjZGU=", buf );
 
 	memset(buf, 77, sizeof(buf));
-	httplib_base64_encode((unsigned char const *)alpha, 6, buf, sizeof(buf));
+	buf_len = sizeof(buf);
+	httplib_base64_encode((unsigned char const *)alpha, 6, buf, &buf_len);
 	ASSERT_STR_EQ( "YWJjZGVm", buf );
 
 	memset(buf, 77, sizeof(buf));
-	httplib_base64_encode((unsigned char const *)alpha, (int)strlen(alpha), buf, sizeof(buf));
+	buf_len = sizeof(buf);
+	httplib_base64_encode((unsigned char const *)alpha, strlen(alpha), buf, &buf_len);
 	ASSERT_STR_EQ( alpha_b64_enc, buf );
 
 	memset(buf, 77, sizeof(buf));
-	httplib_base64_encode((unsigned char const *)nonalpha, (int)strlen(nonalpha), buf, sizeof(buf));
+	buf_len = sizeof(buf);
+	httplib_base64_encode((unsigned char const *)nonalpha, strlen(nonalpha), buf, &buf_len);
 	ASSERT_STR_EQ( nonalpha_b64_enc, buf );
 
 	PASS();
@@ -1160,6 +1242,7 @@ main(int argc, char **argv) {
 	WSAStartup(MAKEWORD(2, 2), &data);
 #endif
 
+	RUN_TEST(test_httplib_base64_decode);
 	RUN_TEST(test_httplib_base64_encode);
 	RUN_TEST(test_httplib_check_feature);
 	RUN_TEST(test_httplib_get_builtin_mime_type);

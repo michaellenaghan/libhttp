@@ -45,6 +45,7 @@ target_sources(
 	httplib_atomic_dec.c
 	httplib_atomic_inc.c
 	httplib_authorize.c
+	httplib_base64_decode.c
 	httplib_base64_encode.c
 	httplib_check_acl.c
 	httplib_check_authorization.c

@@ -395,7 +395,8 @@ LIBHTTP_API void *				XX_httplib_realloc_ex( void *memory, size_t newsize, const
 
 LIBHTTP_API int					httplib_atomic_dec( volatile int *addr );
 LIBHTTP_API int					httplib_atomic_inc( volatile int *addr );
-LIBHTTP_API int					httplib_base64_encode( const unsigned char *src, int src_len, char *dst, int dst_len );
+LIBHTTP_API ssize_t				httplib_base64_decode( const unsigned char *src, size_t src_len, char *dst, size_t *dst_len );
+LIBHTTP_API ssize_t				httplib_base64_encode( const unsigned char *src, size_t src_len, char *dst, size_t *dst_len );
 LIBHTTP_API bool				httplib_check_feature( enum httplib_feature const feature );
 LIBHTTP_API void				httplib_close_connection( struct httplib_context *ctx, struct httplib_connection *conn );
 LIBHTTP_API int					httplib_closedir( DIR *dir );
