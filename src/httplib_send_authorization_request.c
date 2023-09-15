@@ -40,12 +40,7 @@ void XX_httplib_send_authorization_request( struct httplib_context *ctx, struct 
 	curtime = time( NULL );
 
 	nonce = (uint64_t)ctx->start_time;
-
-	httplib_pthread_mutex_lock( & ctx->nonce_mutex );
-	nonce += ctx->nonce_count;
-	++ctx->nonce_count;
-	httplib_pthread_mutex_unlock( & ctx->nonce_mutex );
-
+	nonce += ctx->nonce_count++;
 	nonce            ^= ctx->auth_nonce_mask;
 
 	conn->status_code = 401;

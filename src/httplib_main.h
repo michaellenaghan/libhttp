@@ -484,7 +484,7 @@ struct httplib_context {
 	time_t start_time;			/* Server start time, used for authentication						*/
 	uint64_t auth_nonce_mask;		/* Mask for all nonce values								*/
 	pthread_mutex_t nonce_mutex;		/* Protects nonce_count									*/
-	unsigned long nonce_count;		/* Used nonces, used for authentication							*/
+	_Atomic(unsigned long) nonce_count;	/* Used nonces, used for authentication							*/
 
 	char *systemName;			/* What operating system is running							*/
 
