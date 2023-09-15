@@ -89,7 +89,6 @@ struct httplib_context *httplib_start( const struct httplib_option *options, con
 		pthread_mutexattr_settype( & XX_httplib_pthread_mutex_attr, PTHREAD_MUTEX_RECURSIVE );
 #endif  /* _WIN32 */
 
-#if !defined(NO_SSL)
 		if ( httplib_pthread_key_create( & XX_httplib_tls_key, NULL ) != 0 ) {
 
 			/*
@@ -103,16 +102,6 @@ struct httplib_context *httplib_start( const struct httplib_option *options, con
 
 			return NULL;
 		}
-#endif  /* NO_SSL */
-	}
-
-	else {
-		/*
-		 * TODO (low): istead of sleeping, check if XX_httplib_tls_key is already
-		 * initialized.
-		 */
-
-		httplib_sleep( 1 );
 	}
 
 	tls.thread_index = -1;  // Really just for worker threads.

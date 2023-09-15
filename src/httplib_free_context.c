@@ -114,14 +114,14 @@ void XX_httplib_free_context( struct httplib_context *ctx ) {
 	 */
 
 	if ( --XX_httplib_tls_init == 0 ) {
-#if defined(_WIN32)
-		DeleteCriticalSection( & global_log_file_lock );
-#endif /* _WIN32 */
-#if !defined(_WIN32)
-		pthread_mutexattr_destroy( & XX_httplib_pthread_mutex_attr );
-#endif
 
 		httplib_pthread_key_delete( XX_httplib_tls_key );
+
+#if defined(_WIN32)
+		DeleteCriticalSection( & global_log_file_lock );
+#else  /* _WIN32 */
+		pthread_mutexattr_destroy( & XX_httplib_pthread_mutex_attr );
+#endif  /* _WIN32 */
 	}
 
 	/*
